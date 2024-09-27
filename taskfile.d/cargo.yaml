@@ -1,0 +1,48 @@
+version: '3'
+
+tasks:
+
+  install:
+    desc: 'Install app <APP>'
+    requires:
+      vars:
+        - APP
+    cmds:
+      - cargo install {{.APP}}
+
+  install:bulk:
+    internal: true
+    requires:
+      vars:
+        - APPS
+    cmds:
+      - for: {var: APPS, as: APP}
+        task: install
+        vars:
+          APP: '{{.APP}}'
+
+  install:curated-list:
+    cmds:
+      - task: install:curated-list:common
+      - task: install:curated-list:unix
+
+  install:curated-list:common:
+    cmds:
+      - task: install:bulk
+        vars:
+          APPS:
+            - sd
+
+  install:curated-list:unix:
+    platforms: [linux, darwin]
+    cmds:
+      - task: install:bulk
+        vars:
+          APPS:
+            - zellij
+            - sshx
+            # - xplr
+            # - tailspin
+            - pyapp
+            - havn
+            # - gpg-tui
