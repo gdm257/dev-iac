@@ -1,0 +1,89 @@
+version: '3'
+
+tasks:
+
+  add:
+    desc: 'Add a plugin <PLUGIN>'
+    requires:
+      vars:
+        - PLUGIN
+    cmds:
+      - vfox add {{.PLUGIN}}
+
+  add:bulk:
+    internal: true
+    requires:
+      vars:
+        - PLUGINS
+    cmds:
+      - for: {var: PLUGINS, as: PLUGIN}
+        task: add
+        vars:
+          PLUGIN: '{{.PLUGIN}}'
+
+  add:curated-list:
+    cmds:
+      - task: add:bulk
+        vars:
+          PLUGINS:
+            # - clang
+            - dotnet
+            # - golang
+            - java
+            - kotlin
+            # - nodejs
+            - php
+            # - python
+
+  install:
+    desc: 'Install a SDK <SDK>'
+    requires:
+      vars:
+        - SDK
+    cmds:
+      - vfox install {{.SDK}}
+
+  install:bulk:
+    internal: true
+    requires:
+      vars:
+        - SDKS
+    cmds:
+      - for: {var: SDKS, as: SDK}
+        task: install
+        vars:
+          SDK: '{{.SDK}}'
+
+  install:curated-list:
+    cmds:
+      - task: install:bulk
+        vars:
+          SDKS:
+            - dotnet@6.0.31
+            - dotnet@8.0.6
+            # - golang@latest
+            - java@8.0.342+7-open
+            - java@11.0.16+8-open
+            - java@17.0.2+8-open
+            - kotlin@1.9.24
+            # - nodejs@latest
+            - php@7.4.32
+
+  globalize:
+    desc: 'Set up auto activation for SDK <SDK>'
+    requires:
+      vars:
+        - SDK
+    cmds:
+      - vfox use --global {{.SDK}}
+
+  globalize:bulk:
+    internal: true
+    requires:
+      vars:
+        - SDKS
+    cmds:
+      - for: {var: SDKS, as: SDK}
+        task: globalize
+        vars:
+          SDK: '{{.SDK}}'
