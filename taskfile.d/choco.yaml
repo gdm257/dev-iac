@@ -1,0 +1,41 @@
+version: '3'
+
+tasks:
+
+  install:
+    platforms: [windows]
+    desc: 'Install app <APP>'
+    requires:
+      vars:
+        - APP
+    cmds:
+      - choco install -y {{.APP}}
+
+  install:bulk:
+    platforms: [windows]
+    internal: true
+    requires:
+      vars:
+        - APPS
+    cmds:
+      - for: {var: APPS, as: APP}
+        task: install
+        vars:
+          APP: '{{.APP}}'
+
+  install:curated-list:
+    platforms: [windows]
+    cmds:
+      - task: install:bulk
+        vars:
+          APPS:
+            - veracrypt
+            # - omnimidi
+            # - softether-vpn-client
+            # - sqlserver-odbcdriver
+            # - krew
+            # - virtualmidisynth
+            # - imdisk
+            - imdisk-toolkit
+            # - ssd-z.portable
+            # - vb-cable
