@@ -1,0 +1,62 @@
+version: '3'
+
+tasks:
+
+  install:
+    desc: 'Install package <PACKAGE>'
+    requires:
+      vars:
+        - PACKAGE
+    cmds:
+      - npm install -g {{.PACKAGE}}
+
+  install:bulk:
+    requires:
+      vars:
+        - PACKAGES
+    cmds:
+      - for: {var: PACKAGES, as: PACKAGE}
+        task: install
+        vars:
+          PACKAGE: '{{.PACKAGE}}'
+
+  install:curated-list:
+    cmds:
+      - task: install:bulk
+        vars:
+          PACKAGES:
+            - opencommit
+            - '@openapitools/openapi-generator-cli'
+            - whistle
+            # - pxder
+            # - npkill
+            # - fkill-cli
+            # - fx
+            # - is-up-cli
+            # - @aweary/alder
+            # - typescript
+            # - temme
+            # - create-nocodb-app
+            # - webpack webpack-cli
+            # - sass
+            # - create-react-app
+            # - @medv/eat
+            # - gitmoji-cli
+            # - @zeit/ncc
+            # - @vercel/ncc
+            # - pkg
+            # - single-file-cli
+            # - webdav-cli
+            # - miniflare
+            # - static-marks
+            # - terminalizer
+            # - lint-staged
+            # - @commitlint/cli @commitlint/config-conventional
+            # - hygen
+            # - yo
+            # - commitizen
+            # - aicommits
+            # - deprank
+            # - git-stats
+            # - pake-cli
+            # - git-run
