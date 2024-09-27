@@ -1,0 +1,39 @@
+version: '3'
+
+tasks:
+
+  install:
+    desc: 'Install app <APP>'
+    requires:
+      vars:
+        - APP
+    cmds:
+      - go install {{.APP}}
+
+  install:bulk:
+    requires:
+      vars:
+        - APPS
+    cmds:
+      - for: {var: APPS, as: APP}
+        task: install
+        vars:
+          APP: '{{.APP}}'
+
+  install:curated-list:
+    cmds:
+      - task: install:bulk
+        vars:
+          APPS:
+            # - github.com/gdm257/scoop-search@gdm257-patch-1
+            - github.com/PaulXu-cn/go-mod-graph-chart/gmchart@latest
+            - github.com/go-delve/delve/cmd/dlv@latest
+            # - github.com/chenjiandongx/sniffer@latest
+            # - github.com/zmap/zdns@latest
+            - github.com/gofireflyio/aiac/v4@latest
+            - github.com/google/go-licenses@latest
+            # - github.com/zquestz/s@latest
+            # - github.com/DimitarPetrov/stegify@latest
+            - github.com/charmbracelet/freeze@latest
+            - github.com/zeromicro/go-zero/tools/goctl@latest
+            - github.com/go-kratos/kratos/cmd/kratos/v2@latest
