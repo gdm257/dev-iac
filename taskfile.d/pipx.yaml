@@ -1,0 +1,132 @@
+version: '3'
+
+tasks:
+
+  install:
+    desc: 'Install package <PACKAGE>'
+    requires:
+      vars:
+        - PACKAGE
+    cmds:
+      - pipx install {{.PACKAGE}}
+
+  install:bulk:
+    internal: true
+    requires:
+      vars:
+        - PACKAGES
+    cmds:
+      - for: {var: PACKAGES, as: PACKAGE}
+        task: install
+        vars:
+          PACKAGE: '{{.PACKAGE}}'
+
+  install:curated-list:
+    cmds:
+      - task: install:bulk
+        vars:
+          PACKAGES:
+            - pipx
+            # - virtualenvwrapper-win
+            # - pipenv
+            # - ipython
+            - ptpython
+            - pdm
+            # - poetry
+            # - hatch
+            # - pyinstaller
+            # - pyarmor
+            # - nuitka
+            # - flake8
+            # - mypy
+            # - ruff
+            # - cookiecutter
+            # - sedsed
+            # - jc
+            - httpie
+            # - mycli
+            # - tqdm
+            # - pandasgui
+            # - scalene
+            # - glances windows-curses
+            # - sphinx
+            # - mkdocs
+            - asciinema
+            # - bgmi
+            # - flexget
+            # - visidata
+            # - csvtotable
+            - pipdeptree
+            # - scrapy; inject ipython
+            # - black[d]
+            # - jsoncsv
+            # - scrapyd-client
+            # - scrapyd
+            # - scrapydweb
+            # - httpx[cli]
+            # - archivebox
+            - code2flow
+            # - torrent-parser
+            # - tox
+            # - pre-commit
+            # - isort
+            # - jupyter
+            # - jupyterhub
+            # - feapder[all]
+            - iredis
+            # - icdiff
+            - gita
+            # - eg
+            # - git-sim
+            # - sqlmodel
+            - shell-gpt
+            # - Quick-Cut
+            # - ansible-lint
+            # - speedtest-cli
+            # - pyside6
+            # - uncompyle6
+            # - docformatter
+            - datamodel-code-generator[http]
+            # - apkleaks
+            # - flake8-to-ruff
+            # - pgcli
+            # - litecli
+            # - gdbgui
+            # - playwithmpv
+            # - bilix
+            # - --include-deps ansible
+            # - vardbg
+            # - jupyterlab
+            # - git-imerge
+            - radian
+            - fonttools[ufo,lxml,woff,unicode]
+            - pix2tex[gui]
+            # - rapid_latex_ocr
+            # - texify
+            # - paracelsus
+            - ssh-audit
+            # - sqlalchemy-data-model-visualizer
+            # - pywxdump
+            - harlequin[postgres,mysql,bigquery,trino,odbc,s3]
+            # - deadlink
+            # - tiptop
+            # - toolong
+            - ciphey
+            # - pyscaffold[all]
+            - stego-lsb
+            # - copier
+            # - open-interpreter
+            # - scapy
+            # - ansible-playbook-grapher
+            - aider-chat
+            # - kupo
+            # - eml-analyzer
+            # - eml-to-html
+            # - yen
+            # - packaged
+            - radon
+            - basic-pitch
+            # - dotdrop
+            # - pretzelai
+            # - openapi-python-client
+            - openbb-cli
