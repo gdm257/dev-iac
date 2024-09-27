@@ -1,0 +1,28 @@
+version: '3'
+
+tasks:
+
+  python:install:
+    desc: 'Install Python <VERSION>'
+    requires:
+      vars:
+        - VERSION
+    cmds:
+      - rye toolchain fetch {{.VERSION}}
+
+  python:install:bulk:
+    requires:
+      vars:
+        - VERSIONS
+    cmds:
+      - for: {var: VERSIONS, as: VERSION}
+        task: python:install
+        vars:
+          VERSION: '{{.VERSION}}'
+
+  python:install:curated-list:
+    cmds:
+      - task: python:install:bulk
+        vars:
+          VERSIONS:
+            - '3.11.6'
