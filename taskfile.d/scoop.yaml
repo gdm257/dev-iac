@@ -1,0 +1,1210 @@
+version: '3'
+
+tasks:
+
+  add:
+    platforms: [windows]
+    desc: 'Add a bucket [NAME URL] -- [NAME URL]'
+    vars:
+      _BUCKET: '{{if and .NAME .URL}}{{.NAME}} {{.URL}}{{else if .CLI_ARGS}}{{.CLI_ARGS}}{{else}}--help{{end}}'
+    cmds:
+      - scoop bucket add {{._BUCKET}}
+
+  add:bulk:
+    platforms: [windows]
+    internal: true
+    requires:
+      vars:
+        - BUCKETS
+    cmds:
+      - for: {var: BUCKETS, as: BUCKET}
+        task: add
+        vars:
+          NAME: '{{.BUCKET.NAME}}'
+          URL: '{{.BUCKET.URL}}'
+
+  install:
+    platforms: [windows]
+    desc: 'Install an app [APP GLOBAL SKIP] -- [APP]'
+    vars:
+      _APP: '{{if .APP}}{{.APP}}{{else if .CLI_ARGS}}{{.CLI_ARGS}}{{else}}--help{{end}}'
+      _GLOBAL: '{{if not .GLOBAL}}{{else}}-g{{end}}'
+      _SKIP: '{{if .SKIP}}-s{{end}}'
+    cmds:
+      - scoop install {{._GLOBAL}} {{._SKIP}} {{._APP}}
+
+  install:bulk:
+    platforms: [windows]
+    internal: true
+    requires:
+      vars:
+        - APPS
+    cmds:
+      - for: {var: APPS, as: APP}
+        task: install
+        vars:
+          APP: '{{.APP}}'
+
+  add:curated-list:
+    cmds:
+      - task: add:bulk
+        vars:
+          BUCKETS:
+            - NAME: apps
+              URL: https://github.com/kkzzhizhou/scoop-apps
+            - NAME: gdm257
+              URL: https://github.com/gdm257/scoop-257
+            - NAME: SM
+              URL: https://github.com/okibcn/ScoopMaster
+            # - NAME: lemon
+            #   URL: https://github.com/hoilc/scoop-lemon
+            # - NAME: spc
+            #   URL: https://ghproxy.com/https://github.com/lzwme/scoop-proxy-cn
+
+  install:curated-list:
+    platforms: [windows]
+    cmds:
+      - task: install:curated-list:devops
+      - task: install:curated-list:downloader
+      - task: install:curated-list:file
+      - task: install:curated-list:fonts
+      - task: install:curated-list:text
+      - task: install:curated-list:picture
+      - task: install:curated-list:video
+      - task: install:curated-list:audio
+      - task: install:curated-list:network
+      - task: install:curated-list:process
+      - task: install:curated-list:shell
+      - task: install:curated-list:kernel
+      - task: install:curated-list:layer
+      - task: install:curated-list:toolbox
+
+  install:curated-list:devops:
+    platforms: [windows]
+    cmds:
+      - task: install:bulk
+        vars:
+          APPS:
+            - chsrc
+            - vfox
+            # - version-manager
+            # - python27 python37 python38 python39 python310 python311 micromamba_ShuguangSun micromamba
+            - rye
+            - gdm257/micromamba
+            - ruff
+            # - uv
+            # - hatch
+            - volta
+            # - tailwindcss
+            # - nvm
+            # - yarn pnpm
+            # - php74 php74-xdebug composer
+            # - openjdk9 openjdk8-redhat openjdk11 openjdk17
+            - maven
+            - gradle
+            - adb
+            # - netbeans-portable
+            # - kotlin
+            - apktool
+            - nuget
+            - ilspy
+            # - dnspy
+            - mingw
+            - llvm
+            - xmake
+            - conan
+            - cmake
+            - doxygen
+            - qt-creator
+            - innoextract
+            - innounp
+            - innosetup-portapps
+            - InnoExtractor
+            - nsis
+            - msix
+            - upx
+            - encrypto
+            - x64dbg
+            - reko
+            - cutter
+            - die
+            - shellcheck
+            - shfmt
+            - luajit
+            - lua53
+            - lua
+            - luarocks
+            - go
+            - golangci-lint
+            - goreleaser
+            - gf
+            - gdm257/protoc-gen-go
+            - rustup-msvc
+            # - unityhub
+            # - autohotkey
+            - AutoHotkey-Portable_ACooper81
+            - AutoHotkey2-Portable
+            # - jetbrains-toolbox@1.26.0.13072
+            # - Gateway-EAP-portable@2022.2.2-222.4167.9
+            # - PyCharm-Professional-portable@2020.3.5-203.7717.81
+            # - IntelliJ-IDEA-Ultimate-portable@2020.3.2-203.7148.57
+            # - GoLand-portable@2020.3.2-203.7148.71
+            # - Rider-portable@2020.3.2-203.6682.21
+            # - WebStorm-portable@2020.3.2-203.7148.54
+            # - CLion-portable@2020.3.3-203.7717.62
+            # - PhpStorm-portable@2020.3.3-203.7717.64
+            - idea-portable
+            # - gdm257/cursor
+            # - imhex
+            - vscode
+            - vim
+            # - vimtutor
+            - neovim
+            # - helix
+            # - emacs
+            - hexyl
+            # - lapce
+            - jupyterlab-desktop
+            - android-studio
+            # - recaf
+            # - rstudio
+            # - serial-studio
+            # - spyder
+            # - sourcetrail
+            # - masscode
+            - mogan
+            - miktex
+            - perl
+            - texstudio
+            # - texmaker
+            # - lyx
+            # - texmacs
+            - ldap-admin
+            - redis
+            - postgresql14
+            # - mysql57
+            - mysql8
+            - mongodb
+            # - dolt
+            - protobuf
+            - another-redis-desktop-manager
+            # - tiny-rdm
+            - mongodb-compass
+            - edgedb
+            - dbgate
+            - chat2db
+            - jailer
+            # - dbeaver
+            # - dblab
+            # - usql
+            - atlas
+            # - migrate
+            # - dbmate
+            # - goose
+            # - datax
+            # - zincsearch
+            # - DataGrip-portable@2020.3.2-203.7148.68
+            # - heidisql
+            # - sqlyog-community
+            # - falcon-sql-client
+            # - beekeeper-studio
+            # - sqlitebrowser
+            # - sqlitestudio
+            # - sqlite
+            # - studio-3t
+            # - robo3t
+            # - NoSQLBooster-for-MongoDB
+            - git
+            - bit
+            - gitui
+            - lazygit
+            - git-credential-manager
+            # - legit
+            - git-branchless
+            # - gitbutler
+            # - git-town
+            - gitleaks
+            - git-lfs
+            - lfs-dal
+            - git-sync
+            # - gptcommit
+            # - gitql
+            # - ungit
+            # - gitleaks
+            - delta
+            # - gix
+            # - git-chglog
+            - git-cliff
+            # - git-sizer
+            - git-quick-stats
+            - onefetch
+            - scc
+            # - tokei
+            # - cloc
+            - gitea
+            - act
+            # - hub
+            # - gh
+            # - ghq
+            # - lepton
+            # - glab
+            # - teleport
+            # - jenkins-lts
+            - nomad
+            # - semaphore
+            # - prometheus
+            # - openobserve
+            # - sourcetree
+            # - sourcetree_ScoopInstaller
+            # - gisto
+            # - nfpm
+
+  install:curated-list:downloader:
+    platforms: [windows]
+    cmds:
+      - task: install:bulk
+        vars:
+          APPS:
+            - scoop-search
+            # - ss
+            - wingetcreate
+            # - wingetui
+            - UniGetUI
+            # - winget-preview
+            # - Baulk_dodorz
+            # - shovel
+            # - npackd
+            # - lux
+            # - bbdown-beta
+            # - bbdown
+            # - downkyi
+            - pixivutil2
+            # - pixivbiu
+            # - youtube-dl
+            # - youtube-dl-gui
+            - yt-dlp
+            - gallery-dl
+            - ariang-native
+            - rclone
+            - rclone-browser
+            # - winfsp-np-beta
+            - croc
+            # - cwRsync
+            - winscp
+            # - synctrayzor
+            # - landrop
+            # - megasync
+            - 115
+            - BaiduNetdisk
+            - alist
+            # - hfs
+            # - sftpgo
+            - dukto
+            - dufs
+            - officetoolplus
+            # - qbittorrent-portable
+            - qbittorrent-enhanced
+            # - annie
+            - fake115uploader
+            - fake115-go
+            - BaiduPanFilesTransfers
+            - baidupcs-go
+            - localsend
+            # - FileCentipede
+            # - ipfs-desktop
+            - gdm257/fav
+            # - FileCentipede
+            # - termscp
+            - s3browser
+            # - windows-iso-downloader
+            - gopeed
+
+  install:curated-list:file:
+    platforms: [windows]
+    cmds:
+      - task: install:bulk
+        vars:
+          APPS:
+            - unar
+            - lessmsi
+            - age
+            - enc
+            - sops
+            - vault
+            - dirhash
+            # - chezmoi
+            - eza
+            # - lsd
+            - gdu
+            - dust
+            - duf
+            - fd
+            # - fselect
+            - fzf
+            # - tre-command
+            - zoxide
+            - yazi
+            - superfile
+            # - broot
+            # - lf
+            # - file
+            - 7zip
+            # - nanazip
+            # - nanazip_DoveBoy
+            - bandizip6
+            - winrar
+            - everything
+            - gdm257/listary5
+            # - listary
+            # - orange
+            # - spacesniffer
+            # - squirreldisk
+            # - alldup
+            - restic
+            - restic-browser
+            # - redu
+            - duplicati
+            # - backrest
+            - diskgenius-zh
+            - SymlinkCreator
+            # - VeraCrypt-Portable
+            - VeraCryptPortable
+            - Snap2HTML
+            # - HashTools
+            - winmerge
+            - meld
+            # - AntRenamer
+            # - ReNamerLite
+            # - Bulk-Rename-Utility_dodorz
+            # - tagspaces
+            # - gdm257/tagstudio
+            # - DoubleCommander
+            - doublecmd
+            # - freecommander
+            # - xplorer
+            # - onecommander
+            # - mucommander
+            - renamer_fixed
+            # - advancedrenamer
+            # - DriveSnapShot
+            - syncthing
+            # - watchexec
+            # - kopia
+            # - kopiaui
+            # - mc
+            # - cryptomator
+
+  install:curated-list:fonts:
+    platforms: [windows]
+    cmds:
+      - task: install:bulk
+        vars:
+          APPS:
+            - LXGWWenKai
+            - LXGWWenKaiMono
+            - LXGWWenKaiScreenR
+            # - MicrosoftYaHeiMono
+            - SarasaGothic-ttc
+            # - SarasaGothic-SC
+            - NerdFontsSymbolsOnly
+            - DejaVuSansMono-NF-Mono
+            - Hack-NF-Mono
+            - JetBrainsMono-NF
+            # - SourceCodePro-NF-Mono
+            # - MPlus-NF-Mono
+
+  install:curated-list:text:
+    platforms: [windows]
+    cmds:
+      - task: install:bulk
+        vars:
+          APPS:
+            - grex
+            - ripgrep
+            # - sig
+            - ugrep
+            - ag
+            # - ack
+            # - sd
+            - sad
+            # - ruplacer
+            - bat
+            - csvlens
+            # - fx
+            # - jid
+            # - openapi-tui
+            # - csview
+            # - jq xq
+            - yq
+            # - fq
+            # - dasel
+            - xidel
+            # - dsq
+            - q
+            # - miller
+            # - pup
+            - pandoc
+            - tailspin
+            - sttr
+            - hashcat
+            - john-the-ripper
+            - 7z2hashcat
+            - pdftk
+            - poppler
+            # - gpg
+            - mkcert
+            # - echo/beyondcompare
+            - zotero
+            - vosviewer
+            - sumatrapdf
+            - eudic
+            - ting-en
+            - ditto
+            # - copyq
+            # - clipboard
+            - obsidian
+            # - bookxnote
+            - BookXNotePro
+            # - rendevoz
+            # - imewlconverter
+            - zeal
+            # - notepad--
+            # - notepadnext
+            # - notepadplusplus
+            # - islide
+            # - vscode-portable
+            - emeditor
+            - sublime-text
+            # - notepad2-mod
+            # - notepad3
+            # - geany
+            # - texlive
+            # - zettlr
+            # - typora
+            # - pdf-xchange-editor
+            # - koodo-reader
+            # - latex
+            # - msys2
+            # - marktext
+            # - logseq
+            # - github
+            # - oh-my-posh
+            # - gpg4win
+            - fontforge
+            - winfontsview
+            # - keepass
+            # - keepass-plugin-kpenhentryview
+            # - keepass-plugin-webautotype
+            # - keepass-plugin-keeanywhere
+            # - keepass-plugin-keepasshttp
+            # - keepass-plugin-keepassnatmsg
+            # - keepass-plugin-keeagent
+            - bitwarden
+            - bitwarden-cli
+            # - authme
+            # - infisical
+            # - mendeley mendeley-desktop
+            # - raindrop.io
+            # - anki
+            # - DocFetcher
+            - AgentRansack
+            # - pdfpatcher_hu3rror
+            - pdfpatcher
+            - libreoffice
+            - pot-desktop
+            - pdf-guru
+            # - calibre-web
+            # - calibre
+            # - goldendict
+            - goldendict-ng
+            - rssguard
+            # - fluent-reader
+            # - logdy
+            # - gdm257/kmcounter
+
+  install:curated-list:picture:
+    platforms: [windows]
+    cmds:
+      - task: install:bulk
+        vars:
+          APPS:
+            - exiftool
+            - jexiftoolgui
+            - honeyview
+            - fsviewer
+            # - shutter-image-browser
+            - gimp
+            # - StylePix
+            - paint.net
+            - gdm257/imbatch
+            - piclist
+            - imagemagick-lean
+            - caesium-image-compressor
+            - Krita-Portable
+            - inkscape
+            - kicad
+            - geogebra
+            - umbrello
+            # - ascii-image-converter
+            # - irfanview
+            # - stegify
+            - clickshow
+            # - gink
+            - carnac
+            # - keyviz
+            # - keycastow
+            # - nohboard
+            - tesseract
+            - tesseract-languages
+            - pixpin
+            # - esearch
+            # - flameshot
+            # - Snipaste-Portable
+            # - wavetone
+            # - xnviewmp
+            # - ScreenToGif
+            # - tachidesk-server
+            - tachidesk-jui
+            # - suwayomi-jui
+            - tachidesk
+            - quicklook
+            # - sizer
+            - WindowResizer
+            # - SetBrightness
+            # - win10_brightnessslider
+            # - lightbulb
+            - screenoff
+            # - xmind8
+            # - freemind
+            # - xmind_ScoopInstaller
+            # - xmind
+            # - revezone
+            # - hiddex
+            # - qgis
+            # - umlet
+            # - staruml
+            - graphviz
+            - plantuml
+            - d2
+            # - Pinta_dodorz
+            # - Lively-Wallpaper
+            # - capture2text
+            # - greenshot
+            - baimiao
+            # - geekdesk
+            # - roundedtb
+            - universal-watermark-disabler
+            # - imageglass
+            - CelestiaPortable
+            # - StellariumPortable
+            # - picgo
+            - yacreader
+            # - kavita
+            # - hydrus-network
+            # - picacg-qt
+            # - jmcomic-qt
+            # - ehentai-qt
+            # - JHenTai
+            - snap2img
+            # - translumo
+            - LunaTranslator
+            - misakatranslator_ivaquero
+            - dango-translator
+            # - openbbterminal
+            # - darktable
+
+  install:curated-list:video:
+    platforms: [windows]
+    cmds:
+      - task: install:bulk
+        vars:
+          APPS:
+            - mediainfo
+            - mediainfo-gui
+            - digikam
+            - gdm257/bili-sync
+            - tinymediamanager
+            - jellyfin
+            - jellyfin-mpv-shim
+            - gdm257/EmbyToLocalPlayer
+            # - streamlink
+            - mpv-handler
+            - mpv.net-dw
+            # - mpv-lazy
+            # - mpv-lazy_hu3rror
+            # - mpv-Portable
+            # - mpv.net implay mpv.net-cm mpv.net-dw
+            - potplayer
+            - bilibili-portable
+            # - kikoplay
+            # - dandanplay
+            - AssFontSubset
+            - videosubfinder
+            - ChineseSubFinder
+            - SubRenamer
+            - fontloadersub
+            - lavfilters
+            - madvr
+            - anime4kcpp-cli
+            - anime4kcpp-gui
+            - anime4k-glsl
+            - anime4kcpp-avisynthplus-plugin
+            - anime4kcpp-vapoursynth-plugin
+            - anime4kcpp-dsfilter
+            - acnet-glsl
+            - video2x
+            - magpie
+            # - vidbatch
+            - xiaowan
+            # - megui-fixed@2896
+            # - megui
+            - megui_fixed
+            - gdm257/okegui
+            - mkvtoolnix
+            - quickcut
+            - ffmpeg
+            # - shanaencoder
+            # - qwinff
+            - aegisub-arch
+            - subtitleedit
+            - video-srt
+            - sushi
+            - Blender-Portable
+            - pmx-editor
+            - miku-miku-model
+            - mikumikudance
+            - natron
+            - olive-editor-nightly
+            # - olive-editor
+            - kdenlive
+            # - shotcut losslesscut
+            - gyroflow
+            - obs-studio
+            - ZXPInstaller
+            - adobe-creative-cloud-cleaner-tool
+            # - UAC.ZXPInstaller
+            # - captura
+            # - sharex
+            # - screentogif
+            # - aegisub
+            # - mpc-be
+            # - blender
+            # - onelist
+            # - ArctimePro_cc713
+            # - nvidia-geforce-experience
+            # - emby
+            # - terminus-player
+            # - EmbyTheater-Portable
+            # - freetube
+
+  install:curated-list:audio:
+    platforms: [windows]
+    cmds:
+      - task: install:bulk
+        vars:
+          APPS:
+            - gdm257/project-86
+            # - project-86-launcher
+            - taisei
+            - osulazer
+            - collection-manager
+            - osuplayer
+            - danser-go
+            - rewind
+            # - storybrew
+            - OsuBeatmapDownloader
+            - OsuRankedBeatmapDownloader
+            - aimp
+            # - foobar2000 foobar2000-encoders foobar2000-foobox-en-pack
+            # - foobar2000-asion-cn-plus
+            # - musicbee
+            # - ampcast
+            - cuetools
+            # - picard
+            # - balabolka
+            # - lilypond
+            - musescore
+            - everyone-piano
+            # - freepiano
+            # - eac
+            - 163MusicLyrics
+            # - navidrome
+            - gdm257/viena
+            # - reaper
+            - lmms
+            - audacity
+            - domino
+            - helio
+            - hydrogen
+            - mixxx
+            - gdm257/keyfinder
+            - gdm257/wavetone
+            # - fluidsynth
+            - gdm257/kiva
+            - gdm257/tmidi
+            - plmidi
+            - gdm257/keppy-midi-converter
+            # - miditrail
+            - openutau
+            - utsu
+            # - vgm2mid
+            # - midnote
+            # - smf-dsp
+            # - infrarecorder
+            # - InfrarecorderPortable
+            # - strawberry
+            # - clementine
+            - mp3tag-portable
+            # - spleeter-gui
+            - polyglot
+            - cuetools
+            - yesplaymusic
+            # - feeluown
+            # - keyfinder
+            - supersonic
+            - retrieval-based-voice-conversion-webui
+            - Buzz_dodorz
+
+  install:curated-list:network:
+    platforms: [windows]
+    cmds:
+      - task: install:bulk
+        vars:
+          APPS:
+            - tor
+            # - simple-obfs
+            - proxychains
+            - gping
+            # - trippy
+            # - besttrace
+            - nexttrace
+            - bind
+            - networkmanager
+            - whosip
+            # - kscan_batkiz
+            - masscan
+            - naabu
+            - tlsx
+            - subfinder
+            - nmap-portable
+            - nuclei
+            # - fscan
+            # - coredns
+            # - sdns
+            - doggo
+            - dog
+            # - ipscan
+            # - shadowsocks-uri-generator
+            # - quicksetdns
+            - apache
+            - nginx
+            - caddy
+            # - xcaddy
+            # - clash
+            - mihomo
+            # - clash-for-windows
+            # - clash-for-windows-portable
+            # - clashweb
+            # - clashy
+            - clash-verge-rev
+            - clash-nyanpasu
+            # - clash-verge
+            - geoip-country-mmdb
+            - v2ray
+            - v2ray-domain-list-community
+            - v2ray-geoip
+            - v2ray-rules-dat
+            - qv2ray
+            - qv2ray-plugin-command
+            - qv2ray-plugin-naiveproxy
+            - qv2ray-plugin-ss
+            - qv2ray-plugin-ssr
+            - qv2ray-plugin-trojan
+            - qv2ray-plugin-trojan-go
+            - v2rayA
+            # - tuic
+            # - xh
+            - curlie
+            - grpcurl
+            - tproxy
+            - websocat
+            - atac
+            - wireshark
+            # - termshark
+            # - fiddler
+            # - mitmproxy
+            # - stairspeedtest-reborn
+            # - CloudflareSpeedTest
+            - tcptunnel
+            # - webhook
+            - trafficmonitor
+            - winnfsd
+            - telegram
+            - wechat
+            # - cleanmywechat
+            # - wechat_ScoopInstaller
+            # - wechat_akirco
+            # - WechatExporter
+            # - pywxdump
+            - memotrace
+            # - WeChatMsg
+            # - tencent-meeting
+            - discord
+            # - chatgpt
+            - frp
+            - gdm257/frpmgr
+            - catsxp
+            - centbrowser
+            # - chromium
+            # - brave
+            # - Brave-Portable
+            # - brave-beta
+            - tor-browser
+            # - HackBrowserData
+            - geckodriver
+            - chromedriver
+            # - DataGrip-portable@2020.1.5-201.8538.4
+            # - sqlitestudio
+            # - sftpgo
+            # - deskreen
+            # - charles
+            # - mariadb103
+            # - wakemeonlan
+            - ddns-go
+            - portforwarder
+            # - rustdesk
+            # - parsec
+            - moonlight
+            - sunshine
+            # - scrcpy
+            - qtscrcpy
+            # - ZeroTier
+            # - mongodb-compass-isolated
+            # - nps-server
+            # - nps-client
+            # - rathole
+            - iperf3
+            # - tailscale
+            - naiveproxy
+            - traefik
+            - nekoray
+            - sing-box
+            - hysteria
+            - trojan
+            - trojan-go
+            - leaf
+            - element
+            # - gomuks
+            # - mailspring
+            # - Thunderbird-Portable
+            # - simpread-synchelper
+            - clumsy
+            # - chatgpt-next-web
+            # - binggpt-portable
+            # - pidgin
+            - chatbox
+            - ChatALL-Portable
+            - aichat
+            # - tutanota
+            - dns-jumper
+            - gns3
+            # - q-dns
+            # - dnsx
+            # - dnslookup
+            # - dnsq-go
+            - hexchat
+            - chisel
+            # - lego
+            # - remoteapptool
+            # - asnmap
+            # - jmeter
+            # - ali
+            # - packetsender
+            # - quasara
+            # - npcap sniffnet
+            - bandwhich
+            # - dug
+            # - zpscan
+            # - hiddify-next
+            - hiddify-next_noql-net
+            # - teleport
+
+  install:curated-list:process:
+    platforms: [windows]
+    cmds:
+      - task: install:bulk
+        vars:
+          APPS:
+            - openark
+            - bottom
+            # - ntop
+            # - procs
+            # - gotop
+            - winsw
+            # - nssm
+            # - activitywatch
+            - tai
+            - memreduct
+            - runasdate
+            - locale-emulator
+            # - locale-remulator
+            # - watch
+            # - noti
+            # - procexp
+            # - nvs
+            # - unetbootin
+            # - keepass-plugin-yafd
+            # - keepass-plugin-keetraytotp
+            # - keepass-plugin-sequencer
+            # - keepass-plugin-keepassrpc
+            # - listarypro
+            # - supervisord-go
+            # - PowerToys-Portable
+            # - activitywatch_chawyehsu
+            # - winmemorycleaner
+            # - systeminformer-nightly_hu3rror
+            # - komorebi
+            # - glazewm
+            # - fleetctl
+
+  install:curated-list:shell:
+    platforms: [windows]
+    cmds:
+      - task: install:bulk
+        vars:
+          APPS:
+            - windows-terminal
+            - wezterm
+            - ttyd
+            # - cmder-full
+            # - xpipe
+            - electerm
+            # - mobaxterm
+            # - alacritty
+            # - hyper-beta
+            # - tabby-portable
+            # - putty
+            - openssh
+            - lrzsz
+            - tssh
+            - mosh-client
+            - powershell
+            # - PSWinUtil
+            # - sudo
+            - gsudo
+            - navi
+            - just
+            - task
+            # - mask
+            # - cheat
+            # - tldr
+            - tealdeer
+            - gdm257/mykeymap-beta
+            - gdm257/capslock-plus
+            - gdm257/dotenvx
+            - starship
+            # - oh-my-posh
+            # - genact
+            # - ultravnc
+            # - vcxsrv
+            # - pueue
+            # - clink
+            # - clink-portable
+            # - nirsoft/nircmd
+            # - nircmd-both
+            # - hyperfine
+            # - SilentCMD-Portable
+            # - direnv
+            # - flow-launcher
+            - utools
+            # - spc/capslock-plus
+            # - keymouse
+            # - vim-ahk
+            # - vimdesktop
+            # - whkd
+            # - Quicker_dodorz
+            # - kmcounter
+            # - cht.sh
+            # - tgpt
+            # - sgpt
+            # - ps-dotenv
+            # - envelope
+            # - olivetin
+            # - maye
+            # - hunt-and-peck
+            # - keymousego
+
+  install:curated-list:kernel:
+    platforms: [windows]
+    cmds:
+      - task: install:bulk
+        vars:
+          APPS:
+            # - osquery
+            # - WindowsUpdateBlocker
+            - urlprotocolview
+            - rapidee
+            - registry-finder
+            - context-menu-manager
+            - hibit-uninstaller-portable
+            # - registry-explorer
+            - dismplusplus
+            # - optimizer
+            # - sophiapp
+            - wpd
+            # - privatezilla
+            # - Malware-Patch_Paxxs
+            - itunes-portable
+            - i4tool
+            # - windows-application-driver
+            - edgeless-hub
+            # - pchunter
+            - microsoft-activation-scripts
+            - CMWTAT_Digital_Edition
+            # - heu-kms-activator
+            # - kms-heu
+            # - KMS_VL_All_AiO-Portable
+            # - kms-vl-all-aio
+            # - powertool
+            # - BulkCrapUninstaller
+            # - BulkCrapUninstaller-Portable
+            # - bulk-crap-uninstaller
+            # - RevoUninstaller-Portable
+            # - geek-uninstaller
+            - driverstoreexplorer
+            - Grub2
+            - ultraiso
+            # - ntlite
+            # - ntlite-portable
+            # - ntlite_FlawlessCasual17
+            - dismtools
+            - vivetool
+            - vivetool-gui
+            - bootice
+            - hwinfo
+            - speccy
+            - furmark
+            - prime95
+            - hwmonitor
+            - memtest
+            - coretemp
+            - bluescreenview
+            - cpu-z
+            - gpu-z
+            - ssd-z
+            # - diskinfo
+            - as-ssd
+            - crystaldiskmark
+            - crystaldiskmark-shizuku-edition
+            - crystaldiskmark-aoi-edition
+            # - CrystalDiskMark-TsukumoTokka
+            - crystaldiskinfo-shizuku-edition
+            # - hdtune
+            - ssdlife
+            - ddu
+
+  install:curated-list:layer:
+    platforms: [windows]
+    cmds:
+      - task: install:bulk
+        vars:
+          APPS:
+            - ventoy
+            - wepe
+            - rufus
+            - virtualbox-extension
+            - lxrunoffline
+            - vagrant
+            - qemu
+            - cemu-dev
+            - xemu
+            - yuzu
+            # - citra-nightly
+            - citra
+            - dolphin-dev
+            - mgba
+            - ppsspp
+            - ryujinx
+            - pcsx2
+            - rpcs3
+            - vita3k
+            - shadps4
+            - xenia
+            - LDPlayer-Portable
+            - onscripter-w
+            - onscripter-jh
+            - onscripter-ru
+            - ruffle-nightly
+            # - wsl2host
+            - docker
+            # - docker-compose
+            - lazydocker
+            - ctop
+            # - dockle
+            # - diun
+            # - hadolint
+            # - dive
+            # - portainer
+            - kompose
+            # - kustomize
+            - helm
+            - helmfile
+            # - autok3s
+            - k3sup
+            - k3d
+            # - minikube
+            # - kind
+            # - kubeadm
+            - lens
+            # - seabird
+            - kdash
+            - k9s
+            - kubectl
+            # - kubecolor
+            # - kubectl-ai
+            - k8sgpt
+            - krew
+            - kubens
+            - kubectx
+            - istioctl
+            # - istio
+            # - kwok
+            # - kubeshark
+            # - kops
+            # - flux2
+            - main/flux
+            - argocd
+            # - wsl2-distro-manager
+            # - WsaToolbox
+            # - wsldl
+            # - sandboxie-plus-np
+            # - virtualbox-with-extension-pack-np
+            # - virtualbox-with-extension-pack-np_ScoopInstaller
+            # - WSABuildsWindows10
+            # - WSABuildsWindows11
+            # - wsl-centos-7
+            # - wsl-centos-8
+
+  install:curated-list:toolbox:
+    platforms: [windows]
+    cmds:
+      - task: install:bulk
+        vars:
+          APPS:
+            - busybox
+            - uutils-coreutils
+            - sysinternals
+            # - sysinternals_ScoopInstaller
+            # - gaojitools
+            - officebox
+            - playnite
+            # - Hen3
+            - thprac
+            - steam
+            # - EpicGamesLauncher-Portable
+            - GOGGalaxy-Portable
+            - itch
+            - watt-toolkit
+            # - snap-hutao
+            # - collapse
+            - starward

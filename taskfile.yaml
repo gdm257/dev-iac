@@ -10,6 +10,7 @@ output: 'interleaved' # "interleaved" | "group" | "prefixed"
 dotenv: ['.env', './.env']
 
 includes:
+  scoop: {taskfile: './taskfile.d/scoop.yaml', optional: true}
   task: {taskfile: './taskfile.d/task.yaml', optional: true}
   winget: {taskfile: './taskfile.d/winget.yaml', optional: true}
 
