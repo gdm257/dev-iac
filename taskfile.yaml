@@ -7,12 +7,35 @@ interval: '5s'
 silent: false
 output: 'interleaved' # "interleaved" | "group" | "prefixed"
 
-dotenv: ['.env', './.env']
+dotenv:
+  - .env
+  - .local.env
 
 includes:
+  adb: {taskfile: './taskfile.d/adb.yaml', optional: true}
+  ansible: {taskfile: './taskfile.d/ansible.yaml', optional: true}
+  brew: {taskfile: './taskfile.d/brew.yaml', optional: true}
+  cargo: {taskfile: './taskfile.d/cargo.yaml', optional: true}
+  choco: {taskfile: './taskfile.d/choco.yaml', optional: true}
+  coolify: {taskfile: './taskfile.d/coolify.yaml', optional: true}
+  dotnet: {taskfile: './taskfile.d/dotnet.yaml', optional: true}
+  git: {taskfile: './taskfile.d/git.yaml', optional: true}
+  go: {taskfile: './taskfile.d/go.yaml', optional: true}
+  k8s: {taskfile: './taskfile.d/k8s.yaml', optional: true}
+  npm: {taskfile: './taskfile.d/npm.yaml', optional: true}
+  pipx: {taskfile: './taskfile.d/pipx.yaml', optional: true}
+  powershell: {taskfile: './taskfile.d/powershell.yaml', optional: true, aliases: [pwsh, ps]}
+  rclone: {taskfile: './taskfile.d/rclone.yaml', optional: true}
+  reg: {taskfile: './taskfile.d/reg.yaml', optional: true}
+  restic: {taskfile: './taskfile.d/restic.yaml', optional: true}
+  rye: {taskfile: './taskfile.d/rye.yaml', optional: true}
   scoop: {taskfile: './taskfile.d/scoop.yaml', optional: true}
   task: {taskfile: './taskfile.d/task.yaml', optional: true}
+  vfox: {taskfile: './taskfile.d/vfox.yaml', optional: true}
+  volta: {taskfile: './taskfile.d/volta.yaml', optional: true}
   winget: {taskfile: './taskfile.d/winget.yaml', optional: true}
+  w2: {taskfile: './taskfile.d/w2.yaml', optional: true}
+  wsl: {taskfile: './taskfile.d/wsl.yaml', optional: true}
 
   ls: {taskfile: './taskfile.d/task-ls.yaml', optional: false, aliases: [list, l]}
   ll: {taskfile: './taskfile.d/task-ll.yaml', optional: false, aliases: [list-all, la]}
