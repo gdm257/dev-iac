@@ -1,0 +1,100 @@
+version: '3'
+
+tasks:
+
+  add:
+    platforms: [linux, darwin]
+    desc: 'Add a tap <TAP>'
+    requires:
+      vars:
+        - TAP
+    cmds:
+      - brew tap {{.TAP}}
+
+  add:bulk:
+    platforms: [linux, darwin]
+    internal: true
+    requires:
+      vars:
+        - TAPS
+    cmds:
+      - for: {var: TAPS, as: TAP}
+        task: add:bulk
+        vars:
+          TAP: '{{.TAP}}'
+
+  add:curated-list:
+    platforms: [linux, darwin]
+    cmds:
+      - task: add:bulk
+        vars:
+          TAPS:
+            - homebrew/cask-fonts
+
+  install:
+    platforms: [linux, darwin]
+    desc: 'Install app <APP>'
+    requires:
+      vars:
+        - APP
+    cmds:
+      - brew install {{.APP}}
+
+  install:bulk:
+    platforms: [linux, darwin]
+    internal: true
+    requires:
+      vars:
+        - APPS
+    cmds:
+      - for: {var: APPS, as: APP}
+        task: install
+        vars:
+          APP: '{{.APP}}'
+
+  install:curated-list:devops:
+    platforms: [linux, darwin]
+    cmds:
+      - task: install:bulk
+        vars:
+          APPS:
+            - chsrc
+            - go-task
+            - just
+            - vfox
+            - volta
+            - gcc
+            - pipx
+            - rye
+            - micromamba
+            - ruff
+            - gradle
+            - adb-enhanced
+            - apktool
+            - nuget
+            - llvm
+            - xmake
+            - conan
+            - cmake
+            - doxygen
+            - upx
+            - shellcheck
+            - shfmt
+            - luajit
+            - lua@5.3
+            - luarocks
+            - go
+            - golangci-lint
+            - goreleaser
+            - protoc-gen-go
+            - gf
+            - rustup
+            - perl
+
+  install:curated-list:shell:
+    platforms: [linux, darwin]
+    cmds:
+      - task: install:bulk
+        vars:
+          APPS:
+            - screen
