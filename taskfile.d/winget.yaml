@@ -1,0 +1,160 @@
+version: '3'
+
+tasks:
+
+  winget:install:curated-list:user:
+    platforms: [windows]
+    cmds:
+      - task: winget:install:bulk
+        vars:
+          APPS:
+            - Microsoft.WindowsTerminal
+            - Espanso.Espanso
+            # - kapitainsky.RcloneBrowser
+            # - FastCopy.FastCopy
+            # - Falcosoft.SoundfontMidiPlayer
+            # - Anaconda.Miniconda3
+            # - Mamba.Micromamba
+            # - Canonical.Ubuntu.2204
+
+  winget:install:curated-list:global:
+    platforms: [windows]
+    cmds:
+      - task: winget:install:bulk
+        vars:
+          APPS:
+            - Chocolatey.Chocolatey
+            # - Chocolatey.ChocolateyGUI
+            - Microsoft.VisualStudio.2022.BuildTools
+            # - *Microsoft.VisualStudio.2022.Community*
+            # - Microsoft.VisualStudio.2022.Enterprise
+            - Microsoft.VCRedist.2005.x64
+            - Microsoft.VCRedist.2008.x64
+            - Microsoft.VCRedist.2010.x64
+            - Microsoft.VCRedist.2012.x64
+            - Microsoft.VCRedist.2013.x64
+            - Microsoft.VCRedist.2015+.x64
+            # - Microsoft.VCRedist.2005.x86
+            # - Microsoft.VCRedist.2008.x86
+            # - Microsoft.VCRedist.2010.x86
+            # - Microsoft.VCRedist.2012.x86
+            # - Microsoft.VCRedist.2013.x86
+            # - Microsoft.VCRedist.2015+.x86
+            - Microsoft.DotNet.DesktopRuntime.3_1
+            - Microsoft.DotNet.DesktopRuntime.5
+            - Microsoft.DotNet.DesktopRuntime.6
+            - Microsoft.DotNet.DesktopRuntime.7
+            - Microsoft.DotNet.DesktopRuntime.8
+            # - Microsoft.DotNet.Framework.DeveloperPack_4
+            - Microsoft.XNARedist
+            # - Microsoft.DirectX
+            # - *Microsoft.DotNet.SDK.3_1*
+            # - Microsoft.DotNet.SDK.5
+            # - *Microsoft.DotNet.SDK.6*
+            # - Microsoft.DotNet.SDK.7
+            # - *Microsoft.DotNet.SDK.8*
+            # - Microsoft.WindowsSDK
+            # - *Microsoft.WindowsApplicationDriver*
+            # - *Microsoft.WebDeploy*
+            # - *Microsoft.WindowsAppRuntime.1.0*
+            # - *Microsoft.WindowsAppRuntime.1.1*
+            # - *Microsoft.WindowsAppRuntime.1.2*
+            # - *Microsoft.PowerToys*
+            # - *Microsoft.MediaCreationTool*
+            # - Microsoft.Office
+            # - Microsoft.Edge
+            # - DEVCOM.JetBrainsMonoNerdFont
+            # - *Nvidia.CUDA*
+            # - *Nvidia.GeForceExperience*
+            # - *MacType.MacType*
+            - OpenSC.OpenSC
+            - SSHFS-Win.SSHFS-Win
+            - WinFsp.WinFsp
+            # - DaiyuuNobori.Win10Pcap
+            - Insecure.Npcap
+            - Rime.Weasel
+            # - Brave.Brave
+            # - AnyDeskSoftwareGmbH.AnyDesk
+            - RustDesk.RustDesk
+            - Tencent.TencentMeeting
+            # - AlekseyHoffman.Sigma-File-Manager
+            # - AOMEI.Backupper
+            # - Dell.DisplayManager
+            - Sandboxie.Plus
+            - Oracle.VirtualBox
+            - Docker.DockerDesktop
+            # - OpenShot.OpenShot
+            # - iSlide.iSlide
+            # - *ZeroTier.ZeroTierOne*
+            # - *Parsec.Parsec*
+            # - LizardByte.Sunshine
+            - tailscale.tailscale
+            # - Billfish.Billfish
+            # - WilbertBerendsen.Frescobaldi
+            # - Hitencent.JisuPDF
+            # - XmacsLabs.Mogan
+            # - *rocksdanister.LivelyWallpaper*
+            # - IELTSBRO.IELTS-PC
+            # - *Adobe.Acrobat.Reader.64-bit*
+            # - RProject.R
+            # - RProject.Rtools
+            # - Posit.RStudio
+            - EpicGames.EpicGamesLauncher
+            - Stellarium.Stellarium
+            # - *HeidelbergUniversity.GaiaSky*
+            # - SURF.eduVPNClient
+            # - MysteriumNetwork.Mysterium
+            # - AOMEI.Backupper
+            # - LamantineSoftware.StickyPassword
+            # - *Microsoft.SQLServerManagementStudio*
+            # - Microsoft.SQLServer.2017.Developer
+            # - Microsoft.SQLServer.2019.Developer
+            # - *Microsoft.SQLServer.2022.Developer*
+            # - Hesan.He3
+            # - TorProject.TorBrowser
+            # - nilesoft.shell
+            # - voidtools.Everything
+            # - stnkl.EverythingToolbar
+            # - *115.115*
+            # - *Muse.MuseHub*
+            # - *Musescore.Musescore*
+            - Drumstick.dmidiplayer
+            # - Falcosoft.VSTMidiDriver
+            # - CodingWondersSoftware.DISMTools.Stable
+            # - CrystalDewWorld.CrystalDiskMark.ShizukuEdition
+            # - EFDSoftware.HDTunePro
+            - HDDGURU.HDDLLFTool
+            - MichaelTippach.ASIO4ALL
+            # - VB-Audio.Voicemeeter.Banana
+            # - VB-Audio.Voicemeeter.Potato
+            # - dechamps.FlexASIO
+            - BandLab.Cakewalk
+            # - GnuPG.Gpg4win
+            # - AOMEI.PartitionAssistant
+            # - *KeppySoftware.OmniMIDI*
+            - 115.115Chrome
+            # - Nlitesoft.NTLite
+
+  winget:install:bulk:
+    platforms: [windows]
+    internal: true
+    requires:
+      vars:
+        - APPS
+    vars:
+      SOURCE: winget
+    cmds:
+      - for: {var: APPS, as: APP}
+        task: winget:install
+        vars:
+          APP: '{{.APP}}'
+          SOURCE: '{{.SOURCE}}'
+
+  winget:install:
+    platforms: [windows]
+    desc: 'Install an app [APP SOURCE] -- [APP]'
+    vars:
+      _APP: '{{if .APP}}{{.APP}}{{else if .CLI_ARGS}}{{.CLI_ARGS}}{{else}}--help{{end}}'
+      _SOURCE: '{{if .SOURCE}}{{.SOURCE}}{{else}}winget{{end}}'
+    cmds:
+      - winget install --source {{._SOURCE}} --name {{._APP}}

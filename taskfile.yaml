@@ -11,6 +11,7 @@ dotenv: ['.env', './.env']
 
 includes:
   task: {taskfile: './taskfile.d/task.yaml', optional: true}
+  winget: {taskfile: './taskfile.d/winget.yaml', optional: true}
 
   ls: {taskfile: './taskfile.d/task-ls.yaml', optional: false, aliases: [list, l]}
   ll: {taskfile: './taskfile.d/task-ll.yaml', optional: false, aliases: [list-all, la]}
