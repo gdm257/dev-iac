@@ -1,0 +1,33 @@
+version: '3'
+
+tasks:
+
+  install:
+    desc: 'Install a tool <TOOL>'
+    requires:
+      vars:
+        - TOOL
+    cmds:
+      - volta install {{.TOOL}}
+
+  install:bulk:
+    internal: true
+    requires:
+      vars:
+        - TOOLS
+    cmds:
+      - for: {var: TOOLS, as: TOOL}
+        task: install
+        vars:
+          TOOL: '{{.TOOL}}'
+
+  install:curated-list:
+    cmds:
+      - task: install:bulk
+        vars:
+          TOOLS:
+            - node
+            # - npm
+            - npx
+            - pnpm
+            - yarn
