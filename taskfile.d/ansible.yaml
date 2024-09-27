@@ -1,0 +1,30 @@
+version: '3'
+
+tasks:
+
+  role:install:
+    desc: 'Install role <ROLE>'
+    requries:
+      vars:
+        - ROLE
+    cmds:
+      - ansible-galaxy role install {{.ROLE}}
+
+  role:install:bulk:
+    internal: true
+    requires:
+      vars:
+        - ROLES
+    cmds:
+      - for: {var: ROLES, as: ROLE}
+        task: role:install
+        vars:
+          ROLE: '{{.ROLE}}'
+
+  role:install:curated-list:
+    cmds:
+      - task: role:install:bulk
+        vars:
+          ROLES:
+            - alvistack.flatpak
+            - geerlingguy.docker
