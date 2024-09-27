@@ -1,0 +1,33 @@
+version: '3'
+
+tasks:
+
+  install:
+    desc: 'Install plugin <PLUGIN>'
+    requires:
+      vars:
+        - PLUGIN
+    cmds:
+      - w2 install {{.PLUGIN}}
+
+  install:bulk:
+    internal: true
+    requires:
+      vars:
+        - PLUGINS
+    cmds:
+      - task: install
+        for: {var: PLUGINS, as: PLUGIN}
+        vars:
+          PLUGIN: '{{.PLUGIN}}'
+
+  install:curated-list:
+    cmds:
+      - task: install:bulk
+        vars:
+          PLUGINS:
+            - whistle.proxyauth
+            # - whistle.uiauth
+            - whistle.inspect
+            - whistle.vase
+            - whistle.script
