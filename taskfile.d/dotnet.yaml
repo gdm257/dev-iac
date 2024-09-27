@@ -1,0 +1,60 @@
+version: '3'
+
+tasks:
+
+  add:
+    desc: 'Add source <SOURCE>'
+    requires:
+      vars:
+        - SOURCE
+    cmds:
+      - dotnet nuget add source {{.SOURCE.URL}} -n {{.SOURCE.NAME}}
+
+  add:bulk:
+    internal: true
+    requires:
+      vars:
+        - SOURCES
+    cmds:
+      - for: {var: SOURCES, as: SOURCE}
+        task: add
+        vars:
+          SOURCE: '{{.SOURCE}}'
+
+  add:curated-list:
+    cmds:
+      - task: add:bulk
+        vars:
+          SOURCES:
+            - NAME: nuget.org
+              URL: https://api.nuget.org/v3/index.json
+
+  install:
+    desc: 'Install tool <TOOL> [GLOBAL]'
+    requires:
+      vars:
+        - TOOL
+    vars:
+      _GLOBAL: '{{if not .GLOBAL}}{{else}}-g{{end}}'
+    cmds:
+      - dotnet tool install {{._GLOBAL}} {{.TOOL}}
+
+  install:bulk:
+    internal: true
+    requires:
+      vars:
+        - TOOLS
+    cmds:
+      - for: {var: TOOLS, as: TOOL}
+        task: install
+        vars:
+          TOOL: '{{.TOOL}}'
+          GLOBAL_FLAG: '-g'
+
+  install:curated-list:
+    cmds:
+      - task: install:bulk
+        vars:
+          TOOLS:
+            - dotnet-repl
+            - Microsoft.dotnet-interactive
