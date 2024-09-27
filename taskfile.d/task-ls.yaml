@@ -1,0 +1,10 @@
+version: '3'
+
+includes:
+  task: {taskfile: ./task.yaml, optional: false}
+
+tasks:
+
+  default:
+    cmds:
+      - task: task:list

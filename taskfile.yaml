@@ -1,0 +1,22 @@
+version: '3'
+run: 'always' # "always" | "once" | "when_changed"
+method: 'checksum' # "checksum" | "timestamp" | "none"
+interval: '5s'
+# set:
+# shopt:
+silent: false
+output: 'interleaved' # "interleaved" | "group" | "prefixed"
+
+dotenv: ['.env', './.env']
+
+includes:
+  task: {taskfile: './taskfile.d/task.yaml', optional: true}
+
+  ls: {taskfile: './taskfile.d/task-ls.yaml', optional: false, aliases: [list, l]}
+  ll: {taskfile: './taskfile.d/task-ll.yaml', optional: false, aliases: [list-all, la]}
+
+tasks:
+
+  default:
+    cmds:
+      - task: ll

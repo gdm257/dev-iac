@@ -1,0 +1,91 @@
+version: '3'
+
+env: # `${ENV}` or `{{.ENV}}`
+  ENV_FOO: env
+  ENV_BAR: env
+  # MSG: env
+
+vars: # `{{.VAR}}`
+  VAR_FOO: vars
+  VAR_BAR: vars
+  # MSG: vars
+
+tasks:
+
+  echo:
+    desc: echo
+    cmds:
+      - cmd: 'echo {{if .CLI_ARGS}} {{.CLI_ARGS}} {{else}}PONG{{end}}'
+
+  envs:USERNAME:
+    cmds:
+      - echo {{.USERNAME}}
+    silent: true
+
+  func:ARCH:
+    cmds:
+      - echo {{ARCH}}
+    silent: true
+
+  func:exeExt:
+    cmds:
+      - echo {{exeExt}}
+    silent: true
+
+  func:OS:
+    cmds:
+      - echo {{OS}}
+    silent: true
+
+  list:
+    desc: 'List tasks [KEYWORD] -- KEYWORD'
+    vars:
+      GREP: '{{if .KEYWORD}} | grep -i {{.KEYWORD}} {{else if .CLI_ARGS}} | grep -i {{.CLI_ARGS}} {{end}}'
+    cmds:
+      - 'task --list {{.GREP}}'
+    silent: true
+
+  list-all:
+    desc: 'List all tasks [KEYWORD] -- KEYWORD'
+    vars:
+      GREP: '{{if .KEYWORD}} | grep -i {{.KEYWORD}} {{else if .CLI_ARGS}} | grep -i {{.CLI_ARGS}} {{end}}'
+    cmds:
+      - 'task --list-all {{.GREP}}'
+    silent: true
+
+  ping:
+    desc: ping taskfile
+    cmds:
+      - cmd: 'echo {{if .MSG}}{{.MSG}}{{else}}PONG{{end}}' # Non-existence variable is empty string
+        # vars:
+        #   MSG: 'tasks.ping.cmds[i].vars' # NO effect!
+      - cmd: 'echo ${MSG}'
+    # vars:
+    #   MSG: 'tasks.ping.vars' # Highest priority for {{.MSG}}
+    # env:
+    #   MSG: 'tasks.ping.env'
+
+  ping-wrap:
+    cmds:
+      - task: ping
+        # vars:
+        #   MSG: 'tasks.ping-proxy.cmds[i].vars' # 2nd priority for {{.MSG}}
+    # vars:
+    #   MSG: 'tasks.ping-proxy.vars' # NO effect!
+    # env:
+    #   MSG: 'tasks.ping-proxy.env' # NO effect!
+
+  vars:TASK:
+    cmds:
+      - echo {{.TASK}}
+    silent: true
+
+  vars:TASK_EXE:
+    cmds:
+      - echo {{.TASK_EXE}}
+    silent: true
+
+  vars:TASK_VERSION:
+    cmds:
+      - echo {{.TASK_VERSION}}
+    silent: true
