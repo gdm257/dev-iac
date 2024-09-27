@@ -1,0 +1,26 @@
+version: '3'
+
+tasks:
+
+  copy:
+    desc: 'Clone SRC directory as DST directory in copy mode <SRC DST> [CLONE OVERWRITE SIZE SKIP] -- <src dst> [options]'
+    vars:
+      _SRC: '{{if .SRC}}{{.SRC}}{{end}}'
+      _DST: '{{if .DST}}{{.DST}}{{else if .CLI_ARGS}}{{.CLI_ARGS}}{{else}}--help{{end}}'
+      _CLONE: '{{if .CLONE}}--server-side-across-configs{{end}}'
+      _OVERWRITE: '{{if not .OVERWRITE}}--immutable{{end}}'
+      _SIZE: '{{if not .SIZE}}{{else}}--size-only --ignore-checksum{{end}}'
+      _SKIP: '{{if not .SKIP}}{{else}}--ignore-existing{{end}}'
+    cmds:
+      - >
+          rclone copy
+          {{._SRC}} {{._DST}}
+          {{._CLONE}}
+          {{._OVERWRITE}}
+          {{._SIZE}}
+          {{._SKIP}}
+          --ignore-times
+          --filter "- desktop.ini"
+          --fast-list
+          --progress
+          -v

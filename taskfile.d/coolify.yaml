@@ -1,0 +1,47 @@
+version: '3'
+
+tasks:
+  config:init:
+    desc: 'Create coolify configurations [DIR]'
+    platforms: [linux]
+    dir: '{{.USER_WORKING_DIR}}'
+    vars:
+      DATA_DIR: '{{if not .DIR}}/data/coolify{{else}}{{.DIR}}{{end}}'
+    preconditions:
+      - curl --version
+      - sh: 'if [ -d {{.DATA_DIR}} ]; then bad-command; fi'
+        msg: '"{{.DATA_DIR}}" already exists'
+    cmds:
+      - echo 'Creating data directories...'
+      - mkdir -p {{.DATA_DIR}}/{source,ssh,applications,databases,backups,services,proxy,webhooks-during-maintenance}
+      - mkdir -p {{.DATA_DIR}}/ssh/{keys,mux}
+      - mkdir -p {{.DATA_DIR}}/proxy/dynamic
+      - echo 'Downloading configuration files...'
+      - curl -fsSL https://cdn.coollabs.io/coolify/docker-compose.yml -o {{.DATA_DIR}}/source/docker-compose.yml
+      - curl -fsSL https://cdn.coollabs.io/coolify/docker-compose.prod.yml -o {{.DATA_DIR}}/source/docker-compose.prod.yml
+      - curl -fsSL https://cdn.coollabs.io/coolify/.env.production -o {{.DATA_DIR}}/source/.env
+      - curl -fsSL https://cdn.coollabs.io/coolify/upgrade.sh -o {{.DATA_DIR}}/source/upgrade.sh
+      - echo 'Generating SSH key used to manage server by coolify...'
+      - mkdir -p ${HOME}/.ssh
+      - "ssh-keygen -f {{.DATA_DIR}}/ssh/keys/id.root@host.docker.internal -t ed25519 -N '' -C root@coolify"
+      - "cat {{.DATA_DIR}}/ssh/keys/id.root@host.docker.internal.pub >> ${HOME}/.ssh/authorized_keys"
+      - chmod 600 ${HOME}/.ssh/authorized_keys
+      - echo 'Generating passwords for configuration'
+      - 'sed -i "s|APP_ID=.*|APP_ID=$(openssl rand -hex 16)|g" {{.DATA_DIR}}/source/.env'
+      - 'sed -i "s|APP_KEY=.*|APP_KEY=base64:$(openssl rand -base64 32)|g" {{.DATA_DIR}}/source/.env'
+      - 'sed -i "s|DB_PASSWORD=.*|DB_PASSWORD=$(openssl rand -base64 32)|g" {{.DATA_DIR}}/source/.env'
+      - 'sed -i "s|REDIS_PASSWORD=.*|REDIS_PASSWORD=$(openssl rand -base64 32)|g" {{.DATA_DIR}}/source/.env'
+      - 'sed -i "s|PUSHER_APP_ID=.*|PUSHER_APP_ID=$(openssl rand -hex 32)|g" {{.DATA_DIR}}/source/.env'
+      - 'sed -i "s|PUSHER_APP_KEY=.*|PUSHER_APP_KEY=$(openssl rand -hex 32)|g" {{.DATA_DIR}}/source/.env'
+      - 'sed -i "s|PUSHER_APP_SECRET=.*|PUSHER_APP_SECRET=$(openssl rand -hex 32)|g" {{.DATA_DIR}}/source/.env'
+      - echo 'Modifying data directory permission...'
+      - sudo chown -R 9999:root {{.DATA_DIR}}
+      - sudo chmod -R 700 {{.DATA_DIR}}
+      - echo Success
+      - cmd: |
+          echo "Please run the following commands to start Coolify:
+          
+          > docker network create --attachable coolify
+          > docker compose --env-file {{.DATA_DIR}}/source/.env -f {{.DATA_DIR}}/source/docker-compose.yml -f {{.DATA_DIR}}/source/docker-compose.prod.yml up -d --pull always --remove-orphans --force-recreate
+          
+          Open Coolify's UI in http://<ip>:8000"

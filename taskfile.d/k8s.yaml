@@ -1,0 +1,231 @@
+version: '3'
+
+tasks:
+
+  argocd:deploy:self:helm:
+    desc: 'Deploy ArgoCD controllers to cluster [CONTEXT]'
+    vars:
+      _CONTEXT: '{{if .CONTEXT}}--kube-context {{.CONTEXT}}{{end}}'
+    cmds:
+      - helm repo add argo https://argoproj.github.io/argo-helm
+      - helm upgrade --install argocd argo/argo-cd --namespace argocd --create-namespace {{._CONTEXT}}
+
+  argocd:deploy:self:kubectl:
+    desc: 'Deploy ArgoCD controllers without HA to cluster [CONTEXT]'
+    vars:
+      _CONTEXT: '{{if .CONTEXT}}--context {{.CONTEXT}}{{end}}'
+    cmds:
+      - kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml {{._CONTEXT}}
+
+  argocd:admin:get-initial-password:
+    desc: 'Print initial admin password i.e. secret "argocd-initial-admin-secret" base64 encoded'
+    cmds:
+      - argocd admin initial-password -n argocd
+
+  argocd:admin:passwd:
+    desc: 'Change admin password'
+    cmds:
+      - argocd account update-password
+
+  cert-manager:deploy:self:
+    vars:
+      _VERSION: '{{if .VERSION}}{{.VERSION}}{{else}}v1.15.3{{end}}'
+    cmds:
+      - helm repo add jetstack https://charts.jetstack.io --force-update
+      - helm upgrade --install cert-manager jetstack/cert-manager --namespace cert-manager --create-namespace --set crds.enabled=true --version {{._VERSION}}
+
+  cnpg:deploy:self:
+    cmds:
+      - helm repo add cnpg https://cloudnative-pg.github.io/charts
+      - helm upgrade --install cnpg cnpg/cloudnative-pg --namespace cnpg-system --create-namespace
+
+  cnpg:deploy:pg:
+    desc: Create a CNPG database cluster [NAME NAMESPACE] -- [extra_args]
+    vars:
+      NS: '{{if .NAMESPACE}}{{.NAMESPACE}}{{else}}cnpg-database{{end}}'
+      RELEASE: '{{if .NAME}}{{.NAME}}{{else}}database{{end}}'
+    cmds:
+      - helm repo add cnpg https://cloudnative-pg.github.io/charts
+      - helm upgrade --install {{.RELEASE}} cnpg/cluster --namespace {{.NS}} --create-namespace {{.CLI_ARGS}}
+
+  flux:deploy:self:
+    desc: 'Deploy Flux CD controllers to cluster [CONTEXT]'
+    preconditions:
+      - flux check --pre
+    vars:
+      _CONTEXT: '{{if .CONTEXT}}--context {{.CONTEXT}}{{end}}'
+    cmds:
+      - flux install {{._CONTEXT}}
+
+  flux:deploy:community:
+    desc: 'Deploy Flux CD controllers to cluster [NAME CONTEXT]'
+    preconditions:
+      - helm version
+      - flux check --pre
+    vars:
+      _NAME: '{{if .NAME}}{{.NAME}}{{else}}flux{{end}}'
+      _CONTEXT: '{{if .CONTEXT}}--kube-context {{.CONTEXT}}{{end}}'
+    cmds:
+      - helm repo add fluxcd-community https://fluxcd-community.github.io/helm-charts
+      - >
+        helm upgrade --install
+        {{._CONTEXT}}
+        --namespace flux-system --create-namespace
+        {{._NAME}} fluxcd-community/flux2
+      - flux check
+
+  gateway-api:install:
+    cmds:
+      - kubectl apply -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.1.0/standard-install.yaml
+
+  helm:repo:add:
+    desc: 'Add a repo <REPO>'
+    internal: true
+    requires: {vars: [REPO]}
+    cmds:
+      - cmd: 'helm repo add {{.REPO}}'
+
+  helm:repo:add:bulk:
+    desc: 'Add repos <REPOS>'
+    internal: true
+    requires: {var: [REPOS]}
+    cmds:
+      - task: 'helm:repo:add'
+        vars: {REPO: '{{.REPO}}'}
+        for: {var: REPOS, as: REPO}
+      - cmd: helm repo update
+
+  helm:repo:add:curated-list:
+    desc: 'Import repos'
+    cmds:
+      - task: 'helm:repo:add:bulk'
+        vars:
+          REPOS:
+            - argo https://argoproj.github.io/argo-helm
+            - cnpg https://cloudnative-pg.github.io/charts/
+            - fluxcd https://charts.fluxcd.io
+            - fluxcd-community https://fluxcd-community.github.io/helm-charts
+            - istio https://istio-release.storage.googleapis.com/charts
+            - jetstack https://charts.jetstack.io
+            - prometheus-community https://prometheus-community.github.io/helm-charts
+
+  istio:deploy:self:
+    cmds:
+      # - istioctl install --set profile=ambient --skip-confirmation
+      - istioctl install --set profile=default --skip-confirmation
+      - istioctl verify-install
+
+  istio:deploy:self:helm:default:
+    cmds:
+      # Install the control plane
+      - helm repo add istio https://istio-release.storage.googleapis.com/charts
+      - helm upgrade --install -n istio-system --create-namespace istio-base istio/base --wait
+      - kubectl apply -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.1.0/standard-install.yaml
+      - helm upgrade --install -n istio-system istiod istio/istiod --wait
+      # Install the data plane
+      - helm upgrade --install -n istio-ingress --create-namespace istio-ingress istio/gateway --wait
+
+  istio:deploy:self:helm:minimal:
+    cmds:
+      # Install the control plane
+      - helm repo add istio https://istio-release.storage.googleapis.com/charts
+      - helm upgrade --install -n istio-system istiod istio/istiod --wait
+      - kubectl apply -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.1.0/standard-install.yaml
+
+  istio:deploy:self:helm:ambient:
+    cmds:
+      # Install the control plane
+      - helm repo add istio https://istio-release.storage.googleapis.com/charts
+      - helm upgrade --install -n istio-system --create-namespace istio-base istio/base --wait
+      - kubectl apply -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.1.0/standard-install.yaml
+      - helm upgrade --install -n istio-system istiod istio/istiod --set profile=ambient --wait
+      - helm upgrade --install -n kube-system istio-cni istio/cni -n kube-system
+      # Install the data plane
+      - helm upgrade --install ztunnel istio/ztunnel --wait
+      # - helm upgrade --install -n istio-ingress --create-namespace istio-ingress istio/gateway --wait
+      # - helm upgrade --install -n istio-system istio-egress istio/egressgateway
+
+  k3sup-init-master:
+    desc: 'Initial k3s cluster via SSH [SSH_HOST SSH_PORT SSH_USER SSH_KEY IS_EMBEDDED_ETCD IS_MERGE_EXISTING]'
+    cmds:
+      - cmd: >
+          k3sup install
+          {{if not .IS_EMBEDDED_ETCD}} {{else}} --cluster {{end}}
+          {{if not .IS_MERGE_EXISTING}} {{else}} --merge {{end}}
+          --host {{if .SSH_HOST}} {{.SSH_HOST}} {{else}} 127.0.0.1 {{end}}
+          --ssh-port {{if .SSH_PORT}} {{.SSH_PORT}} {{else}} 22 {{end}}
+          --user {{if .SSH_USER}} {{.SSH_USER}} {{else}} {{.USER}} {{end}}
+          {{if .SSH_KEY}} --ssh-key {{.SSH_KEY}} {{end}}
+          --k3s-channel stable
+
+  k3sup-join-worker:
+    desc: 'Join a k3s cluster via SSH <SSH_HOST SSH_USER MASTER_SSH_HOST MASTER_SSH_PORT>'
+    cmds:
+      - cmd: >
+          k3sup join
+          --server
+          --host {{.SSH_HOST}}
+          --user {{.SSH_USER}}
+          --server-host {{.MASTER_SSH_HOST}}
+          --server-user {{.MASTER_SSH_PORT}}
+          --k3s-channel stable
+
+  krew:install:plugin:
+    desc: 'Install a kubectl plugin [PLUGIN] -- [plugin]'
+    vars:
+      _PLUGIN: '{{if .PLUGIN}}{{.PLUGIN}}{{else if .CLI_ARGS}}{{.CLI_ARGS}}{{else}}--help{{end}}'
+    cmds:
+      - kubectl krew install {{._PLUGIN}}
+
+  krew:install:plugins:
+    internal: true
+    requires:
+      vars: [PLUGINS]
+    cmds:
+      - task: krew:install:plugin
+        vars:
+          PLUGIN: '{{.PLUGIN}}'
+        for: {var: PLUGINS, as: PLUGIN}
+
+  krew:install:plugin:curated-list:
+    desc: 'Install recommended plugins'
+    cmds:
+      - task: krew:install:plugins
+        vars:
+          PLUGINS:
+            - access-matrix
+            - cert-manager
+            - cilium
+            - cnpg
+            - cost
+            - explore
+            - flame
+            - kc
+            - tree
+
+  krew:install:plugin:curated-list:unix:
+    platforms: [linux, darwin]
+    desc: 'Install recommended plugins'
+    cmds:
+      - task: krew:install:plugins
+        vars:
+          PLUGINS:
+            - ctx
+            - ns
+            - node-shell
+
+  kube-vip:deploy:self:
+    desc: 'Deploy kube-vip'
+    cmds:
+      - kubectl apply -f https://kube-vip.io/manifests/rbac.yaml
+      - 'echo "TODO: DaemonSet"'
+      - echo "To simplify, is is recommended to use loadBalancer to replace kube-vip"
+      - echo "k3d comes with HA implemented by Nginx"
+ 
+  prometheus:deploy:community:cnpg:
+    cmds:
+      - helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+      - >
+        helm upgrade --install
+        prometheus-community prometheus-community/kube-prometheus-stack
+        --values https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/main/docs/src/samples/monitoring/kube-stack-config.yaml

@@ -1,0 +1,14 @@
+version: '3'
+
+tasks:
+
+  history:
+    desc: Search command history [PATTERN] -- [PATTERN]
+    vars:
+      _PATTERN: '{{if .PATTERN}}{{.PATTERN}}{{else if .CLI_ARGS}}{{.CLI_ARGS}}{{end}}'
+    cmds:
+      - cmd: |
+          powershell -NoProfile -Command - <<'EOF'
+            Get-Content (Get-PSReadLineOption).HistorySavePath | Where-Object { $_ -like {{._PATTERN}} }
+          EOF
+        silent: true

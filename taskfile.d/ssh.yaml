@@ -1,0 +1,17 @@
+version: '3'
+
+tasks:
+
+  key:
+    cmds:
+      - cmd: >
+          ssh-keygen
+          -t {{if .T}} {{.T}} {{else}} ed25519 {{end}}
+          -C {{if .COMMENT}} {{.COMMENT}} {{else}} comment {{end}}
+
+  key:passwd:
+    dir: '{{.USER_WORKING_DIR}}'
+    reqruies:
+      vars: [FILE]
+    cmds:
+      - ssh-keygen -p -f {{.FILE}}

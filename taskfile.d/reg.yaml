@@ -1,0 +1,32 @@
+version: '3'
+
+tasks:
+
+  env:backup:
+    platforms: [windows]
+    desc: "Backup user and system environment variables [DIR]"
+    cmds:
+      - |
+        powershell -NoProfile -Command - <<'EOF'
+          reg export HKCU\Environment {{.DIR}}\env-backup-user.reg /y
+        EOF
+      - |
+        powershell -NoProfile -Command - <<'EOF'
+          reg export "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Environment" {{.DIR}}\env-backup-global.reg /y
+        EOF
+    vars:
+      DIR: '{{if .DIR}}{{.DIR}}{{else}}$Env:USERPROFILE\Documents{{end}}'
+
+  env:restore:
+    platforms: [windows]
+    desc: "Restore user and system environment variables [DIR]"
+    cmds:
+      - |
+        powershell -NoProfile -Command - <<'EOF'
+          reg import {{.DIR}}\env-backup-user.reg
+        EOF
+      - |
+        powershell -NoProfile -Command - <<'EOF'
+          reg import {{.DIR}}\env-backup-global.reg
+    vars:
+      DIR: '{{if .DIR}}{{.DIR}}{{else}}$Env:USERPROFILE\Documents{{end}}'

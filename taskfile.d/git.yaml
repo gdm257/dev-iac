@@ -1,0 +1,24 @@
+version: '3'
+
+tasks:
+
+  remote:list:
+    aliases: [remote:ls, remote:ll, remote:l]
+    dir: '{{.USER_WORKING_DIR}}'
+    cmds:
+      - git remote -v
+
+  remote:github:
+    desc: '<REPO> [REMOTE SSH PUSH FETCH] E.g. REPO=user001/repo001 SSH=true REMOTE=origin FETCH=true'
+    dir: '{{.USER_WORKING_DIR}}'
+    requires:
+      vars:
+        - REPO
+    vars:
+      _REPO: '{{if .SSH}}ssh://git@github.com/{{.REPO}}.git{{else}}https://github.com/{{.REPO}}.git{{end}}'
+      _REMOTE: '{{if .REMOTE}}{{.REMOTE}}{{else}}origin{{end}}'
+      _ALL: '{{if or .FETCH .PUSH}}{{else}}true{{end}}'
+    cmds:
+      - '{{if ._ALL}} git remote set-url {{._REMOTE}} {{._REPO}}{{end}}'
+      - '{{if and (not ._ALL) .FETCH}} git remote set-url --fetch {{._REMOTE}} {{._REPO}} {{end}}'
+      - '{{if and (not ._ALL) .PUSH}} git remote set-url --push {{._REMOTE}} {{._REPO}} {{end}}'
