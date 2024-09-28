@@ -3,12 +3,14 @@ version: '3'
 tasks:
 
   install:
-    desc: 'Install package <PACKAGE>'
+    desc: 'Install package <PACKAGE> [INCLUDE_DEPS]'
     requires:
       vars:
         - PACKAGE
+    vars:
+      _INCLUDE_DEPS: '{{if .INCLUDE_DEPS}}--include-deps{{end}}'
     cmds:
-      - pipx install {{.PACKAGE}}
+      - pipx install {{._INCLUDE_DEPS}} {{.PACKAGE}}
 
   install:bulk:
     internal: true
@@ -94,7 +96,6 @@ tasks:
             # - gdbgui
             # - playwithmpv
             # - bilix
-            # - --include-deps ansible
             # - vardbg
             # - jupyterlab
             # - git-imerge
@@ -130,3 +131,11 @@ tasks:
             # - pretzelai
             # - openapi-python-client
             - openbb-cli
+
+  install:curated-list:unix:
+    platforms: [linux, darwin]
+    cmds:
+      - task: install:bulk
+        vars:
+          PACKAGES:
+            - --include-deps ansible
