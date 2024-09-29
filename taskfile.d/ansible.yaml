@@ -3,6 +3,7 @@ version: '3'
 tasks:
 
   role:install:
+    platforms: [linux, darwin]
     desc: 'Install role <ROLE>'
     requries:
       vars:
@@ -11,6 +12,7 @@ tasks:
       - ansible-galaxy role install {{.ROLE}}
 
   role:install:bulk:
+    platforms: [linux, darwin]
     internal: true
     requires:
       vars:
@@ -22,9 +24,39 @@ tasks:
           ROLE: '{{.ROLE}}'
 
   role:install:curated-list:
+    platforms: [linux, darwin]
     cmds:
       - task: role:install:bulk
         vars:
           ROLES:
             - alvistack.flatpak
             - geerlingguy.docker
+
+  collection:install:
+    platforms: [linux, darwin]
+    desc: 'Install collection <COLLECTION>'
+    requries:
+      vars:
+        - COLLECTION
+    cmds:
+      - ansible-galaxy collection install {{.COLLECTION}}
+
+  collection:install:bulk:
+    platforms: [linux, darwin]
+    internal: true
+    requires:
+      vars:
+        - COLLECTIONS
+    cmds:
+      - for: {var: COLLECTIONS, as: COLLECTION}
+        task: collection:install
+        vars:
+          COLLECTION: '{{.COLLECTION}}'
+
+  collection:install:curated-list:
+    platforms: [linux, darwin]
+    cmds:
+      - task: collection:install:bulk
+        vars:
+          COLLECTIONS:
+            - git+https://github.com/techno-tim/k3s-ansible.git
