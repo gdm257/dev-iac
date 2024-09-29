@@ -1,0 +1,33 @@
+version: '3'
+
+tasks:
+
+  create:
+    desc: 'Create a conda environment <NAME> [CHANNEL BIN] -- [options]'
+    requires:
+      vars:
+        - NAME
+    vars:
+      _CHANNEL: '{{if .CHANNEL}}{{.CHANNEL}}{{else}}conda-forge{{end}}'
+      _COMMAND: '{{if .BIN}}{{.BIN}}{{else}}micromamba{{end}}' # e.g. conda mamba micromamba
+    cmds:
+      - '{{._COMMAND}} create -y --channel {{._CHANNEL}} --name {{.NAME}} {{.CLI_ARGS}}'
+
+  create:bulk:
+    internal: true
+    requires:
+      vars:
+        - NAMES
+    cmds:
+      - task: create
+        for: {var: NAMES, as: NAME}
+        vars:
+          NAME: '{{.NAME}}'
+
+  create:curated-list:
+    cmds:
+      - task: create:bulk
+        vars:
+          NAMES:
+            - python3 python=3.11.* pipx
+            - python311 python=3.11.*

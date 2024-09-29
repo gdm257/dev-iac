@@ -22,6 +22,7 @@ includes:
   git: {taskfile: './taskfile.d/git.yaml', optional: true}
   go: {taskfile: './taskfile.d/go.yaml', optional: true}
   k8s: {taskfile: './taskfile.d/k8s.yaml', optional: true}
+  conda: {taskfile: './taskfile.d/conda.yaml', optional: true}
   npm: {taskfile: './taskfile.d/npm.yaml', optional: true}
   pipx: {taskfile: './taskfile.d/pipx.yaml', optional: true}
   powershell: {taskfile: './taskfile.d/powershell.yaml', optional: true, aliases: [pwsh, ps]}
