@@ -3,14 +3,15 @@ version: '3'
 tasks:
 
   install:
-    desc: 'Install package <PACKAGE> [INCLUDE_DEPS]'
+    desc: 'Install package <PACKAGE> [INCLUDE_DEPS GLOBAL]'
     requires:
       vars:
         - PACKAGE
     vars:
       _INCLUDE_DEPS: '{{if .INCLUDE_DEPS}}--include-deps{{end}}'
+      _GLOBAL: '{{if and (eq OS "linux") (eq .GLOBAL "true")}}--global{{end}}'
     cmds:
-      - pipx install {{._INCLUDE_DEPS}} {{.PACKAGE}}
+      - pipx install {{._GLOBAL}} {{._INCLUDE_DEPS}} {{.PACKAGE}}
 
   install:bulk:
     internal: true
