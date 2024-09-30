@@ -59,4 +59,5 @@ tasks:
       - task: collection:install:bulk
         vars:
           COLLECTIONS:
+            - git+https://github.com/k3s-io/k3s-ansible.git
             - git+https://github.com/techno-tim/k3s-ansible.git
