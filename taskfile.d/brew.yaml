@@ -131,7 +131,7 @@ tasks:
             - helmfile
             - k3sup
             - kdash-rs/kdash/kdash
-            - nomad
+            # - nomad
             - robinovitch61/tap/wander
             - dokku/repo/dokku
             # ==== Network ====
