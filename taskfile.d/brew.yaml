@@ -114,6 +114,10 @@ tasks:
             - eza
             - fzf
             - fd
+            - lsof
+            # ==== Kernel ====
+            - cyme
+            - tz
             # ==== Layer ====
             - qemu
             - nemu
@@ -138,15 +142,18 @@ tasks:
             - gping
             # - dog
             - doggo
+            - asn
             - curlie
             - websocat
             - mkcert
             - bitwarden-cli
             - bandwhich 
+            - guumaster/tap/hostctl
             # ==== Process ====
             - htop
             - pstree
             - bottom
+            - procs
             # ==== Text ====
             - vim
             - neovim
@@ -158,6 +165,7 @@ tasks:
             - ripgrep
             - ugrep
             - grex
+            - fnt
             # ==== Shell ====
             - zsh
             - powershell/tap/powershell-lts
@@ -167,6 +175,8 @@ tasks:
             - tmux
             - zellij
             - asciinema
+            - atuin
+            - clipboard
             - mcfly
             - tealdeer
             - zoxide
@@ -185,6 +195,7 @@ tasks:
             - vfox
             - volta
             - gcc
+            - gdb
             - pipx
             - rye
             - micromamba

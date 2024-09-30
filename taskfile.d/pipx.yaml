@@ -142,6 +142,7 @@ tasks:
             # - pretzelai
             # - openapi-python-client
             - openbb-cli
+            - rexi
 
   install:curated-list:unix:
     platforms: [linux, darwin]

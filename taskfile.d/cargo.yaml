@@ -46,3 +46,4 @@ tasks:
             - pyapp
             - havn
             # - gpg-tui
+            # - serie

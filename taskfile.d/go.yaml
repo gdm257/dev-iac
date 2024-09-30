@@ -37,3 +37,5 @@ tasks:
             - github.com/charmbracelet/freeze@latest
             - github.com/zeromicro/go-zero/tools/goctl@latest
             - github.com/go-kratos/kratos/cmd/kratos/v2@latest
+            # - github.com/allyring/pvw@latest
+            # - github.com/chip/pathos@latest

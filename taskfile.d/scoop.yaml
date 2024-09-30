@@ -270,7 +270,8 @@ tasks:
             - wingetcreate
             # - wingetui
             - UniGetUI
-            # - winget-preview
+            - winget-preview
+            # - eget
             # - Baulk_dodorz
             # - shovel
             # - npackd
@@ -461,7 +462,7 @@ tasks:
             - ting-en
             - ditto
             # - copyq
-            # - clipboard
+            - clipboard
             - obsidian
             # - bookxnote
             - BookXNotePro
@@ -928,6 +929,7 @@ tasks:
             # - hiddify-next
             - hiddify-next_noql-net
             # - teleport
+            - hostctl
 
   install:curated-list:process:
     platforms: [windows]
