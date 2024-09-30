@@ -31,6 +31,25 @@ tasks:
           TAPS:
             - homebrew/cask-fonts
 
+  install:self:
+    env:
+      HOMEBREW_BREW_GIT_REMOTE: https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/brew.git
+      HOMEBREW_CORE_GIT_REMOTE: https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/homebrew-core.git
+      HOMEBREW_INSTALL_FROM_API: 1
+    cmds:
+     - /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+     - (echo; echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"') >> $HOME/.bashrc
+     - echo 'sudo apt-get install build-essential'
+     - echo 'brew install gcc'
+
+  install:shell:bash:
+    env:
+      HOMEBREW_BREW_GIT_REMOTE: https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/brew.git
+      HOMEBREW_CORE_GIT_REMOTE: https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/homebrew-core.git
+      HOMEBREW_INSTALL_FROM_API: 1
+    cmds:
+     - (echo; echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"') >> $HOME/.bashrc
+
   install:
     platforms: [linux, darwin]
     desc: 'Install app <APP>'
@@ -51,6 +70,108 @@ tasks:
         task: install
         vars:
           APP: '{{.APP}}'
+
+  install:curated-list:vps:
+    platforms: [linux, darwin]
+    cmds:
+      - task: install:bulk
+        vars:
+          APPS:
+            # ==== Download ====
+            - chsrc
+            - croc
+            - eget
+            - rclone
+            - restic
+            - rsync
+            - lrzsz
+            # ==== DevOps ====
+            - go-task
+            - just
+            - vfox
+            - gcc
+            - llvm
+            - go
+            - micromamba
+            # - pipx
+            - rust
+            - rustup
+            # - rye
+            - volta
+            - git
+            - gitui
+            - lazygit
+            # ==== File ====
+            - unar
+            - 7zip
+            - age
+            - ncdu
+            - tre
+            - duf
+            - dust
+            - yazi
+            - superfile
+            - eza
+            - fzf
+            - fd
+            # ==== Layer ====
+            - qemu
+            - nemu
+            - docker
+            - lazydocker
+            - ctop
+            - dive
+            - kompose
+            - kustomize
+            - helm
+            - helmfile
+            - k3sup
+            - kdash-rs/kdash/kdash
+            - nomad
+            - robinovitch61/tap/wander
+            - dokku/repo/dokku
+            # ==== Network ====
+            - nftables
+            - iptables
+            - iproute2
+            - iputils
+            - gping
+            # - dog
+            - doggo
+            - curlie
+            - websocat
+            - mkcert
+            - bitwarden-cli
+            - bandwhich 
+            # ==== Process ====
+            - htop
+            - pstree
+            - bottom
+            # ==== Text ====
+            - vim
+            - neovim
+            - bat
+            - mdcat
+            - sad
+            - yq
+            - ag
+            - ripgrep
+            - ugrep
+            - grex
+            # ==== Shell ====
+            - zsh
+            - powershell/tap/powershell-lts
+            - trzsz-ssh
+            - mosh
+            - screen
+            - tmux
+            - zellij
+            - asciinema
+            - mcfly
+            - tealdeer
+            - zoxide
+            # ==== Video ====
+            - ffmpeg
 
   install:curated-list:devops:
     platforms: [linux, darwin]
