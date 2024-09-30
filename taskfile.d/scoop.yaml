@@ -462,7 +462,7 @@ tasks:
             - ting-en
             - ditto
             # - copyq
-            - clipboard
+            # - clipboard
             - obsidian
             # - bookxnote
             - BookXNotePro
