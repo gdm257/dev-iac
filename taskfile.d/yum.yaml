@@ -1,0 +1,51 @@
+version: '3'
+
+tasks:
+
+  install:
+    platforms: [linux]
+    desc: 'Install package <PACKAGE>'
+    requires:
+      vars:
+        - PACKAGE
+    cmds:
+      - yum install -y {{.PACKAGE}}
+
+  install:bulk:
+    platforms: [linux]
+    internal: true
+    requires:
+      vars: [PACKAGES]
+    cmds:
+      - task: install
+        vars:
+          PACKAGE: '{{.ITEM}}'
+        for: {var: PACKAGES}
+
+  install:group:
+    platforms: [linux]
+    desc: 'Group installation <GROUP>'
+    requires:
+      vars:
+        - GROUP
+    cmds:
+      - yum groupinstall {{.GROUP}}
+
+  install:group:bulk:
+    platforms: [linux]
+    internal: true
+    requires:
+      vars: [GROUPS]
+    cmds:
+      - task: install:group
+        vars:
+          GROUP: '{{.ITEM}}'
+        for: {var: GROUPS}
+
+  install:group:curated-list:
+    platforms: [linux]
+    cmds:
+      - task: install:group:bulk
+        vars:
+          GROUPS:
+            - Development Tools

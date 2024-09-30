@@ -31,12 +31,14 @@ includes:
   restic: {taskfile: './taskfile.d/restic.yaml', optional: true}
   rye: {taskfile: './taskfile.d/rye.yaml', optional: true}
   scoop: {taskfile: './taskfile.d/scoop.yaml', optional: true}
+  ssh: {taskfile: './taskfile.d/ssh.yaml', optional: true}
   task: {taskfile: './taskfile.d/task.yaml', optional: true}
   vfox: {taskfile: './taskfile.d/vfox.yaml', optional: true}
   volta: {taskfile: './taskfile.d/volta.yaml', optional: true}
   winget: {taskfile: './taskfile.d/winget.yaml', optional: true}
   w2: {taskfile: './taskfile.d/w2.yaml', optional: true}
   wsl: {taskfile: './taskfile.d/wsl.yaml', optional: true}
+  yum: {taskfile: './taskfile.d/yum.yaml', optional: true}
 
   ls: {taskfile: './taskfile.d/task-ls.yaml', optional: false, aliases: [list, l]}
   ll: {taskfile: './taskfile.d/task-ll.yaml', optional: false, aliases: [list-all, la]}
