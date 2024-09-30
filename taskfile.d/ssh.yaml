@@ -11,7 +11,8 @@ tasks:
 
   key:passwd:
     dir: '{{.USER_WORKING_DIR}}'
-    reqruies:
-      vars: [FILE]
+    requires:
+      vars:
+        - KEYFILE
     cmds:
-      - ssh-keygen -p -f {{.FILE}}
+      - ssh-keygen -p -f {{.KEYFILE}}
