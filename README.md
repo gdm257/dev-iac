@@ -15,3 +15,7 @@ After thousands of notes, I realize **task runner** is the best choice for **CLI
 ### .env
 
 It's allowed to write sensitive environment variables to `.local.env` file that taskfile auto reads.
+
+## Philosophy
+
+- Infrastructure as Code
