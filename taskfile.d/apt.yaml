@@ -1,0 +1,40 @@
+version: '3'
+
+tasks:
+
+  fix:debian11:
+    platforms: [linux]
+    desc: 'Change Debian 11 deprecated reposority name'
+    cmds:
+      - sudo cp /etc/apt/sources.list /etc/apt/sources.list.bak
+      - sudo sed -i 's/bullseye\/updates/bullseye-security/g' /etc/apt/sources.list
+      - cat /etc/apt/sources.list
+      - sudo apt update
+
+  install:
+    platforms: [linux]
+    desc: 'Install package <PACKAGE>'
+    requires:
+      vars:
+        - PACKAGE
+    cmds:
+      - apt install -y {{.PACKAGE}}
+
+  install:bulk:
+    platforms: [linux]
+    internal: true
+    requires:
+      vars: [PACKAGES]
+    cmds:
+      - task: install
+        vars:
+          PACKAGE: '{{.ITEM}}'
+        for: {var: PACKAGES}
+
+  install:curated-list:
+    platforms: [linux]
+    cmds:
+      - task: install:bulk
+        vars:
+          PACKAGES:
+            - build-essential

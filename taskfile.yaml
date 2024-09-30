@@ -14,6 +14,7 @@ dotenv:
 includes:
   adb: {taskfile: './taskfile.d/adb.yaml', optional: true}
   ansible: {taskfile: './taskfile.d/ansible.yaml', optional: true}
+  apt: {taskfile: './taskfile.d/apt.yaml', optional: true}
   brew: {taskfile: './taskfile.d/brew.yaml', optional: true}
   cargo: {taskfile: './taskfile.d/cargo.yaml', optional: true}
   choco: {taskfile: './taskfile.d/choco.yaml', optional: true}
