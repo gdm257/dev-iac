@@ -3,7 +3,11 @@ run: 'always' # "always" | "once" | "when_changed"
 method: 'checksum' # "checksum" | "timestamp" | "none"
 interval: '5s'
 # set:
+#   - -e # Exit immediately if command returns a non-zero status
+#   - -x # Print commands
 # shopt:
+#   - -s
+#   - dotglob
 silent: false
 output: 'interleaved' # "interleaved" | "group" | "prefixed"
 
