@@ -52,6 +52,21 @@ tasks:
       - helm repo update
       - helm upgrade --install {{.RELEASE}} cnpg/cluster --namespace {{.NS}} --create-namespace {{.CLI_ARGS}}
 
+  eg:deploy:self:
+    desc: 'Deploy Envoy Gateway'
+    cmds:
+      - >
+        helm upgrade --install
+        eg oci://docker.io/envoyproxy/gateway-helm
+        --version v1.1.2
+        --namespace envoy-gateway-system --create-namespace
+      - >
+        kubectl wait
+        --timeout=5m
+        --namespace envoy-gateway-system
+        deployment/envoy-gateway
+        --for=condition=Available
+
   flux:deploy:self:
     desc: 'Deploy Flux CD controllers to cluster [CONTEXT]'
     preconditions:
