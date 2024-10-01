@@ -93,7 +93,7 @@ tasks:
         {{._NAME}} fluxcd-community/flux2
       - flux check
 
-  gateway-api:install:
+  gwapi:install:v1.1.0:
     cmds:
       - kubectl apply -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.1.0/standard-install.yaml
 
@@ -130,6 +130,7 @@ tasks:
             - jetstack https://charts.jetstack.io
             - kong https://charts.konghq.com
             - longhorn https://charts.longhorn.io
+            - openebs https://openebs.github.io/openebs
             - prometheus-community https://prometheus-community.github.io/helm-charts
 
   istio:deploy:self:
