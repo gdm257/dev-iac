@@ -102,11 +102,14 @@ tasks:
         vars:
           REPOS:
             - argo https://argoproj.github.io/argo-helm
+            - bitnami https://charts.bitnami.com/bitnami
             - cnpg https://cloudnative-pg.github.io/charts/
+            - datawire https://app.getambassador.io
             - fluxcd https://charts.fluxcd.io
             - fluxcd-community https://fluxcd-community.github.io/helm-charts
             - istio https://istio-release.storage.googleapis.com/charts
             - jetstack https://charts.jetstack.io
+            - kong https://charts.konghq.com
             - prometheus-community https://prometheus-community.github.io/helm-charts
 
   istio:deploy:self:

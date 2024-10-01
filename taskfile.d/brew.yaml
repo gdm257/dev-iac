@@ -171,7 +171,7 @@ tasks:
             - powershell/tap/powershell-lts
             - trzsz-ssh
             - mosh
-            - screen
+            # - screen
             - tmux
             - zellij
             - asciinema
