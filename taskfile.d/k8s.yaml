@@ -8,6 +8,7 @@ tasks:
       _CONTEXT: '{{if .CONTEXT}}--kube-context {{.CONTEXT}}{{end}}'
     cmds:
       - helm repo add argo https://argoproj.github.io/argo-helm
+      - helm repo update
       - helm upgrade --install argocd argo/argo-cd --namespace argocd --create-namespace {{._CONTEXT}}
 
   argocd:deploy:self:kubectl:
@@ -32,11 +33,13 @@ tasks:
       _VERSION: '{{if .VERSION}}{{.VERSION}}{{else}}v1.15.3{{end}}'
     cmds:
       - helm repo add jetstack https://charts.jetstack.io --force-update
+      - helm repo update
       - helm upgrade --install cert-manager jetstack/cert-manager --namespace cert-manager --create-namespace --set crds.enabled=true --version {{._VERSION}}
 
   cnpg:deploy:self:
     cmds:
       - helm repo add cnpg https://cloudnative-pg.github.io/charts
+      - helm repo update
       - helm upgrade --install cnpg cnpg/cloudnative-pg --namespace cnpg-system --create-namespace
 
   cnpg:deploy:pg:
@@ -46,6 +49,7 @@ tasks:
       RELEASE: '{{if .NAME}}{{.NAME}}{{else}}database{{end}}'
     cmds:
       - helm repo add cnpg https://cloudnative-pg.github.io/charts
+      - helm repo update
       - helm upgrade --install {{.RELEASE}} cnpg/cluster --namespace {{.NS}} --create-namespace {{.CLI_ARGS}}
 
   flux:deploy:self:
@@ -110,6 +114,7 @@ tasks:
             - istio https://istio-release.storage.googleapis.com/charts
             - jetstack https://charts.jetstack.io
             - kong https://charts.konghq.com
+            - longhorn https://charts.longhorn.io
             - prometheus-community https://prometheus-community.github.io/helm-charts
 
   istio:deploy:self:
@@ -122,6 +127,7 @@ tasks:
     cmds:
       # Install the control plane
       - helm repo add istio https://istio-release.storage.googleapis.com/charts
+      - helm repo update
       - helm upgrade --install -n istio-system --create-namespace istio-base istio/base --wait
       - kubectl apply -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.1.0/standard-install.yaml
       - helm upgrade --install -n istio-system istiod istio/istiod --wait
@@ -132,6 +138,7 @@ tasks:
     cmds:
       # Install the control plane
       - helm repo add istio https://istio-release.storage.googleapis.com/charts
+      - helm repo update
       - helm upgrade --install -n istio-system istiod istio/istiod --wait
       - kubectl apply -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.1.0/standard-install.yaml
 
@@ -139,6 +146,7 @@ tasks:
     cmds:
       # Install the control plane
       - helm repo add istio https://istio-release.storage.googleapis.com/charts
+      - helm repo update
       - helm upgrade --install -n istio-system --create-namespace istio-base istio/base --wait
       - kubectl apply -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.1.0/standard-install.yaml
       - helm upgrade --install -n istio-system istiod istio/istiod --set profile=ambient --wait
@@ -225,9 +233,25 @@ tasks:
       - echo "To simplify, is is recommended to use loadBalancer to replace kube-vip"
       - echo "k3d comes with HA implemented by Nginx"
  
+  longhorn:install:self:helm:
+    desc: 'Deploy longhorn'
+    vars:
+      _VERSION: '1.7.1'
+      _NAMESPACE: 'longhorn-system'
+      _RELEASE: 'longhorn'
+    cmds:
+      - helm repo add longhorn https://charts.longhorn.io
+      - helm repo update
+      - >
+        helm upgrade --install
+        {{._RELEASE}} longhorn/longhorn
+        --namespace {{._NAMESPACE}} --create-namespace
+        --version {{._VERSION}}
+
   prometheus:deploy:community:cnpg:
     cmds:
       - helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+      - helm repo update
       - >
         helm upgrade --install
         prometheus-community prometheus-community/kube-prometheus-stack
