@@ -47,3 +47,6 @@ tasks:
             - havn
             # - gpg-tui
             # - serie
+            - binsider
+            - systeroid
+            - systeroid-tui

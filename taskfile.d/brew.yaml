@@ -77,32 +77,110 @@ tasks:
       - task: install:bulk
         vars:
           APPS:
-            # ==== Download ====
-            - chsrc
-            - croc
-            - eget
-            - rclone
-            - restic
-            - rsync
-            - lrzsz
             # ==== DevOps ====
             - go-task
             - just
+            - make
+            - cmake
             - vfox
             - gcc
             - llvm
             - go
             - micromamba
-            # - pipx
             - rust
-            - rustup
-            # - rye
             - volta
             - git
             - gitui
             - lazygit
-            # ==== File ====
+      - task: install:curated-list:downloader
+      - task: install:curated-list:file
+      - task: install:curated-list:kernel
+      - task: install:curated-list:layer
+      - task: install:curated-list:network
+      - task: install:curated-list:process
+      - task: install:curated-list:text
+
+  install:curated-list:devops:
+    platforms: [linux, darwin]
+    cmds:
+      - task: install:bulk
+        vars:
+          APPS:
+            - go-task
+            - just
+            - make
+            - cmake
+            - vfox
+            - asdf
+            - whalebrew
+            - croc
+            - eget
+            - apt
+            - dpkg
+            - volta
+            # - pipx
+            # - rye
+            - micromamba
+            - ruff
+            - gradle
+            - adb-enhanced
+            - apktool
+            - nuget
+            - gcc
+            - llvm
+            - xmake
+            - conan
+            - gdb
+            - upx
+            - doxygen
+            - shellcheck
+            - shfmt
+            - luajit
+            - luarocks
+            # - lua@5.3
+            - go
+            - golangci-lint
+            - goreleaser
+            - protoc-gen-go
+            - gf
+            - rust
+            # - rustup
+            - perl
+      # PHP
+      - task: install:bulk
+        vars:
+          APPS:
+            # - php@8.2
+            - shivammathur/php/php@8.2
+      - cmd: brew link --force --overwrite php@8.2
+      # PHP extensions
+      - task: install:bulk
+        vars:
+          APPS:
+            - shivammathur/extensions/xdebug@8.2
+
+  install:curated-list:downloader:
+    platforms: [linux, darwin]
+    cmds:
+      - task: install:bulk
+        vars:
+          APPS:
+            - chsrc
+            - rclone
+            - restic
+            - rsync
+            - lrzsz
+
+  install:curated-list:file:
+    platforms: [linux, darwin]
+    cmds:
+      - task: install:bulk
+        vars:
+          APPS:
+            - file-formula
             - unar
+            - unzip
+            - gnu-tar
             - 7zip
             - age
             - ncdu
@@ -115,13 +193,29 @@ tasks:
             - fzf
             - fd
             - lsof
-            # ==== Kernel ====
+            - rename
+            - trash
+
+  install:curated-list:kernel:
+    platforms: [linux, darwin]
+    cmds:
+      - task: install:bulk
+        vars:
+          APPS:
             - cyme
             - tz
-            # ==== Layer ====
+
+  install:curated-list:layer:
+    platforms: [linux, darwin]
+    cmds:
+      - task: install:bulk
+        vars:
+          APPS:
             - qemu
             - nemu
             - docker
+            - docker-compose
+            - docker-buildx
             - lazydocker
             - ctop
             - dive
@@ -131,10 +225,22 @@ tasks:
             - helmfile
             - k3sup
             - kdash-rs/kdash/kdash
+            - k9s
+            - kubernetes-cli
+            - krew
+            - kubectx
             # - nomad
-            - robinovitch61/tap/wander
-            - dokku/repo/dokku
-            # ==== Network ====
+            # - robinovitch61/tap/wander
+            # - dokku/repo/dokku
+
+  install:curated-list:network:
+    platforms: [linux, darwin]
+    cmds:
+      - task: install:bulk
+        vars:
+          APPS:
+            - curl
+            - wget
             - nftables
             - iptables
             - iproute2
@@ -147,16 +253,55 @@ tasks:
             - websocat
             - mkcert
             - bitwarden-cli
-            - bandwhich 
+            - bandwhich
             - guumaster/tap/hostctl
-            # ==== Process ====
+
+  install:curated-list:process:
+    platforms: [linux, darwin]
+    cmds:
+      - task: install:bulk
+        vars:
+          APPS:
+            - systemd
             - htop
-            - pstree
             - bottom
+            - pstree
             - procs
-            # ==== Text ====
+
+  install:curated-list:shell:
+    platforms: [linux, darwin]
+    cmds:
+      - task: install:bulk
+        vars:
+          APPS:
+            - zsh
+            - powershell/tap/powershell
+            # - powershell/tap/powershell-lts
+            - openssh
+            - trzsz-ssh
+            - mosh
+            # - screen
+            # - tmux
+            - zellij
+            - asciinema
+            - atuin
+            - clipboard
+            - mcfly
+            - tealdeer
+            # - wtfutil
+            - zoxide
+            - rargs
+            - dotenvx/brew/dotenvx
+
+  install:curated-list:text:
+    platforms: [linux, darwin]
+    cmds:
+      - task: install:bulk
+        vars:
+          APPS:
             - vim
             - neovim
+            # - amp
             - bat
             - mdcat
             - sad
@@ -165,68 +310,43 @@ tasks:
             - ripgrep
             - ugrep
             - grex
+            - grep
+            - gnu-sed
+            - awk
             - fnt
-            # ==== Shell ====
-            - zsh
-            - powershell/tap/powershell-lts
-            - trzsz-ssh
-            - mosh
-            # - screen
-            - tmux
-            - zellij
-            - asciinema
-            - atuin
-            - clipboard
-            - mcfly
-            - tealdeer
-            - zoxide
-            # ==== Video ====
+            - argon2
+            - less
+
+  install:curated-list:toolbox:
+    platforms: [linux, darwin]
+    cmds:
+      - task: install:bulk
+        vars:
+          APPS:
+            - util-linux
+            - util-macros
+            - coreutils
+            - diffutils
+            - findutils
+            - uutils-coreutils
+            - uutils-diffutils
+            - uutils-findutils
+            - binutils
+            - dateutils
+            - inetutils
+            - iputils
+            - mailutils
+            - moreutils
+            - nfcutils
+            - pciutils
+            - plotutils
+            - recutils
+            - usbutils
+
+  install:curated-list:video:
+    platforms: [linux, darwin]
+    cmds:
+      - task: install:bulk
+        vars:
+          APPS:
             - ffmpeg
-
-  install:curated-list:devops:
-    platforms: [linux, darwin]
-    cmds:
-      - task: install:bulk
-        vars:
-          APPS:
-            - chsrc
-            - go-task
-            - just
-            - vfox
-            - volta
-            - gcc
-            - gdb
-            - pipx
-            - rye
-            - micromamba
-            - ruff
-            - gradle
-            - adb-enhanced
-            - apktool
-            - nuget
-            - llvm
-            - xmake
-            - conan
-            - cmake
-            - doxygen
-            - upx
-            - shellcheck
-            - shfmt
-            - luajit
-            - lua@5.3
-            - luarocks
-            - go
-            - golangci-lint
-            - goreleaser
-            - protoc-gen-go
-            - gf
-            - rustup
-            - perl
-
-  install:curated-list:shell:
-    platforms: [linux, darwin]
-    cmds:
-      - task: install:bulk
-        vars:
-          APPS:
-            - screen

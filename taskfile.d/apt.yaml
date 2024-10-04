@@ -37,4 +37,7 @@ tasks:
       - task: install:bulk
         vars:
           PACKAGES:
+            # Group
             - build-essential
+            # Package
+            - pleaser

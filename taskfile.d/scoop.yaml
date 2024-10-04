@@ -144,15 +144,6 @@ tasks:
             # - autohotkey
             - AutoHotkey-Portable_ACooper81
             - AutoHotkey2-Portable
-            # - jetbrains-toolbox@1.26.0.13072
-            # - Gateway-EAP-portable@2022.2.2-222.4167.9
-            # - PyCharm-Professional-portable@2020.3.5-203.7717.81
-            # - IntelliJ-IDEA-Ultimate-portable@2020.3.2-203.7148.57
-            # - GoLand-portable@2020.3.2-203.7148.71
-            # - Rider-portable@2020.3.2-203.6682.21
-            # - WebStorm-portable@2020.3.2-203.7148.54
-            # - CLion-portable@2020.3.3-203.7717.62
-            # - PhpStorm-portable@2020.3.3-203.7717.64
             - idea-portable
             # - gdm257/cursor
             # - imhex
@@ -203,7 +194,6 @@ tasks:
             # - goose
             # - datax
             # - zincsearch
-            # - DataGrip-portable@2020.3.2-203.7148.68
             # - heidisql
             # - sqlyog-community
             # - falcon-sql-client
@@ -218,15 +208,15 @@ tasks:
             - bit
             - gitui
             - lazygit
-            - git-credential-manager
             # - legit
-            - git-branchless
+            # - git-branchless
             # - gitbutler
             # - git-town
-            - gitleaks
+            # - git-sync
             - git-lfs
             - lfs-dal
-            - git-sync
+            - git-credential-manager
+            - gitleaks
             # - gptcommit
             # - gitql
             # - ungit
@@ -994,10 +984,7 @@ tasks:
             # - PSWinUtil
             # - sudo
             - gsudo
-            - navi
-            - just
-            - task
-            # - mask
+            # - navi
             # - cheat
             # - tldr
             - tealdeer
@@ -1162,18 +1149,16 @@ tasks:
             - kdash
             - k9s
             - kubectl
-            # - kubecolor
-            # - kubectl-ai
-            - k8sgpt
             - krew
             - kubens
             - kubectx
-            - istioctl
-            # - istio
+            # - kubecolor
+            # - kubectl-ai
+            - k8sgpt
+            # - istioctl
             # - kwok
             # - kubeshark
             # - kops
-            # - flux2
             - main/flux
             - argocd
             # - wsl2-distro-manager
