@@ -386,6 +386,16 @@ tasks:
         helm upgrade --install
         prometheus-community prometheus-community/kube-prometheus-stack
         --values https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/main/docs/src/samples/monitoring/kube-stack-config.yaml
+
+  rainbond:deploy:self:k3s:
+    cmds:
+      - helm repo add rainbond https://openchart.goodrain.com/goodrain/rainbond
+      - helm repo update
+      - >
+        helm upgrade --install
+        rainbond rainbond/rainbond-cluster
+        -n rbd-system --create-namespace
+        --set useK3sContainerd=true
   tsuru:deploy:self:
     cmds:
       - helm repo add tsuru https://tsuru.github.io/charts
