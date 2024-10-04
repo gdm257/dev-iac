@@ -255,6 +255,16 @@ tasks:
       # - helm upgrade --install -n istio-ingress --create-namespace istio-ingress istio/gateway --wait
       # - helm upgrade --install -n istio-system istio-egress istio/egressgateway
 
+  juicefs:csi:deploy:self:
+    cmds:
+      - helm repo add juicefs https://juicedata.github.io/charts/
+      - helm repo update
+      - >
+        helm upgrade --install
+        juicefs-csi-driver juicefs/juicefs-csi-driver
+        --namespace kube-system --create-namespace
+        {{.CLI_ARGS}}
+
   k3sup-init-master:
     desc: 'Initial k3s cluster via SSH [SSH_HOST SSH_PORT SSH_USER SSH_KEY IS_EMBEDDED_ETCD IS_MERGE_EXISTING]'
     cmds:
