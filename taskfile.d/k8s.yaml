@@ -420,6 +420,16 @@ tasks:
         --wait
         {{.CLI_ARGS}}
 
+  kubevela:deploy:self:
+    cmds:
+      - helm repo add kubevela https://kubevela.github.io/charts
+      - helm repo update
+      - >
+        helm upgrade --install
+        kubevela kubevela/vela-core
+        -n vela-system --create-namespace
+        --wait
+
   longhorn:install:self:helm:
     desc: 'Deploy longhorn'
     vars:
