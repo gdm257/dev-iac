@@ -265,6 +265,18 @@ tasks:
         --namespace kube-system --create-namespace
         {{.CLI_ARGS}}
 
+  kadalu:deploy:self:
+    vars:
+      _VERSION: '1.3.0'
+    cmds:
+      - >
+        helm upgrade --install
+        kadalu https://github.com/kadalu/kadalu/releases/download/1.3.0/kadalu-helm-chart.tgz
+        --namespace kadalu --create-namespace
+        --set kubernetesDistro=kubernetes
+        --set operator.enabled=true
+        {{.CLI_ARGS}}
+
   k3sup-init-master:
     desc: 'Initial k3s cluster via SSH [SSH_HOST SSH_PORT SSH_USER SSH_KEY IS_EMBEDDED_ETCD IS_MERGE_EXISTING]'
     cmds:
