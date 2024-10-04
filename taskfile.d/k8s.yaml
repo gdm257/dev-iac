@@ -198,6 +198,16 @@ tasks:
             - openebs https://openebs.github.io/openebs
             - prometheus-community https://prometheus-community.github.io/helm-charts
 
+  hwameistor:deploy:self:
+    cmds:
+      - helm repo add hwameistor-operator https://hwameistor.io/hwameistor-operator
+      - helm repo update
+      - >
+        helm upgrade --install
+        hwameistor-operator hwameistor-operator/hwameistor-operator
+        --namespace hwameistor --create-namespace
+        {{.CLI_ARGS}}
+
   istio:deploy:self:
     cmds:
       # - istioctl install --set profile=ambient --skip-confirmation
