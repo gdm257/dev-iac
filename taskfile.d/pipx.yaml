@@ -8,9 +8,8 @@ tasks:
       CONDA: 'micromamba'
       PYTHONVERSION: '3.11.*'
     cmds:
-      - '{{.CONDA}} create --channel conda-forge -n python3 -y python={{.PYTHONVERSION}} pipx'
-      - 'sudo {{.CONDA}} run -n python3 pipx install --global pipx'
-      - '{{.CONDA}} run -n python3 pipx install pipx'
+      - 'sudo $(which {{.CONDA}}) create --channel conda-forge -n pipx -y python={{.PYTHONVERSION}} pipx'
+      - 'sudo $(which {{.CONDA}}) run -n pipx pipx install --global pipx'
 
   install:
     desc: 'Install package <PACKAGE> [INCLUDE_DEPS GLOBAL]'
