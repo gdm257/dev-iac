@@ -52,6 +52,18 @@ tasks:
     cmds:
       - argocd account update-password
 
+  carina:deploy:self:
+    vars:
+      _VERSION: 'v0.11.0'
+    cmds:
+      - helm repo add carina-csi-driver https://carina-io.github.io
+      - helm repo update
+      - >
+        helm upgrade --install
+        carina-csi-driver carina-csi-driver/carina-csi-driver
+        --version {{._VERSION}}
+        --namespace kube-system --create-namespace
+
   cert-manager:deploy:self:
     vars:
       _VERSION: '{{if .VERSION}}{{.VERSION}}{{else}}v1.15.3{{end}}'
