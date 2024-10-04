@@ -2,6 +2,11 @@ version: '3'
 
 tasks:
 
+  log:graph:
+    dir: '{{.USER_WORKING_DIR}}'
+    cmds:
+      - git log --oneline --graph --all --decorate
+
   remote:list:
     aliases: [remote:ls, remote:ll, remote:l]
     dir: '{{.USER_WORKING_DIR}}'
