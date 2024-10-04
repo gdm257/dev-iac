@@ -88,6 +88,14 @@ tasks:
       - helm repo update
       - helm upgrade --install {{.RELEASE}} cnpg/cluster --namespace {{.NS}} --create-namespace {{.CLI_ARGS}}
 
+  csi:s3:deploy:self:
+    cmds:
+      - helm repo add yandex-s3 https://yandex-cloud.github.io/k8s-csi-s3/charts
+      - helm repo update
+      - >
+        helm upgrade --install
+        csi-s3 yandex-s3/csi-s3
+
   eg:deploy:self:
     desc: 'Deploy Envoy Gateway'
     cmds:
