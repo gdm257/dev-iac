@@ -396,6 +396,34 @@ tasks:
         rainbond rainbond/rainbond-cluster
         -n rbd-system --create-namespace
         --set useK3sContainerd=true
+
+  traefik:deploy:self:
+    desc: 'Deploy traefik [RELEASE VERSION CRD INGRESS GWAPI] -- [options]'
+    vars:
+      _RELEASE: 'traefik'
+      _VERSION: '32.0.0'
+      _NAMESPACE: '--namespace {{if .NAMESPACE}}{{.NAMESPACE}}{{else}}traefik{{end}} --create-namespace'
+      _DAEMONSET: '{{if ne .DAEMONSET "false"}}--set deployment.kind=DaemonSet{{end}}'
+      _CRD: '{{if eq .CRD "false"}}--set providers.kubernetesCRD.enabled=false{{end}}'
+      _INGRESS: '{{if eq .INGRESS "false"}}--set providers.kubernetesIngress.enabled=false{{end}}'
+      _GWAPI: '{{if ne .GWAPI "false"}}--set providers.kubernetesGateway.enabled=true{{end}}'
+    cmds:
+        # --set metrics.prometheus.enabled=true
+        # --set metrics.prometheus.prometheusRule.enabled=true
+        # --set metrics.prometheus.service.enabled=true
+      - helm repo add traefik https://traefik.github.io/charts
+      - helm repo update
+      - >
+        helm upgrade --install
+        {{._RELEASE}} traefik/traefik --version {{._VERSION}}
+        {{._NAMESPACE}}
+        --set ingressRoute.dashboard.enabled=true
+        {{._DAEMONSET}}
+        {{._CRD}}
+        {{._INGRESS}}
+        {{._GWAPI}}
+        {{if .CLI_ARGS}}{{.CLI_ARGS}}{{end}}
+
   tsuru:deploy:self:
     cmds:
       - helm repo add tsuru https://tsuru.github.io/charts
