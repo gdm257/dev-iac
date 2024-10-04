@@ -362,7 +362,45 @@ tasks:
       - 'echo "TODO: DaemonSet"'
       - echo "To simplify, is is recommended to use loadBalancer to replace kube-vip"
       - echo "k3d comes with HA implemented by Nginx"
- 
+
+  kubero:deploy:self:full:
+    cmds:
+      - task: kubero:deploy:operator:full
+      - task: kubero:deploy:ui
+
+  kubero:deploy:self:minimal:
+    cmds:
+      - task: kubero:deploy:operator:minimal
+      - task: kubero:deploy:ui
+
+  kubero:deploy:operator:minimal:
+    cmds:
+      - kubectl apply -f https://raw.githubusercontent.com/kubero-dev/kubero-operator/main/deploy/operator.yaml
+
+  kubero:deploy:operator:full:
+    cmds:
+      - kubectl create -f https://raw.githubusercontent.com/operator-framework/operator-lifecycle-manager/master/deploy/upstream/quickstart/crds.yaml
+      - kubectl create -f https://raw.githubusercontent.com/operator-framework/operator-lifecycle-manager/master/deploy/upstream/quickstart/olm.yaml
+      - kubectl create -f https://operatorhub.io/install/kubero-operator.yaml
+
+  kubero:deploy:ui:
+    requires:
+      vars:
+        - 'KUBERO_WEBHOOK_SECRET' # openssl rand -hex 20
+        - 'KUBERO_SESSION_KEY' # openssl rand -hex 20
+    cmds:
+      - kubectl create namespace kubero
+      - >
+        kubectl create secret generic kubero-secrets
+        -n kubero
+        --from-literal=KUBERO_WEBHOOK_SECRET={{.KUBERO_WEBHOOK_SECRET}}
+        --from-literal=KUBERO_SESSION_KEY={{.KUBERO_SESSION_KEY}}
+        {{.CLI_ARGS}}
+      - >
+        kubectl apply
+        -f https://raw.githubusercontent.com/kubero-dev/kubero-operator/main/config/samples/application_v1alpha1_kubero.yaml
+        -n kubero
+
   kubeshark:deploy:self:
     cmds:
       - helm repo add kubeshark https://helm.kubeshark.co
