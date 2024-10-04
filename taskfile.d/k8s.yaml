@@ -117,6 +117,21 @@ tasks:
         deployment/envoy-gateway
         --for=condition=Available
 
+  fission:deploy:self:
+    vars:
+      _VERSION: 'v1.20.4'
+      _NAMESPACE: fission
+    cmds:
+      - kubectl create namespace {{._NAMESPACE}}
+      - kubectl create -k "github.com/fission/fission/crds/v1?ref={{._VERSION}}"
+      - helm repo add fission-charts https://fission.github.io/fission-charts/
+      - helm repo update
+      - >
+        helm upgrade --install
+        fission fission-charts/fission-all
+        --version {{._VERSION}}
+        --namespace {{._NAMESPACE}} --create-namespace
+
   flux:deploy:self:
     desc: 'Deploy Flux CD controllers to cluster [CONTEXT]'
     preconditions:
