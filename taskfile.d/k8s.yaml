@@ -386,6 +386,17 @@ tasks:
         helm upgrade --install
         prometheus-community prometheus-community/kube-prometheus-stack
         --values https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/main/docs/src/samples/monitoring/kube-stack-config.yaml
+  tsuru:deploy:self:
+    cmds:
+      - helm repo add tsuru https://tsuru.github.io/charts
+      - helm repo update
+      - >
+        helm upgrade --install
+        tsuru tsuru/tsuru-stack
+        --create-namespace --namespace tsuru-system
+        --set ingress-nginx.enabled=false
+        --set tsuru-api.service.type=ClusterIP
+
   velero:deploy:self:
     desc: 'Deploy velero 1.14.1'
     cmds:
