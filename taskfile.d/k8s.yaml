@@ -378,6 +378,16 @@ tasks:
         --namespace {{._NAMESPACE}} --create-namespace
         --version {{._VERSION}}
 
+  openfaas:deploy:self:
+    cmds:
+      - kubectl apply -f https://raw.githubusercontent.com/openfaas/faas-netes/master/namespaces.yml
+      - helm repo add openfaas https://openfaas.github.io/faas-netes/
+      - helm repo update
+      - >
+        helm upgrade --install
+        openfaas openfaas/openfaas
+        --namespace openfaas --create-namespace
+
   prometheus:deploy:community:cnpg:
     cmds:
       - helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
