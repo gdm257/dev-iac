@@ -363,6 +363,15 @@ tasks:
       - echo "To simplify, is is recommended to use loadBalancer to replace kube-vip"
       - echo "k3d comes with HA implemented by Nginx"
  
+  kubeshark:deploy:self:
+    cmds:
+      - helm repo add kubeshark https://helm.kubeshark.co
+      - helm repo update
+      - >
+        helm upgrade --install
+        kubeshark kubeshark/kubeshark
+        --namespace kubeshark --create-namespace
+
   longhorn:install:self:helm:
     desc: 'Deploy longhorn'
     vars:
