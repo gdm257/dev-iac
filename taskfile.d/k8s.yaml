@@ -2,6 +2,30 @@ version: '3'
 
 tasks:
 
+  anteon:deploy:self:
+    cmds:
+      - helm repo add anteon https://getanteon.github.io/anteon-helm-charts/
+      - helm repo update
+      # Anteon platform
+      - >
+        helm upgrade --install
+        anteon-selfhosted anteon/anteon
+        --namespace anteon --create-namespace
+        --wait
+
+  anteon:deploy:alaz:
+    requires:
+      vars: [MONITORING_ID]
+    cmds:
+      - helm repo add anteon https://getanteon.github.io/anteon-helm-charts/
+      - helm repo update
+      # eBPF agent (Alaz)
+      - >
+        helm upgrade --install
+        alaz anteon/alaz
+        --namespace anteon --create-namespace
+        --set monitoringID={{.MONITORING_ID}}
+
   argocd:deploy:self:helm:
     desc: 'Deploy ArgoCD controllers to cluster [CONTEXT]'
     vars:
