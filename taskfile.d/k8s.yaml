@@ -386,3 +386,13 @@ tasks:
         helm upgrade --install
         prometheus-community prometheus-community/kube-prometheus-stack
         --values https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/main/docs/src/samples/monitoring/kube-stack-config.yaml
+  velero:deploy:self:
+    desc: 'Deploy velero 1.14.1'
+    cmds:
+      - helm repo add vmware-tanzu https://vmware-tanzu.github.io/helm-charts
+      - helm repo update
+      - >
+        helm upgrade --install
+        velero vmware-tanzu/velero
+        --version 7.2.1
+        {{.CLI_ARGS}}
