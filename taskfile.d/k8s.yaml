@@ -277,6 +277,15 @@ tasks:
         --set operator.enabled=true
         {{.CLI_ARGS}}
 
+  kanister:deploy:self:
+    cmds:
+      - helm repo add kanister https://charts.kanister.io/
+      - helm repo update
+      - >
+        helm upgrade --install
+        kanister kanister/kanister-operator
+        --namespace kanister --create-namespace
+
   k3sup-init-master:
     desc: 'Initial k3s cluster via SSH [SSH_HOST SSH_PORT SSH_USER SSH_KEY IS_EMBEDDED_ETCD IS_MERGE_EXISTING]'
     cmds:
