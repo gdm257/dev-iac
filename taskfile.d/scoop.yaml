@@ -1154,6 +1154,7 @@ tasks:
             - kubectx
             # - kubecolor
             # - kubectl-ai
+            - kubeconform
             - k8sgpt
             # - istioctl
             # - kwok

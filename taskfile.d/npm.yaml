@@ -28,6 +28,7 @@ tasks:
             - opencommit
             - '@openapitools/openapi-generator-cli'
             - whistle
+            - neoss
             # - pxder
             # - npkill
             # - fkill-cli

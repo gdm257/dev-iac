@@ -21,7 +21,8 @@ tasks:
         vars:
           TOOL: '{{.TOOL}}'
 
-  install:curated-list:
+  install:curated-list:windows:
+    platforms: [windows]
     cmds:
       - task: install:bulk
         vars:
@@ -31,3 +32,11 @@ tasks:
             - npx
             - pnpm
             - yarn
+
+  install:curated-list:unix:
+    platforms: [linux, darwin]
+    cmds:
+      - task: install:bulk
+        vars:
+          TOOLS:
+            - node
