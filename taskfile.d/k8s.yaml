@@ -462,6 +462,28 @@ tasks:
         -schema-location 'https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/{{"{{"}}.Group{{"}}"}}/{{"{{"}}.ResourceKind{{"}}"}}_{{"{{"}}.ResourceAPIVersion{{"}}"}}.json'
         {{.CLI_ARGS}}
 
+  multus:deploy:self:k3s:whereabouts:
+    desc: 'Deploy multus CNI [DATA_DIR]'
+    vars:
+      _DATA_DIR: '{{if .DATA_DIR}}{{.DATA_DIR}}{{else}}/var/lib/rancher/k3s{{end}}'
+    cmds:
+      - helm repo add rke2-charts https://rke2-charts.rancher.io
+      - helm repo update
+      - |
+        helm upgrade --install multus rke2-charts/rke2-multus -n kube-system --values - <<'EOF'
+        config:
+          cni_conf:
+            confDir: {{._DATA_DIR}}/agent/etc/cni/net.d
+            binDir: {{._DATA_DIR}}/data/current/bin/
+            kubeconfig: {{._DATA_DIR}}/agent/etc/cni/net.d/multus.d/multus.kubeconfig
+        rke2-whereabouts:
+          fullnameOverride: whereabouts
+          enabled: true
+          cniConf:
+            confDir: {{._DATA_DIR}}/agent/etc/cni/net.d
+            binDir: {{._DATA_DIR}}/data/current/bin/
+        EOF
+
   longhorn:install:self:helm:
     desc: 'Deploy longhorn'
     vars:
