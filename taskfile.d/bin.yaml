@@ -1,0 +1,39 @@
+version: '3'
+
+tasks:
+
+  install:self:eget:
+    dir: '{{.USER_WORKING_DIR}}'
+    cmds:
+      - eget marcosnils/bin
+      - ./bin install github.com/marcosnils/bin
+      - rm bin
+
+  install:
+    desc: 'Install binary <BIN>'
+    requires:
+      vars:
+        - BIN
+    cmds:
+      - bin install {{.BIN}}
+
+  install:bulk:
+    internal: true
+    requires:
+      vars: [BINS]
+    cmds:
+      - task: install
+        vars:
+          BIN: '{{.ITEM}}'
+        for: {var: BINS}
+
+  install:curated-list:linux:
+    platforms: [linux]
+    vars:
+      _DIR: '{{if .DIR}}{{.DIR}}{{else}}$HOME/.local/bin{{end}}'
+    cmds:
+      - task: install:bulk
+        vars:
+          BINS:
+            - github.com/joehillen/sysz
+            - github.com/servicer-labs/servicer {{._DIR}}/servicer
