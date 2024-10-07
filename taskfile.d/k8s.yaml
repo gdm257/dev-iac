@@ -452,6 +452,16 @@ tasks:
         -n vela-system --create-namespace
         --wait
 
+  manifest:validate:
+    desc: 'Validate manifests -- <MANIFEST>...'
+    dir: '{{.USER_WORKING_DIR}}'
+    cmds:
+      - >
+        kubeconform
+        -schema-location default
+        -schema-location 'https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/{{"{{"}}.Group{{"}}"}}/{{"{{"}}.ResourceKind{{"}}"}}_{{"{{"}}.ResourceAPIVersion{{"}}"}}.json'
+        {{.CLI_ARGS}}
+
   longhorn:install:self:helm:
     desc: 'Deploy longhorn'
     vars:
