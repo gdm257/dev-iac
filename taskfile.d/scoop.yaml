@@ -262,6 +262,7 @@ tasks:
             - UniGetUI
             - winget-preview
             # - eget
+            - bin-manager
             # - Baulk_dodorz
             # - shovel
             # - npackd
@@ -1156,6 +1157,7 @@ tasks:
             # - kubectl-ai
             - kubeconform
             - k8sgpt
+            # - cilium-cli
             # - istioctl
             # - kwok
             # - kubeshark
