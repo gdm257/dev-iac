@@ -16,3 +16,18 @@ tasks:
         - KEYFILE
     cmds:
       - ssh-keygen -p -f {{.KEYFILE}}
+
+  mosh:
+    desc: '<SSH_USER SSH_HOST> [SSH_KEY SSH_ARGS PORT]'
+    requires:
+      vars:
+        - SSH_USER
+        - SSH_HOST
+    vars:
+      _SSH_USER: '{{if .SSH_USER}}{{.SSH_USER}}{{else}}root{{end}}'
+      _SSH_HOST: '{{if .SSH_HOST}}{{.SSH_HOST}}{{else}}127.0.0.1{{end}}'
+      _SSH_KEY: '{{if .SSH_KEY}}-i {{.SSH_KEY}}{{end}}'
+      _SSH_ARGS: '{{if .SSH_ARGS}}{{.SSH_ARGS}}{{end}}'
+      _PORT: '{{if .PORT}}-p {{.PORT}}{{end}}'
+    cmds:
+      - mosh {{._PORT}} {{._SSH_USER}}@{{.SSH_HOST}} --ssh 'ssh {{._SSH_KEY}} {{._SSH_ARGS}}'
