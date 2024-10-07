@@ -538,24 +538,51 @@ tasks:
   traefik:deploy:self:
     desc: 'Deploy traefik [RELEASE VERSION CRD INGRESS GWAPI] -- [options]'
     vars:
-      _RELEASE: 'traefik'
-      _VERSION: '32.0.0'
+      _RELEASE: >
+        {{- if .RELEASE}}
+        {{.RELEASE}}
+        {{- else}}
+        traefik
+        {{- end}}
+      _VERSION: >
+        {{- if .VERSION}}
+        {{.VERSION}}
+        {{- else}}
+        32.0.0
+        {{- end}}
       _NAMESPACE: '--namespace {{if .NAMESPACE}}{{.NAMESPACE}}{{else}}traefik{{end}} --create-namespace'
+      _METRICS: >
+        --set metrics.prometheus.enabled=true
+        --set metrics.prometheus.service.enabled=true
       _DAEMONSET: '{{if ne .DAEMONSET "false"}}--set deployment.kind=DaemonSet{{end}}'
-      _CRD: '{{if eq .CRD "false"}}--set providers.kubernetesCRD.enabled=false{{end}}'
-      _INGRESS: '{{if eq .INGRESS "false"}}--set providers.kubernetesIngress.enabled=false{{end}}'
-      _GWAPI: '{{if ne .GWAPI "false"}}--set providers.kubernetesGateway.enabled=true{{end}}'
+      _CRD: >
+        {{- if eq .CRD "false" }}
+        --set providers.kubernetesCRD.enabled=false
+        {{- else}}
+        --set providers.kubernetesCRD.allowCrossNamespace=true
+        --set providers.kubernetesCRD.allowExternalNameServices=true
+        --set ingressRoute.dashboard.enabled=true
+        {{- end}}
+      _INGRESS: >
+        {{- if eq .INGRESS "false"}}
+        --set providers.kubernetesIngress.enabled=false
+        {{- else}}
+        --set providers.kubernetesIngress.allowExternalNameServices=true
+        {{if ne .INGRESS_DEFAULT "true"}}--set ingressClass.isDefaultClass=false{{end}}
+        {{- end}}
+      _GWAPI: >
+        {{- if ne .GWAPI "false"}}
+        --set providers.kubernetesGateway.enabled=true
+        --set providers.kubernetesGateway.experimentalChannel=true
+        {{- end}}'
     cmds:
-        # --set metrics.prometheus.enabled=true
-        # --set metrics.prometheus.prometheusRule.enabled=true
-        # --set metrics.prometheus.service.enabled=true
       - helm repo add traefik https://traefik.github.io/charts
       - helm repo update
       - >
         helm upgrade --install
         {{._RELEASE}} traefik/traefik --version {{._VERSION}}
         {{._NAMESPACE}}
-        --set ingressRoute.dashboard.enabled=true
+        {{._METRICS}}
         {{._DAEMONSET}}
         {{._CRD}}
         {{._INGRESS}}
