@@ -78,6 +78,28 @@ tasks:
         --set crds.enabled=true
         --set "extraArgs={--enable-gateway-api}"
 
+  cilium:deploy:self:k3s:
+    cmds:
+      - helm repo add cilium https://helm.cilium.io/
+      - helm repo update
+      - >
+        helm upgrade --install
+        cilium cilium/cilium
+        --version 1.16.2
+        --namespace $CILIUM_NAMESPACE
+        --set operator.replicas=1
+      # Restart unmanaged Pods
+      - >
+        kubectl get pods --all-namespaces -o custom-columns=NAMESPACE:.metadata.namespace,NAME:.metadata.name,HOSTNETWORK:.spec.hostNetwork --no-headers=true
+        | grep '<none>'
+        | awk '{print "-n "$1" "$2}'
+        | xargs -L 1 -r kubectl delete pod
+
+  cilium:check:
+    cmds:
+      - cilium status --wait
+      - cilium connectivity test
+
   cnpg:deploy:self:
     cmds:
       - helm repo add cnpg https://cloudnative-pg.github.io/charts
