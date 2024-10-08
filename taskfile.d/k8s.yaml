@@ -539,42 +539,44 @@ tasks:
     desc: 'Deploy traefik [RELEASE VERSION CRD INGRESS GWAPI] -- [options]'
     vars:
       _RELEASE: >
-        {{- if .RELEASE}}
+        {{- if .RELEASE -}}
         {{.RELEASE}}
-        {{- else}}
+        {{- else -}}
         traefik
-        {{- end}}
+        {{- end -}}
       _VERSION: >
-        {{- if .VERSION}}
+        {{- if .VERSION -}}
         {{.VERSION}}
-        {{- else}}
+        {{- else -}}
         32.0.0
-        {{- end}}
+        {{- end -}}
       _NAMESPACE: '--namespace {{if .NAMESPACE}}{{.NAMESPACE}}{{else}}traefik{{end}} --create-namespace'
       _METRICS: >
+        {{- if true -}}
         --set metrics.prometheus.enabled=true
         --set metrics.prometheus.service.enabled=true
-      _DAEMONSET: '{{if ne .DAEMONSET "false"}}--set deployment.kind=DaemonSet{{end}}'
+        {{- end -}}
+      _DAEMONSET: '{{- if ne .DAEMONSET "false" -}}--set deployment.kind=DaemonSet{{- end -}}'
       _CRD: >
-        {{- if eq .CRD "false" }}
+        {{- if eq .CRD "false" -}}
         --set providers.kubernetesCRD.enabled=false
-        {{- else}}
+        {{- else -}}
         --set providers.kubernetesCRD.allowCrossNamespace=true
         --set providers.kubernetesCRD.allowExternalNameServices=true
         --set ingressRoute.dashboard.enabled=true
-        {{- end}}
+        {{- end -}}
       _INGRESS: >
-        {{- if eq .INGRESS "false"}}
+        {{- if eq .INGRESS "false" -}}
         --set providers.kubernetesIngress.enabled=false
-        {{- else}}
+        {{- else -}}
         --set providers.kubernetesIngress.allowExternalNameServices=true
         {{if ne .INGRESS_DEFAULT "true"}}--set ingressClass.isDefaultClass=false{{end}}
-        {{- end}}
+        {{- end -}}
       _GWAPI: >
-        {{- if ne .GWAPI "false"}}
+        {{- if ne .GWAPI "false" -}}
         --set providers.kubernetesGateway.enabled=true
         --set providers.kubernetesGateway.experimentalChannel=true
-        {{- end}}'
+        {{- end -}}
     cmds:
       - helm repo add traefik https://traefik.github.io/charts
       - helm repo update
@@ -587,7 +589,7 @@ tasks:
         {{._CRD}}
         {{._INGRESS}}
         {{._GWAPI}}
-        {{if .CLI_ARGS}}{{.CLI_ARGS}}{{end}}
+        {{if .CLI_ARGS}}{{.CLI_ARGS}}{{end -}}
 
   tsuru:deploy:self:
     cmds:
