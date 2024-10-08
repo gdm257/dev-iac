@@ -25,5 +25,5 @@ tasks:
       _ALL: '{{if or .FETCH .PUSH}}{{else}}true{{end}}'
     cmds:
       - '{{if ._ALL}} git remote set-url {{._REMOTE}} {{._REPO}}{{end}}'
-      - '{{if and (not ._ALL) .FETCH}} git remote set-url --fetch {{._REMOTE}} {{._REPO}} {{end}}'
+      - '{{if and (not ._ALL) .FETCH}} git remote set-url {{._REMOTE}} {{._REPO}} {{end}}'
       - '{{if and (not ._ALL) .PUSH}} git remote set-url --push {{._REMOTE}} {{._REPO}} {{end}}'
