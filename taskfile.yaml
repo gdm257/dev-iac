@@ -38,6 +38,7 @@ includes:
   rye: {taskfile: './taskfile.d/rye.yaml', optional: true}
   scoop: {taskfile: './taskfile.d/scoop.yaml', optional: true}
   ssh: {taskfile: './taskfile.d/ssh.yaml', optional: true}
+  systemd: {taskfile: './taskfile.d/systemd.yaml', optional: true}
   task: {taskfile: './taskfile.d/task.yaml', optional: true}
   vfox: {taskfile: './taskfile.d/vfox.yaml', optional: true}
   volta: {taskfile: './taskfile.d/volta.yaml', optional: true}

@@ -1,0 +1,8 @@
+version: '3'
+
+tasks:
+
+  ctl:reload:
+    decs: 'Reload daemon to load configuration'
+    cmds:
+      - sudo systemctl daemon-reload
