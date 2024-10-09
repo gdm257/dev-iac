@@ -2,6 +2,14 @@ version: '3'
 
 tasks:
 
+  list:
+    cmds:
+      - wsl -l -v
+
+  list:online:
+    cmds:
+      - wsl --list --online
+
   install:
     desc: 'Install a distro <DISTRO>'
     requires:
