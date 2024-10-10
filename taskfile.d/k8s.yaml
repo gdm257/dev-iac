@@ -90,6 +90,19 @@ tasks:
         --namespace cert-manager --create-namespace
         {{.CLI_ARGS}}
 
+  cilium:k3s:stop:
+    desc: >-
+      Before stopping k3s cluster,
+      you MUST remove cilium network interfaces and iptables rules.
+      If you fail to do this,
+      you may lose network connectivity to the host when K3s is stopped
+    cmds:
+      - ip link delete cilium_host
+      - ip link delete cilium_net
+      - ip link delete cilium_vxlan
+      - iptables-save | grep -iv cilium | iptables-restore
+      - ip6tables-save | grep -iv cilium | ip6tables-restore
+
   cilium:deploy:self:k3s:
     cmds:
       - helm repo add cilium https://helm.cilium.io/
@@ -99,7 +112,13 @@ tasks:
         cilium cilium/cilium
         --version 1.16.2
         --namespace $CILIUM_NAMESPACE
+        --reuse-values
         --set operator.replicas=1
+        --set nodeIPAM.enabled=true
+
+  cilium:install:self:k3s:
+    cmds:
+      - task: cilium:deploy:self:k3s
       # Restart unmanaged Pods
       - >
         kubectl get pods --all-namespaces -o custom-columns=NAMESPACE:.metadata.namespace,NAME:.metadata.name,HOSTNETWORK:.spec.hostNetwork --no-headers=true
