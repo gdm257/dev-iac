@@ -147,13 +147,65 @@ tasks:
       - helm repo update
       - helm upgrade --install {{.RELEASE}} cnpg/cluster --namespace {{.NS}} --create-namespace {{.CLI_ARGS}}
 
+  csi:nfs:deploy:self:
+    _VERSION: '{{if .VERSION}}{{.VERSION}}{{else}}v4.9.0{{end}}'
+    cmds:
+      - helm repo add csi-driver-nfs https://raw.githubusercontent.com/kubernetes-csi/csi-driver-nfs/master/charts
+      - helm repo update
+      - >-
+        helm upgrade --install
+        csi-driver-nfs csi-driver-nfs/csi-driver-nfs
+        --version {{._VERSION}}
+        --namespace kube-system
+        --set storageClass.create=true
+        {{.CLI_ARGS}}
+
   csi:s3:deploy:self:
+    requires:
+      vars:
+        - S3_ENDPOINT
+        - ACCESS_KEY_ID
+        - SECRET_ACCESS_KEY
+        - S3_BUCKET
+    vars:
+      _S3_REGION: >-
+        {{- if .S3_REGION -}}
+        --set secret.region={{.S3_REGION}}
+        {{- end -}}
     cmds:
       - helm repo add yandex-s3 https://yandex-cloud.github.io/k8s-csi-s3/charts
       - helm repo update
       - >
         helm upgrade --install
         csi-s3 yandex-s3/csi-s3
+        -n csi-s3 --create-namespace
+        {{._S3_REGION}}
+        --set secret.endpoint={{.S3_ENDPOINT}}
+        --set secret.accessKey={{.ACCESS_KEY_ID}}
+        --set secret.secretKey={{.SECRET_ACCESS_KEY}}
+        --set storageClass.singleBucket={{.S3_BUCKET}}
+
+  csi:smb:deploy:self:
+    _VERSION: '{{if .VERSION}}{{.VERSION}}{{else}}v1.16.0{{end}}'
+    cmds:
+      - helm repo add csi-driver-smb https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/charts
+      - helm repo update
+      - >-
+        helm upgrade --install
+        csi-driver-smb csi-driver-smb/csi-driver-smb
+        --version {{._VERSION}}
+        --namespace kube-system
+        {{.CLI_ARGS}}
+
+  csi:seasweedfs:deploy:self:
+    _VERSION: '{{if .VERSION}}{{.VERSION}}{{else}}0.2.2{{end}}'
+    cmds:
+      - helm repo add --force-update seaweedfs-csi-driver https://seaweedfs.github.io/seaweedfs-csi-driver/helm
+      - >-
+        helm upgrade --install
+        seaweedfs-csi-driver seaweedfs-csi-driver/seaweedfs-csi-driver
+        --version {{._VERSION}}
+        {{.CLI_ARGS}}
 
   eg:deploy:self:
     desc: 'Deploy Envoy Gateway that supports gwapi v1.1.0'
