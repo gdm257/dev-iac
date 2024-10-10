@@ -784,7 +784,7 @@ tasks:
     cmds:
       - helm repo add rke2-charts https://rke2-charts.rancher.io
       - helm repo update
-      - |
+      - |-
         helm upgrade --install multus rke2-charts/rke2-multus -n kube-system --values - <<'EOF'
         config:
           cni_conf:
@@ -799,20 +799,177 @@ tasks:
             binDir: {{._DATA_DIR}}/data/current/bin/
         EOF
 
-  longhorn:install:self:helm:
-    desc: 'Deploy longhorn'
+  longhorn:prepare:deps:iscsi:
+    platforms: [linux]
+    cmds:
+      - kubectl apply --wait -f https://raw.githubusercontent.com/longhorn/longhorn/v1.7.1/deploy/prerequisite/longhorn-iscsi-installation.yaml
+
+  longhorn:prepare:deps:nfs:
+    platforms: [linux]
+    cmds:
+      - kubectl apply --wait -f https://raw.githubusercontent.com/longhorn/longhorn/v1.7.1/deploy/prerequisite/longhorn-nfs-installation.yaml
+
+  longhorn:prepare:deps:cryptsetup:
+    platforms: [linux]
+    desc: 'Optional'
+    vars:
+      OS:
+        sh: >-
+          OS=$(grep -E "^ID_LIKE=" /etc/os-release | cut -d '=' -f 2);
+          if [[ -z "${OS}" ]];
+          then OS=$(grep -E "^ID=" /etc/os-release | cut -d '=' -f 2);
+          fi;
+          echo ${OS};
+      DEBIAN:
+        sh: >-
+          if [[ "{{.OS}}" == *"debian"* ]]; then echo "yes"; else echo "no"; fi
+      FEDORA:
+        sh: >-
+          if [[ "{{.OS}}" == *"fedora"* ]]; then echo "yes"; else echo "no"; fi
+      SUSE:
+        sh: >-
+          if [[ "{{.OS}}" == *"suse"* ]]; then echo "yes"; else echo "no"; fi
+    cmds:
+      - >-
+        {{- if eq .DEBIAN "yes"}}
+        sudo apt-get install -y cryptsetup dmsetup
+        {{end}}
+      - >-
+        {{- if eq .FEDORA "yes"}}
+        sudo yum install -y cryptsetup device-mapper
+        {{end}}
+      - >-
+        {{- if eq .SUSE "yes"}}
+        sudo zypper install -y cryptsetup device-mapper
+        {{end}}
+
+  longhorn:prepare:check:
+    platforms: [linux]
+    preconditions:
+      - kubectl version
+      - jq --version
+      - mktemp --version
+      - sort --version
+      - printf "Found printf"
+    requires:
+      vars:
+        - KUBECONFIG
+    cmds:
+      - export KUBECONFIG={{.KUBECONFIG}}; curl -sSfL https://raw.githubusercontent.com/longhorn/longhorn/v1.7.1/scripts/environment_check.sh | bash
+
+  longhorn:deploy:self:
     vars:
       _VERSION: '1.7.1'
-      _NAMESPACE: 'longhorn-system'
       _RELEASE: 'longhorn'
+      _DATA_DIR: >-
+        {{- if .DATA_DIR -}}
+        {{.DATA_DIR}}
+        {{- else -}}
+        /var/lib/longhorn/
+        {{- end -}}
     cmds:
       - helm repo add longhorn https://charts.longhorn.io
       - helm repo update
       - >
         helm upgrade --install
         {{._RELEASE}} longhorn/longhorn
-        --namespace {{._NAMESPACE}} --create-namespace
         --version {{._VERSION}}
+        --namespace longhorn-system --create-namespace
+        --reuse-values
+        --set defaultSettings.defaultDataPath={{._DATA_DIR}}
+        --set defaultSettings.storageMinimalAvailablePercentage=12
+        --set defaultSettings.defaultReplicaCount=1
+        --set defaultSettings.backupTarget=s3://longhorn@us-east-1/
+        --set longhornUI.replicas=1
+        --set persistence.migratable=true
+        --set csi.attacherReplicaCount=1
+        --set csi.provisionerReplicaCount=1
+        --set csi.resizerReplicaCount=1
+        --set csi.snapshotterReplicaCount=1
+        {{.CLI_ARGS}}
+
+  longhorn:backup:s3:
+    desc: >-
+      Create secret of longhorn backup target
+      <AWS_ACCESS_KEY_ID
+      AWS_SECRET_ACCESS_KEY
+      AWS_ENDPOINTS>
+      [VIRTUAL_HOSTED_STYLE]
+    requires:
+      vars:
+        - AWS_ACCESS_KEY_ID
+        - AWS_SECRET_ACCESS_KEY
+        - AWS_ENDPOINTS # http(s)://host:port
+    vars:
+      _SECRET: >-
+        {{- if .SECRET}}
+        {{.SECRET}}
+        {{- else -}}
+        longhorn-backup-s3-compatible-secret
+        {{- end}}
+      _VIRTUAL_HOSTED_STYLE: >-
+        {{- if eq .VIRTUAL_HOSTED_STYLE "false"}}
+        false
+        {{- else -}}
+        true
+        {{- end}}
+    cmds:
+      - >-
+        kubectl create secret generic {{._SECRET}}
+        -n longhorn-system
+        --type Opaque
+        --from-literal AWS_ACCESS_KEY_ID={{.AWS_ACCESS_KEY_ID}}
+        --from-literal AWS_SECRET_ACCESS_KEY={{.AWS_SECRET_ACCESS_KEY}}
+        --from-literal AWS_ENDPOINTS={{.AWS_ENDPOINTS}}
+        --from-literal VIRTUAL_HOSTED_STYLE={{._VIRTUAL_HOSTED_STYLE}}
+        {{.CLI_ARGS}}
+
+  longhorn:backup:s3:update:
+    desc: >-
+      Update secret of longhorn backup target
+      <AWS_ACCESS_KEY_ID
+      AWS_SECRET_ACCESS_KEY
+      AWS_ENDPOINTS>
+      [VIRTUAL_HOSTED_STYLE]
+    requires:
+      vars:
+        - AWS_ACCESS_KEY_ID
+        - AWS_SECRET_ACCESS_KEY
+        - AWS_ENDPOINTS # http(s)://host:port
+    vars:
+      _SECRET: >-
+        {{- if .SECRET}}
+        {{.SECRET}}
+        {{- else -}}
+        longhorn-backup-s3-compatible-secret
+        {{- end}}
+      AWS_ACCESS_KEY_ID_BASE64:
+        sh: 'echo {{.AWS_ACCESS_KEY_ID}} | base64'
+      AWS_SECRET_ACCESS_KEY_BASE64:
+        sh: 'echo {{.AWS_SECRET_ACCESS_KEY}} | base64'
+      AWS_ENDPOINTS_BASE64:
+        sh: 'echo {{.AWS_ENDPOINTS}} | base64'
+      VIRTUAL_HOSTED_STYLE_BASE64: >-
+        {{- if eq .VIRTUAL_HOSTED_STYLE "false"}}
+        ZmFsc2U=
+        {{- else -}}
+        dHJ1ZQ==
+        {{- end}}
+    cmds:
+      - |-
+        kubectl apply -f - <<'EOF'
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: {{._SECRET}}
+          namespace: longhorn-system
+        type: Opaque
+        data:
+          AWS_ACCESS_KEY_ID: {{.AWS_ACCESS_KEY_ID_BASE64}}
+          AWS_SECRET_ACCESS_KEY: '{{.AWS_SECRET_ACCESS_KEY_BASE64}}'
+          AWS_ENDPOINTS: '{{.AWS_ENDPOINTS_BASE64}}'
+          VIRTUAL_HOSTED_STYLE: '{{.VIRTUAL_HOSTED_STYLE_BASE64}}'
+        EOF
 
   nginx:deploy:self:
     cmds:
