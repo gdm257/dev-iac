@@ -1007,6 +1007,88 @@ tasks:
         -n rbd-system --create-namespace
         --set useK3sContainerd=true
 
+  rclone:csi:deploy:self:
+    vars:
+      _VERSION: '{{if .VERSION}}{{.VERSION}}{{else}}1.20{{end}}'
+    cmds:
+      - git clone https://github.com/wunderio/csi-rclone
+      - kubectl apply -f csi-rclone/deploy/kubernetes/{{._VERSION}}/
+      - rm -r csi-rclone
+      - kubectl delete storageclass rclone
+      - |-
+        kubectl apply -f - <<'EOF'
+        apiVersion: storage.k8s.io/v1
+        kind: StorageClass
+        metadata:
+          name: rclone
+        provisioner: csi-rclone
+        parameters:
+          pathPattern: "${.PVC.namespace}/${.PVC.annotations.csi-rclone/storage-path}"
+        EOF
+
+  rclone:csi:deploy:remote:default:s3:r2:
+    cmds:
+      - task: rclone:csi:deploy:remote:default:s3
+        vars:
+          PROVIDER: Cloudflare
+
+  rclone:csi:deploy:remote:default:s3:
+    requires:
+      vars:
+        - S3_ENDPOINT # http(s)://host:port
+        - ACCESS_KEY_ID
+        - SECRET_ACCESS_KEY
+    vars:
+      _PROVIDER: '{{if .PROVIDER}}{{.PROVIDER}}{{else}}Other{{end}}'
+      _DIR: '{{if .DIR}}{{.DIR}}{{else}}{{end}}'
+    cmds:
+      - |-
+        kubectl apply -n csi-rclone -f - <<'EOF'
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: rclone-secret
+        type: Opaque
+        stringData:
+          remote: "default"
+          remotePath: "projectname"
+          configData: |
+            [default]
+            type = s3
+            provider = {{._PROVIDER}}
+            access_key_id = {{.ACCESS_KEY_ID}}
+            secret_access_key = {{.SECRET_ACCESS_KEY}}
+            endpoint = {{.S3_ENDPOINT}}
+            encoding = Slash
+        EOF
+
+  rook:deploy:self:
+    cmds:
+      - task: rook:deploy:operator
+      - task: rook:deploy:cluster
+
+  rook:deploy:operator:
+    cmds:
+      - helm repo add rook-release https://charts.rook.io/release
+      - helm repo update
+      - >-
+        helm upgrade --install
+        --create-namespace --namespace rook-ceph
+        rook-ceph rook-release/rook-ceph
+        --wait
+        --set resources.requests.cpu=100m
+
+  rook:deploy:cluster:
+    cmds:
+      - helm repo add rook-release https://charts.rook.io/release
+      - helm repo update
+      - >-
+        helm upgrade --install
+        --create-namespace --namespace rook-ceph
+        rook-ceph-cluster
+        rook-release/rook-ceph-cluster
+        --set operatorNamespace=rook-ceph
+
   traefik:deploy:self:
     desc: 'Deploy traefik [RELEASE VERSION CRD INGRESS GWAPI] -- [options]'
     vars:
