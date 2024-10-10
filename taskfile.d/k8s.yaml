@@ -416,6 +416,56 @@ tasks:
           --server-user {{.MASTER_SSH_PORT}}
           --k3s-channel stable
 
+  karpor:deploy:self:
+    vars:
+      _STORAGE_CLASS: >-
+        {{if .STORAGE_CLASS -}}
+        --set etcd.persistence.storageClass={{.STORAGE_CLASS}}
+        {{- end}}
+    cmds:
+      - helm repo add kusionstack https://kusionstack.github.io/charts --force-update
+      - >-
+        helm upgrade --install
+        karpor kusionstack/karpor
+        --reuse-values
+        {{._STORAGE_CLASS}}
+        --set server.resources.requests.cpu=100m
+        --set syncer.resources.requests.cpu=100m
+        --set elasticsearch.resources.requests.cpu=100m
+        --set etcd.resources.requests.cpu=100m
+
+  karpor:get:config:
+    cmds:
+      - >-
+        kubectl get configmap karpor-kubeconfig -n karpor -o go-template='{{.data.config}}'
+        > $HOME/.kube/karpor-hub-cluster.kubeconfig
+
+  karpo:create:sa:admin:
+    env:
+      KUBECONFIG: '$HOME/.kube/karpor-hub-cluster.kubeconfig'
+    cmds:
+      - kubectl create serviceaccount karpor-admin
+      - kubectl create clusterrolebinding karpor-admin --clusterrole=karpor-admin --serviceaccount=default:karpor-admin
+
+  karpo:create:sa:guest:
+    env:
+      KUBECONFIG: '$HOME/.kube/karpor-hub-cluster.kubeconfig'
+    cmds:
+      - kubectl create serviceaccount karpor-guest
+      - kubectl create clusterrolebinding karpor-guest --clusterrole=karpor-guest --serviceaccount=default:karpor-guest
+
+  karpo:create:token:admin:
+    env:
+      KUBECONFIG: '$HOME/.kube/karpor-hub-cluster.kubeconfig'
+    cmds:
+      - kubectl create token karpor-admin --duration=1000h
+
+  karpo:create:token:guest:
+    env:
+      KUBECONFIG: '$HOME/.kube/karpor-hub-cluster.kubeconfig'
+    cmds:
+      - kubectl create token karpor-admin --duration=8760h
+
   krew:install:plugin:
     desc: 'Install a kubectl plugin [PLUGIN] -- [plugin]'
     vars:
