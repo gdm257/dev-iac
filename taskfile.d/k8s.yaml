@@ -169,9 +169,9 @@ tasks:
         - S3_BUCKET
     vars:
       _S3_REGION: >-
-        {{- if .S3_REGION -}}
+        {{if .S3_REGION -}}
         --set secret.region={{.S3_REGION}}
-        {{- end -}}
+        {{- end}}
     cmds:
       - helm repo add yandex-s3 https://yandex-cloud.github.io/k8s-csi-s3/charts
       - helm repo update
@@ -595,11 +595,11 @@ tasks:
     silent: true
     vars:
       _DATA_DIR: >-
-        {{- if .DATA_DIR -}}
+        {{if .DATA_DIR -}}
         {{.DATA_DIR}}
         {{- else -}}
         /opt/local-path-provisioner
-        {{- end -}}
+        {{- end}}
     cmds:
       # - kubectl apply -f https://raw.githubusercontent.com/rancher/local-path-provisioner/v0.0.30/deploy/local-path-storage.yaml
       - |-
@@ -831,17 +831,17 @@ tasks:
           if [[ "{{.OS}}" == *"suse"* ]]; then echo "yes"; else echo "no"; fi
     cmds:
       - >-
-        {{- if eq .DEBIAN "yes"}}
+        {{if eq .DEBIAN "yes" -}}
         sudo apt-get install -y cryptsetup dmsetup
-        {{end}}
+        {{- end}}
       - >-
-        {{- if eq .FEDORA "yes"}}
+        {{if eq .FEDORA "yes" -}}
         sudo yum install -y cryptsetup device-mapper
-        {{end}}
+        {{- end}}
       - >-
-        {{- if eq .SUSE "yes"}}
+        {{if eq .SUSE "yes" -}}
         sudo zypper install -y cryptsetup device-mapper
-        {{end}}
+        {{- end}}
 
   longhorn:prepare:check:
     platforms: [linux]
@@ -862,11 +862,11 @@ tasks:
       _VERSION: '1.7.1'
       _RELEASE: 'longhorn'
       _DATA_DIR: >-
-        {{- if .DATA_DIR -}}
+        {{if .DATA_DIR -}}
         {{.DATA_DIR}}
         {{- else -}}
         /var/lib/longhorn/
-        {{- end -}}
+        {{- end}}
     cmds:
       - helm repo add longhorn https://charts.longhorn.io
       - helm repo update
@@ -902,13 +902,13 @@ tasks:
         - AWS_ENDPOINTS # http(s)://host:port
     vars:
       _SECRET: >-
-        {{- if .SECRET}}
+        {{if .SECRET -}}
         {{.SECRET}}
         {{- else -}}
         longhorn-backup-s3-compatible-secret
         {{- end}}
       _VIRTUAL_HOSTED_STYLE: >-
-        {{- if eq .VIRTUAL_HOSTED_STYLE "false"}}
+        {{if eq .VIRTUAL_HOSTED_STYLE "false" -}}
         false
         {{- else -}}
         true
@@ -938,7 +938,7 @@ tasks:
         - AWS_ENDPOINTS # http(s)://host:port
     vars:
       _SECRET: >-
-        {{- if .SECRET}}
+        {{if .SECRET -}}
         {{.SECRET}}
         {{- else -}}
         longhorn-backup-s3-compatible-secret
@@ -950,7 +950,7 @@ tasks:
       AWS_ENDPOINTS_BASE64:
         sh: 'echo {{.AWS_ENDPOINTS}} | base64'
       VIRTUAL_HOSTED_STYLE_BASE64: >-
-        {{- if eq .VIRTUAL_HOSTED_STYLE "false"}}
+        {{if eq .VIRTUAL_HOSTED_STYLE "false" -}}
         ZmFsc2U=
         {{- else -}}
         dHJ1ZQ==
@@ -1093,44 +1093,44 @@ tasks:
     desc: 'Deploy traefik [RELEASE VERSION CRD INGRESS GWAPI] -- [options]'
     vars:
       _RELEASE: >
-        {{- if .RELEASE -}}
+        {{if .RELEASE -}}
         {{.RELEASE}}
         {{- else -}}
         traefik
-        {{- end -}}
+        {{- end}}
       _VERSION: >
-        {{- if .VERSION -}}
+        {{if .VERSION -}}
         {{.VERSION}}
         {{- else -}}
         32.0.0
-        {{- end -}}
+        {{- end}}
       _NAMESPACE: '--namespace {{if .NAMESPACE}}{{.NAMESPACE}}{{else}}traefik{{end}} --create-namespace'
       _METRICS: >
-        {{- if true -}}
+        {{if true -}}
         --set metrics.prometheus.enabled=true
         --set metrics.prometheus.service.enabled=true
-        {{- end -}}
-      _DAEMONSET: '{{- if ne .DAEMONSET "false" -}}--set deployment.kind=DaemonSet{{- end -}}'
+        {{- end}}
+      _DAEMONSET: '{{if ne .DAEMONSET "false"}}--set deployment.kind=DaemonSet{{end}}'
       _CRD: >
-        {{- if eq .CRD "false" -}}
+        {{if eq .CRD "false" -}}
         --set providers.kubernetesCRD.enabled=false
         {{- else -}}
         --set providers.kubernetesCRD.allowCrossNamespace=true
         --set providers.kubernetesCRD.allowExternalNameServices=true
         --set ingressRoute.dashboard.enabled=true
-        {{- end -}}
+        {{- end}}
       _INGRESS: >
-        {{- if eq .INGRESS "false" -}}
+        {{if eq .INGRESS "false" -}}
         --set providers.kubernetesIngress.enabled=false
         {{- else -}}
         --set providers.kubernetesIngress.allowExternalNameServices=true
         {{if ne .INGRESS_DEFAULT "true"}}--set ingressClass.isDefaultClass=false{{end}}
-        {{- end -}}
+        {{- end}}
       _GWAPI: >
-        {{- if ne .GWAPI "false" -}}
+        {{if ne .GWAPI "false" -}}
         --set providers.kubernetesGateway.enabled=true
         --set providers.kubernetesGateway.experimentalChannel=true
-        {{- end -}}
+        {{- end}}
     cmds:
       - helm repo add traefik https://traefik.github.io/charts
       - helm repo update
@@ -1143,7 +1143,7 @@ tasks:
         {{._CRD}}
         {{._INGRESS}}
         {{._GWAPI}}
-        {{if .CLI_ARGS}}{{.CLI_ARGS}}{{end -}}
+        {{.CLI_ARGS}}
 
   tsuru:deploy:self:
     cmds:
