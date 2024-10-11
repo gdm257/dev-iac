@@ -38,7 +38,9 @@ tasks:
     silent: true
 
   list:
+    aliases: [search]
     desc: 'List tasks [KEYWORD] -- KEYWORD'
+    dir: '{{.USER_WORKING_DIR}}'
     vars:
       GREP: '{{if .KEYWORD}} | grep -i {{.KEYWORD}} {{else if .CLI_ARGS}} | grep -i {{.CLI_ARGS}} {{end}}'
     cmds:
@@ -46,7 +48,9 @@ tasks:
     silent: true
 
   list-all:
+    aliases: [search-all]
     desc: 'List all tasks [KEYWORD] -- KEYWORD'
+    dir: '{{.USER_WORKING_DIR}}'
     vars:
       GREP: '{{if .KEYWORD}} | grep -i {{.KEYWORD}} {{else if .CLI_ARGS}} | grep -i {{.CLI_ARGS}} {{end}}'
     cmds:
@@ -74,6 +78,13 @@ tasks:
     #   MSG: 'tasks.ping-proxy.vars' # NO effect!
     # env:
     #   MSG: 'tasks.ping-proxy.env' # NO effect!
+
+  print:
+    desc: 'Print task -- <TASK>'
+    dir: '{{.USER_WORKING_DIR}}'
+    cmds:
+      - task --dry {{.TASK}}
+    silent: true
 
   vars:TASK:
     cmds:
