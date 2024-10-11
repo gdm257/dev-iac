@@ -324,11 +324,24 @@ tasks:
 
   istio:deploy:self:
     cmds:
-      # - istioctl install --set profile=ambient --skip-confirmation
-      - istioctl install --set profile=default --skip-confirmation
-      - istioctl verify-install
+      - >-
+        helm upgrade --install
+        istio-base istio/base
+        -n istio-system --create-namespace
+        --wait
+      - >-
+        helm upgrade --install
+        istiod istio/istiod
+        -n istio-system --create-namespace
+        --set profile=ambient
+        --wait
+      - >-
+        helm upgrade --install
+        istio-ingress istio/gateway
+        -n istio-system --create-namespace
+        --wait
 
-  istio:deploy:self:helm:default:
+  istio:deploy:self:default:
     cmds:
       # Install the control plane
       - helm repo add istio https://istio-release.storage.googleapis.com/charts
@@ -339,7 +352,7 @@ tasks:
       # Install the data plane
       - helm upgrade --install -n istio-ingress --create-namespace istio-ingress istio/gateway --wait
 
-  istio:deploy:self:helm:minimal:
+  istio:deploy:self:minimal:
     cmds:
       # Install the control plane
       - helm repo add istio https://istio-release.storage.googleapis.com/charts
@@ -347,7 +360,7 @@ tasks:
       - helm upgrade --install -n istio-system istiod istio/istiod --wait
       - kubectl apply -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.1.0/standard-install.yaml
 
-  istio:deploy:self:helm:ambient:
+  istio:deploy:self:ambient:
     cmds:
       # Install the control plane
       - helm repo add istio https://istio-release.storage.googleapis.com/charts
@@ -360,6 +373,12 @@ tasks:
       - helm upgrade --install ztunnel istio/ztunnel --wait
       # - helm upgrade --install -n istio-ingress --create-namespace istio-ingress istio/gateway --wait
       # - helm upgrade --install -n istio-system istio-egress istio/egressgateway
+
+  istio:deploy:self:istioctl:
+    cmds:
+      # - istioctl install --set profile=ambient --skip-confirmation
+      - istioctl install --set profile=default --skip-confirmation
+      - istioctl verify-install
 
   juicefs:csi:deploy:self:
     cmds:
