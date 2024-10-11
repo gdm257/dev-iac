@@ -1129,6 +1129,39 @@ tasks:
                 imagePullPolicy: IfNotPresent
         EOF
 
+  kuma:deploy:self:
+    desc: >-
+      [
+      INGRESS
+      INGRESS_SERVICE_TYPE
+      EGRESS
+      EGRESS_SERVICE_TYPE
+      ]
+    vars:
+      _RESOURCE: >-
+        --set controlPlane.resources.requests.cpu=200m
+      _INGRESS: >-
+        {{if ne .INGRESS "no" -}}
+        --set ingress.enabled=true
+        --set ingress.service.type={{default "LoadBalancer" .INGRESS_SERVICE_TYPE}}
+        {{- end}}
+      _EGRESS: >-
+        {{if eq .EGRESS "yes" -}}
+        --set egress.enabled=true
+        --set egress.service.type={{default "ClientIP" .EGRESS_SERVICE_TYPE}}
+        {{- end}}
+    cmds:
+      - helm repo add --force-update kuma https://kumahq.github.io/charts
+      - >-
+        helm upgrade --install
+        --create-namespace --namespace kuma-system
+        kuma kuma/kuma
+        --reuse-values
+        {{._RESOURCE}}
+        {{._INGRESS}}
+        {{._EGRESS}}
+        {{.CLI_ARGS}}
+
   manifest:validate:
     desc: 'Validate manifests -- <MANIFEST>...'
     dir: '{{.USER_WORKING_DIR}}'
