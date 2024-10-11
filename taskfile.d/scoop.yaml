@@ -1139,6 +1139,7 @@ tasks:
             # - kustomize
             - helm
             - helmfile
+            - kcl
             # - autok3s
             - k3sup
             - k3d

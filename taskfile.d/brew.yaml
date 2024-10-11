@@ -223,6 +223,7 @@ tasks:
             - kustomize
             - helm
             - helmfile
+            - kcl-lang/tap/kcl
             - k3sup
             - kdash-rs/kdash/kdash
             - k9s
@@ -244,6 +245,7 @@ tasks:
             - nftables
             - iptables
             - iproute2
+            - net-tools
             - iputils
             - gping
             # - dog
@@ -254,6 +256,11 @@ tasks:
             - mkcert
             - bitwarden-cli
             - bandwhich
+            - nethogs
+            - iftop
+            - iotop
+            - iperf3
+            - tcpdump
             - guumaster/tap/hostctl
 
   install:curated-list:process:
