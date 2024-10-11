@@ -12,6 +12,7 @@ tasks:
         anteon-selfhosted anteon/anteon
         --namespace anteon --create-namespace
         --wait
+        --reuse-values
 
   anteon:deploy:alaz:
     requires:
@@ -969,6 +970,67 @@ tasks:
           AWS_SECRET_ACCESS_KEY: '{{.AWS_SECRET_ACCESS_KEY_BASE64}}'
           AWS_ENDPOINTS: '{{.AWS_ENDPOINTS_BASE64}}'
           VIRTUAL_HOSTED_STYLE: '{{.VIRTUAL_HOSTED_STYLE_BASE64}}'
+        EOF
+
+  metallb:deploy:self:
+    cmds:
+      - helm repo add --force-update metallb https://metallb.github.io/metallb
+      - >-
+        helm upgrade --install
+        metallb metallb/metallb
+        -n metallb-system --create-namespace
+        {{.CLI_ARGS}}
+
+  metallb:deploy:self:bitnami:
+    cmds:
+      - >-
+        helm upgrade --install
+        metallb oci://registry-1.docker.io/bitnamicharts/metallb
+        -n metallb-system --create-namespace
+        {{.CLI_ARGS}}
+
+  metallb:deploy:pool:
+    vars:
+      _NAME: '{{default "metallb-pool" .NAME}}'
+      _NAMESPACE: '{{default "metallb-system" .NAMESPACE}}'
+      _CIDR: '{{default "192.168.10.0/24" .CIDR}}'
+    cmds:
+      - |-
+        kubectl apply -f - <<'EOF'
+        apiVersion: metallb.io/v1beta1
+        kind: IPAddressPool
+        metadata:
+          # A name for the address pool. Services can request allocation
+          # from a specific address pool using this name.
+          name: {{._NAME}}
+          namespace: {{._NAMESPACE}}
+        spec:
+          # A list of IP address ranges over which MetalLB has
+          # authority. You can list multiple ranges in a single pool, they
+          # will all share the same settings. Each range can be either a
+          # CIDR prefix, or an explicit start-end range of IPs.
+          addresses:
+          - {{._CIDR}}
+          # - 192.168.9.1-192.168.9.5
+          # - 192.168.10.0/24
+          # - fc00:f853:0ccd:e799::/124
+        EOF
+
+  metallb:deploy:ad:
+    vars:
+      _NAME: '{{default "metallb-ad" .NAME}}'
+      _NAMESPACE: '{{default "metallb-system" .NAMESPACE}}'
+      _POOL: '{{default "metallb-pool" .POOL}}'
+    cmds:
+      - |-
+        kubectl apply -f - <<'EOF'
+        kind: L2Advertisement
+        apiVersion: metallb.io/v1beta1
+        metadata:
+          name: {{._NAME}}
+          namespace: {{._NAMESPACE}}
+        spec:
+          ipAddressPools: [{{._POOL}}]
         EOF
 
   nginx:deploy:self:
