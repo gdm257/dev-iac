@@ -22,6 +22,7 @@ includes:
   bin: {taskfile: './taskfile.d/bin.yaml', optional: true}
   brew: {taskfile: './taskfile.d/brew.yaml', optional: true}
   cargo: {taskfile: './taskfile.d/cargo.yaml', optional: true}
+  cheatsheet: {taskfile: './taskfile.d/cheatsheet.yaml', optional: true}
   choco: {taskfile: './taskfile.d/choco.yaml', optional: true}
   coolify: {taskfile: './taskfile.d/coolify.yaml', optional: true}
   dotnet: {taskfile: './taskfile.d/dotnet.yaml', optional: true}

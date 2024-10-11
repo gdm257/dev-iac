@@ -1,0 +1,8 @@
+version: '3'
+
+tasks:
+
+  https:
+    desc: 'Cheatsheet from cheat.sh -- <command>'
+    cmds:
+      - https cheat.sh/{{.CLI_ARGS}}
