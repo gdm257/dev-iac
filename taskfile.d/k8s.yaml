@@ -418,6 +418,7 @@ tasks:
           --k3s-channel stable
 
   karpor:deploy:self:
+    desc: 'Deploy karpor [STORAGE_CLASS]'
     vars:
       _STORAGE_CLASS: >-
         {{if .STORAGE_CLASS -}}
@@ -434,6 +435,7 @@ tasks:
         --set syncer.resources.requests.cpu=100m
         --set elasticsearch.resources.requests.cpu=100m
         --set etcd.resources.requests.cpu=100m
+        {{.CLI_ARGS}}
 
   karpor:get:config:
     cmds:
