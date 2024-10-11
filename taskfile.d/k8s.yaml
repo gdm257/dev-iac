@@ -387,20 +387,47 @@ tasks:
         deployment/envoy-gateway
         --for=condition=Available
 
-  envoy-gateway:deploy:gateway:
+  envoy-gateway:deploy:gateway:web:
+    desc: >-
+      [
+      GATEWAY_SERVICE_TYPE
+      ]
+    cmds:
       - |-
-        kubectl apply -f - <<'EOF'
+        kubectl apply -f - <<EOF
+        {{if .GATEWAY_SERVICE_TYPE}}
+        ---
+        apiVersion: gateway.envoyproxy.io/v1alpha1
+        kind: EnvoyProxy
+        metadata:
+          name: custom-eg-config
+          namespace: envoy-gateway-system
+        spec:
+          provider:
+            type: Kubernetes
+            kubernetes:
+              envoyService:
+                type: {{.GATEWAY_SERVICE_TYPE}}
+        {{end}}
+        ---
         apiVersion: gateway.networking.k8s.io/v1
         kind: GatewayClass
         metadata:
           name: eg
         spec:
           controllerName: gateway.envoyproxy.io/gatewayclass-controller
+          {{- if .GATEWAY_SERVICE_TYPE}}
+          parametersRef:
+            group: gateway.envoyproxy.io
+            kind: EnvoyProxy
+            name: custom-eg-config
+            namespace: envoy-gateway-system
+          {{- end}}
         ---
         apiVersion: gateway.networking.k8s.io/v1
         kind: Gateway
         metadata:
-          name: eg
+          name: eg-web
           namespace: envoy-gateway-system
         spec:
           gatewayClassName: eg
