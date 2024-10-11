@@ -295,6 +295,20 @@ tasks:
       - helm repo update
       - helm upgrade --install {{.RELEASE}} cnpg/cluster --namespace {{.NS}} --create-namespace {{.CLI_ARGS}}
 
+  consul:deploy:self:
+    cmds:
+      - helm repo add hashicorp https://helm.releases.hashicorp.com --force-update
+      - >-
+        helm upgrade --install
+        consul hashicorp/consul
+        --version 1.5.3
+        --create-namespace --namespace consul
+        --reuse-values
+        --set global.name=consul
+        --set connectInject.enabled=true
+        --set ingressGateways.enabled=ture
+        {{.CLI_ARGS}}
+
   csi:nfs:deploy:self:
     _VERSION: '{{if .VERSION}}{{.VERSION}}{{else}}v4.9.0{{end}}'
     cmds:
