@@ -1131,12 +1131,15 @@ tasks:
 
   kuma:deploy:self:
     desc: >-
+      Deploy kuma
       [
       INGRESS
       INGRESS_SERVICE_TYPE
       EGRESS
       EGRESS_SERVICE_TYPE
       ]
+      --
+      [OPTIONS]
     vars:
       _RESOURCE: >-
         --set controlPlane.resources.requests.cpu=200m
