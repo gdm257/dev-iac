@@ -27,6 +27,71 @@ tasks:
         --namespace anteon --create-namespace
         --set monitoringID={{.MONITORING_ID}}
 
+  apisix:deploy:self:
+    cmds:
+      - task: apisix:deploy:bitnami
+
+  apisix:deploy:bitnami:
+    vars:
+      _INGRESS: >-
+        {{if ne INGRESS "no" -}}
+        --set ingressController.enabled=true
+        {{- end}}
+      _DASHBOARD: >-
+        {{if ne DASHBOARD "no" -}}
+        --set dashboard.enabled=true
+        {{- end}}
+    cmds:
+      - helm repo add --force-update apisix https://charts.apiseven.com
+      - >-
+        helm upgrade --install
+        apisix oci://registry-1.docker.io/bitnamicharts/apisix
+        --version 0.14.0
+        --create-namespace --namespace ingress-apisix
+        --reuse-values
+        {{._INGRESS}}
+        {{._DASHBOARD}}
+        {{.CLI_ARGS}}
+
+  apisix:deploy:ingress:
+    vars:
+      _GATEWAY_API: >-
+        {{if ne GATEWAY_API "no" -}}
+        --set config.kubernetes.enableGatewayAPI=true
+        {{- end}}
+    cmds:
+      - helm repo add --force-update apisix https://charts.apiseven.com
+      - >-
+        helm upgrade --install
+        apisix-ingress-controller apisix/apisix-ingress-controller
+        --version 0.14.0
+        --create-namespace --namespace ingress-apisix
+        --reuse-values
+        {{._GATEWAY_API}}
+        {{.CLI_ARGS}}
+
+  apisix:deploy:normal:
+    cmds:
+      - helm repo add --force-update apisix https://charts.apiseven.com
+      - >-
+        helm upgrade --install
+        apisix apisix/apisix
+        --version 2.9.0
+        --create-namespace  --namespace apisix
+        --reuse-values
+        {{.CLI_ARGS}}
+
+  apisix:deploy:dashboard:
+    cmds:
+      - helm repo add --force-update apisix https://charts.apiseven.com
+      - >-
+        helm upgrade --install
+        apisix-dashboard apisix/apisix-dashboard
+        --version 0.8.2
+        --create-namespace --namespace apisix
+        --reuse-values
+        {{.CLI_ARGS}}
+
   argocd:deploy:self:helm:
     desc: 'Deploy ArgoCD controllers to cluster [CONTEXT]'
     vars:
