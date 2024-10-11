@@ -1141,8 +1141,10 @@ tasks:
       --
       [OPTIONS]
     vars:
-      _RESOURCE: >-
+      _RESOURCES: >-
+        {{if ne .RESOURCES "no" -}}
         --set controlPlane.resources.requests.cpu=200m
+        {{- end}}
       _INGRESS: >-
         {{if ne .INGRESS "no" -}}
         --set ingress.enabled=true
@@ -1160,7 +1162,7 @@ tasks:
         --create-namespace --namespace kuma-system
         kuma kuma/kuma
         --reuse-values
-        {{._RESOURCE}}
+        {{._RESOURCES}}
         {{._INGRESS}}
         {{._EGRESS}}
         {{.CLI_ARGS}}
