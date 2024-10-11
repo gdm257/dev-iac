@@ -91,6 +91,116 @@ tasks:
         --namespace cert-manager --create-namespace
         {{.CLI_ARGS}}
 
+  cilium:deploy:self:k3s:
+    desc: >-
+      Deploy cilium
+      [
+
+      ]
+      -- [options]
+    vars:
+      _VERSION: '{{default "1.16.2" .VERSION}}'
+      # Default IPv4 Pod CIDR is 10.0.0.0/8
+      # If your node network is in the same range,
+      # you will lose connectivity to other nodes.
+      _POD_CIDR: >-
+        {{if .POD_CIDR -}}
+        --set ipam.clusterPoolIPv4PodCIDRList[0]={{.POD_CIDR}}
+        {{- end}}
+      _ISTIO: >-
+        {{if .ISTIO -}}
+        --set kubeProxyReplacement=true
+        --set socketLB.hostNamespaceOnly=true
+        {{- end}}
+      _INGRESS: >-
+        {{if eq INGRESS "yes" -}}
+        --set ingressController.enabled=true
+        --set ingressController.loadbalancerMode=dedicated
+        --set ingressController.default=true
+        {{- end}}
+      _EGRESS: >-
+        {{if eq EGRESS "yes" -}}
+        --set egressGateway.enabled=true
+        --set bpf.masquerade=true
+        --set kubeProxyReplacement=true
+        {{- end}}
+      _GATEWAY_API: >-
+        {{if eq GATEWAY_API "yes" -}}
+        --set kubeProxyReplacement=true
+        --set gatewayAPI.enabled=true
+        {{- end}}
+      _NODE_PORT: >-
+        {{if eq NODE_PORT "yes" -}}
+        --set nodePort.enabled=true
+        {{- end}}
+      _HOST_PORT: >-
+        {{if eq HOST_PORT "yes" -}}
+        --set hostPort.enabled=true
+        {{- end}}
+      _IPAM_LB: >-
+        {{if eq IPAM_LB "yes" -}}
+        --set nodeIPAM.enabled=true
+        {{- end}}
+      _SOCKET_LB: >-
+        {{if eq LB "yes" -}}
+        --set externalIPs.enabled=true
+        {{- end}}
+      _SOCKET_LB: >-
+        {{if eq SOCKET_LB "yes" -}}
+        --set socketLB.enabled=true
+        --set socketLB.hostNamespaceOnly=true
+        {{- end}}
+      _FIREWALL: >-
+        {{if eq FIREWALL "yes" -}}
+        --set hostFirewall.enabled=true
+        {{- end}}
+      _PROMETHEUS: >-
+        {{if eq PROMETHEUS "yes" -}}
+        --set prometheus.enabled=true
+        --set operator.prometheus.enabled=true
+        {{- end}}
+      _GRAFANA: >-
+        {{if eq GRAFANA "yes" -}}
+        --set dashboards.enabled=true
+        {{- end}}
+    cmds:
+      - helm repo add cilium https://helm.cilium.io/
+      - helm repo update
+      - >
+        helm upgrade --install
+        cilium cilium/cilium
+        --version {{._VERSION}}
+        --namespace kube-system
+        --reuse-values
+        {{._POD_CIDR}}
+        {{._INGRESS}}
+        {{._EGRESS}}
+        {{._GATEWAY_API}}
+        {{._PROMETHEUS}}
+        {{._GRAFANA}}
+        {{.CLI_ARGS}}
+      # Restart unmanaged Pods
+      - >-
+        kubectl get pods --all-namespaces -o custom-columns=NAMESPACE:.metadata.namespace,NAME:.metadata.name,HOSTNETWORK:.spec.hostNetwork --no-headers=true
+        | grep '<none>'
+        | awk '{print "-n "$1" "$2}'
+        | xargs -L 1 -r kubectl delete pod
+      - >-
+        {{if eq ._INGRESS "yes" -}}
+        kubectl -n kube-system rollout restart deployment/cilium-operator;
+        kubectl -n kube-system rollout restart ds/cilium;
+        {{else if eq ._GATEWAY_API "yes" -}}
+        kubectl -n kube-system rollout restart deployment/cilium-operator;
+        kubectl -n kube-system rollout restart ds/cilium;
+        {{else if eq ._IPAM "yes" -}}
+        kubectl -n kube-system rollout restart deployment/cilium-operator;
+        {{- end}}
+
+  cilium:check:
+    cmds:
+      - cilium status --wait
+      - cilium connectivity test
+
   cilium:k3s:stop:
     desc: >-
       Before stopping k3s cluster,
@@ -103,34 +213,6 @@ tasks:
       - ip link delete cilium_vxlan
       - iptables-save | grep -iv cilium | iptables-restore
       - ip6tables-save | grep -iv cilium | ip6tables-restore
-
-  cilium:deploy:self:k3s:
-    cmds:
-      - helm repo add cilium https://helm.cilium.io/
-      - helm repo update
-      - >
-        helm upgrade --install
-        cilium cilium/cilium
-        --version 1.16.2
-        --namespace $CILIUM_NAMESPACE
-        --reuse-values
-        --set operator.replicas=1
-        --set nodeIPAM.enabled=true
-
-  cilium:install:self:k3s:
-    cmds:
-      - task: cilium:deploy:self:k3s
-      # Restart unmanaged Pods
-      - >
-        kubectl get pods --all-namespaces -o custom-columns=NAMESPACE:.metadata.namespace,NAME:.metadata.name,HOSTNETWORK:.spec.hostNetwork --no-headers=true
-        | grep '<none>'
-        | awk '{print "-n "$1" "$2}'
-        | xargs -L 1 -r kubectl delete pod
-
-  cilium:check:
-    cmds:
-      - cilium status --wait
-      - cilium connectivity test
 
   cnpg:deploy:self:
     cmds:
@@ -173,12 +255,13 @@ tasks:
         {{if .S3_REGION -}}
         --set secret.region={{.S3_REGION}}
         {{- end}}
+      _RELEASE: '{{default "csi-s3" .RELEASE}}'
     cmds:
       - helm repo add yandex-s3 https://yandex-cloud.github.io/k8s-csi-s3/charts
       - helm repo update
       - >
         helm upgrade --install
-        csi-s3 yandex-s3/csi-s3
+        {{._RELEASE}} yandex-s3/csi-s3
         -n csi-s3 --create-namespace
         {{._S3_REGION}}
         --set secret.endpoint={{.S3_ENDPOINT}}
