@@ -514,7 +514,156 @@ tasks:
         helm upgrade --install
         juicefs-csi-driver juicefs/juicefs-csi-driver
         --namespace kube-system --create-namespace
+        --reuse-values
+        --set metrics.enabled=true
+        --set controller.replicas=1
         {{.CLI_ARGS}}
+
+  juicefs:csi:deploy:storage-class:
+    cmds:
+      - |-
+        helm upgrade --install juicefs-csi-driver juicefs/juicefs-csi-driver --namespace kube-system --create-namespace --reuse-values --values - <<'EOF'
+        # For production environment, manually create & manage storageClass outside Helm is recommended, ref: https://juicefs.com/docs/csi/guide/pv#create-storage-class
+        storageClasses:
+        - name: "juicefs-sc"
+          # Set to true to actually create this StorageClass
+          enabled: true
+          # Either Retain or Delete, ref: https://juicefs.com/docs/csi/guide/resource-optimization#reclaim-policy
+          reclaimPolicy: Retain
+          # Set to true to allow PVC expansion
+          allowVolumeExpansion: true
+          # Additional annotations for this StorageClass, e.g. make it default
+          # annotations:
+          #   storageclass.kubernetes.io/is-default-class: "true"
+
+          backend:
+            # The JuiceFS file system name
+            name: ""
+            # Connection URL for metadata engine (e.g. Redis), for community edition use only, ref: https://juicefs.com/docs/community/databases_for_metadata
+            metaurl: ""
+            # Object storage type, such as s3, gs, oss, for community edition use only, ref: https://juicefs.com/docs/community/how_to_setup_object_storage
+            storage: ""
+            # Bucket URL, for community edition use only, ref: https://juicefs.com/docs/community/how_to_setup_object_storage
+            bucket: ""
+            # Token for JuiceFS Enterprise Edition token, ref: https://juicefs.com/docs/cloud/acl
+            token: ""
+            # Access key for object storage
+            accessKey: ""
+            # Secret key for object storage
+            secretKey: ""
+            # Environment variables for the JuiceFS Client
+            # Example: {"a": "b"}
+            # Ref: https://juicefs.com/docs/csi/guide/pv#volume-credentials
+            envs: ""
+            # Extra files for the mount pod, ref: https://juicefs.com/docs/csi/guide/pv/#mount-pod-extra-files
+            configs: ""
+            # The number of days which files are kept in the trash, for community edition use only, ref: https://juicefs.com/docs/community/security/trash
+            trashDays: ""
+            # Options passed to the "juicefs format" or "juicefs auth" command, depending on which edition you're using
+            # Example: block-size=4096,capacity=10
+            # Ref: https://juicefs.com/docs/community/command_reference#format and https://juicefs.com/docs/cloud/reference/commands_reference#auth
+            formatOptions: ""
+
+          # Options for the "juicefs mount" command
+          # Example:
+          # - debug
+          # - cache-size=2048
+          # - cache-dir=/var/foo
+          # Ref: https://juicefs.com/docs/community/command_reference#mount and https://juicefs.com/docs/cloud/reference/commands_reference#mount
+          mountOptions:
+          # Customize PV directory format, ref: https://juicefs.com/docs/csi/guide/pv#using-path-pattern
+          # If enabled, controller.provisioner must be set to true
+          # Example: "${.PVC.namespace}-${.PVC.name}"
+          pathPattern: ""
+
+          # Using PVC as JuiceFS cache path, ref: https://juicefs.com/docs/csi/guide/cache#use-pvc-as-cache-path
+          cachePVC: ""
+
+          mountPod:
+            # Mount pod resource requests & limits
+            resources:
+              limits:
+                cpu: 5000m
+                memory: 5Gi
+              requests:
+                cpu: 100m
+                memory: 256Mi
+            # Override mount pod image, ref: https://juicefs.com/docs/csi/guide/custom-image
+            image: ""
+            # Set annotations for the mount pod
+            annotations: {}
+        EOF
+
+  juicefs:csi:format:
+    desc: >-
+      Create secret of JuiceFS
+      <AWS_ACCESS_KEY_ID
+      AWS_SECRET_ACCESS_KEY
+      BUCKET_URL
+      DATABASE>
+      [SECRET
+      FS_NAME
+      STORAGE
+      ENCRYPT_KEY
+      JFS_RSA_PASSPHRASE]
+    requires:
+      vars:
+        - AWS_ACCESS_KEY_ID
+        - AWS_SECRET_ACCESS_KEY
+        - BUCKET_URL # https://<BUCKET>.s3.<REGION>.amazonaws.com
+        - DATABASE
+    vars:
+      _SECRET: >-
+        {{if .SECRET -}}
+        {{.SECRET}}
+        {{- else -}}
+        juicefs-s3-secret
+        {{- end}}
+      _FS_NAME: >-
+        {{if .FS_NAME -}}
+        {{.FS_NAME}}
+        {{- else -}}
+        juicefs
+        {{- end}}
+      # file/s3/gs/oss/cos
+      _STORAGE: >-
+        {{if .STORAGE -}}
+        {{.STORAGE}}
+        {{- else -}}
+        s3
+        {{- end}}
+      _TZ: >-
+        {{if .TZ -}}
+        {{.TZ}}
+        {{- else -}}
+        UTC
+        {{- end}}
+      # path/to/key.pem
+      _ENCRYPT_RSA_KEY: >-
+        {{if .ENCRYPT_RSA_KEY -}}
+        ,--encrypt-rsa-key={{.ENCRYPT_KEY}}
+        {{- end}}
+    cmds:
+      - |-
+        kubectl apply -n default -f - <<'EOF'
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: {{._SECRET}}
+          namespace: default
+          labels:
+            juicefs.com/validate-secret: "true"
+        type: Opaque
+        stringData:
+          name: {{._FS_NAME}}
+          metaurl: {{.DATABASE}}
+          storage: {{._STORAGE}}
+          bucket: {{.BUCKET_URL}}
+          access-key: {{.AWS_ACCESS_KEY_ID}}
+          secret-key: {{.AWS_SECRET_ACCESS_KEY}}
+          envs: "{TZ: {{._TZ}}{{if .JFS_RSA_PASSPHRASE}}, JFS_RSA_PASSPHRASE: {{.JFS_RSA_PASSPHRASE}}{{end}}}"
+          format-options: --block-size=2M,--compress=lz4,trash-days=3{{._ENCRYPT_RSA_KEY}}
+        EOF
 
   kadalu:deploy:self:
     vars:
