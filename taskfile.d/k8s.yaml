@@ -291,20 +291,63 @@ tasks:
         --version {{._VERSION}}
         {{.CLI_ARGS}}
 
-  eg:deploy:self:
+  envoy-gateway:deploy:self:
     desc: 'Deploy Envoy Gateway that supports gwapi v1.1.0'
     cmds:
-      - >
+      - >-
         helm upgrade --install
         eg oci://docker.io/envoyproxy/gateway-helm
         --version v1.1.2
         --namespace envoy-gateway-system --create-namespace
-      - >
+        --reuse-values
+        --set deployment.ports[0].name=grpc
+        --set deployment.ports[0].port=18000
+        --set deployment.ports[0].targetPort=18000
+        --set deployment.ports[1].name=ratelimit
+        --set deployment.ports[1].port=18001
+        --set deployment.ports[1].targetPort=18001
+        --set deployment.ports[2].name=wasm
+        --set deployment.ports[2].port=18002
+        --set deployment.ports[2].targetPort=18002
+        --set deployment.ports[3].name=metrics
+        --set deployment.ports[3].port=19001
+        --set deployment.ports[3].targetPort=19001
+        --set deployment.ports[4].name=admin
+        --set deployment.ports[4].port=19000
+        --set deployment.ports[4].targetPort=19000
+        {{.CLI_ARGS}}
+      - >-
         kubectl wait
         --timeout=5m
         --namespace envoy-gateway-system
         deployment/envoy-gateway
         --for=condition=Available
+
+  envoy-gateway:deploy:gateway:
+      - |-
+        kubectl apply -f - <<'EOF'
+        apiVersion: gateway.networking.k8s.io/v1
+        kind: GatewayClass
+        metadata:
+          name: eg
+        spec:
+          controllerName: gateway.envoyproxy.io/gatewayclass-controller
+        ---
+        apiVersion: gateway.networking.k8s.io/v1
+        kind: Gateway
+        metadata:
+          name: eg
+          namespace: envoy-gateway-system
+        spec:
+          gatewayClassName: eg
+          listeners:
+            - name: http
+              protocol: HTTP
+              port: 80
+            - name: https
+              protocol: HTTPS
+              port: 443
+        EOF
 
   fission:deploy:self:
     vars:
