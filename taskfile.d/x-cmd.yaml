@@ -2,6 +2,38 @@ version: '3'
 
 tasks:
 
+  # TODO: Support Windows
+  install:self:
+    platforms: [linux, darwin]
+    vars:
+      CMD:
+        sh: >-
+          if command -v curl > /dev/null 2>&1; then
+            echo "curl";
+          elif command -v wget > /dev/null 2>&1; then
+            echo "wget";
+          else
+            echo "no";
+          fi;
+      TASK: >-
+        {{if eq .CMD "curl" -}}
+        install:self:curl
+        {{- else -}}
+        install:self:wget
+        {{- end}}
+    cmds:
+      - task: '{{.TASK}}'
+
+  install:self:curl:
+    platforms: [linux, darwin]
+    cmds:
+      - eval "$(curl https://get.x-cmd.com)"
+
+  install:self:wget:
+    platforms: [linux, darwin]
+    cmds:
+      - eval "$(wget -O- https://get.x-cmd.com)"
+
   install:
     requires:
       vars: [APP]
