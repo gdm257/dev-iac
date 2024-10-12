@@ -1143,6 +1143,7 @@ tasks:
             # - autok3s
             - k3sup
             - k3d
+            - rancher-desktop
             # - minikube
             # - kind
             # - kubeadm
