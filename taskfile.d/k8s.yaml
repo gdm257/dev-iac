@@ -963,6 +963,7 @@ tasks:
         --namespace kubeshark --create-namespace
 
   kubesphere:deploy:self:
+    desc: 'Deploy KubeSphere. http://ip:30880 with "admin" "P@88w0rd"'
     cmds:
       - >
         helm upgrade --install
