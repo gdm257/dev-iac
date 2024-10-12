@@ -854,6 +854,15 @@ tasks:
     cmds:
       - kubectl create token karpor-admin --duration=8760h
 
+  kong:deploy:self:
+    cmds:
+      - >-
+        helm upgrade --install
+        kong --repo https://charts.konghq.com ingress
+        --namespace kong --create-namespace
+        --reuse-values
+        {{.CLI_ARGS}}
+
   krew:install:plugin:
     desc: 'Install a kubectl plugin [PLUGIN] -- [plugin]'
     vars:
