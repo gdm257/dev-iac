@@ -1155,6 +1155,19 @@ tasks:
                 imagePullPolicy: IfNotPresent
         EOF
 
+  kmesh:deploy:self:
+    desc: 'Deploy kmesh. Please install istio ahead'
+    dir: '{{.USER_WORKING_DIR}}'
+    cmds:
+      - git clone https://github.com/kmesh-net/kmesh
+      - >-
+        helm upgrade install
+        kmesh ./kmesh/deploy/charts/kmesh-helm
+        -n kmesh-system --create-namespace
+        --reuse-values
+        {{.CLI_ARGS}}
+      - rm -r kmesh
+
   kuma:deploy:self:
     desc: >-
       Deploy kuma
