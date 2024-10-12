@@ -135,7 +135,6 @@ tasks:
       _VERSION: '{{if .VERSION}}{{.VERSION}}{{else}}v1.15.3{{end}}'
     cmds:
       - helm repo add jetstack https://charts.jetstack.io --force-update
-      - helm repo update
       - >
         helm upgrade --install
         cert-manager jetstack/cert-manager
@@ -1516,6 +1515,19 @@ tasks:
         rainbond rainbond/rainbond-cluster
         -n rbd-system --create-namespace
         --set useK3sContainerd=true
+
+  rancher:deploy:self:
+    vars:
+      _IP: '{{default "127.0.0.1" .IP}}'
+    cmds:
+      - helm repo add rancher-latest https://releases.rancher.com/server-charts/latest --force-update
+      - >-
+        helm upgrade --install
+        rancher rancher-latest/rancher
+        --namespace cattle-system --create-namespace
+        --reuse-values
+        --set replicas=1
+        --set hostname={{._IP}}.sslip.io
 
   rclone:csi:deploy:self:
     vars:
