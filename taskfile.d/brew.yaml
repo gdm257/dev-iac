@@ -204,6 +204,7 @@ tasks:
           APPS:
             - cyme
             - tz
+            - fastfetch
 
   install:curated-list:layer:
     platforms: [linux, darwin]

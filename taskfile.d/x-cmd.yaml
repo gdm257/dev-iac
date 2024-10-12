@@ -1,0 +1,26 @@
+version: '3'
+
+tasks:
+
+  install:
+    requires:
+      vars: [APP]
+    cmds:
+      - x install {{.APP}}
+
+  install:bulk:
+    internal: true
+    requres:
+      vars: [APPS]
+    cmds:
+      - task: install
+        vars:
+          APP: '{{.ITEM}}'
+        for: {var: APPS}
+
+  install:curated-list:
+    cmds:
+      - task: install:bulk
+        vars:
+          APPS:
+            - brew

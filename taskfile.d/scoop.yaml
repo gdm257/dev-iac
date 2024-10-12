@@ -1031,6 +1031,7 @@ tasks:
         vars:
           APPS:
             # - osquery
+            - fastfetch
             # - WindowsUpdateBlocker
             - urlprotocolview
             - rapidee

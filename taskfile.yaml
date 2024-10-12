@@ -46,6 +46,7 @@ includes:
   winget: {taskfile: './taskfile.d/winget.yaml', optional: true}
   w2: {taskfile: './taskfile.d/w2.yaml', optional: true}
   wsl: {taskfile: './taskfile.d/wsl.yaml', optional: true}
+  x: {taskfile: './taskfile.d/x-cmd.yaml', optional: true}
   yum: {taskfile: './taskfile.d/yum.yaml', optional: true}
 
   ls: {taskfile: './taskfile.d/task-ls.yaml', optional: false, aliases: [list, l]}
