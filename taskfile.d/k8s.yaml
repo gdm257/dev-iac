@@ -280,19 +280,84 @@ tasks:
 
   cnpg:deploy:self:
     cmds:
-      - helm repo add cnpg https://cloudnative-pg.github.io/charts
-      - helm repo update
-      - helm upgrade --install cnpg cnpg/cloudnative-pg --namespace cnpg-system --create-namespace
+      - helm repo add cnpg https://cloudnative-pg.github.io/charts --force-update
+      - >-
+        helm upgrade --install
+        cnpg cnpg/cloudnative-pg
+        --namespace cnpg-system --create-namespace
+        --reuse-values
+        {{.CLI_ARGS}}
 
-  cnpg:deploy:pg:
-    desc: Create a CNPG database cluster [NAME NAMESPACE] -- [extra_args]
+  cnpg:deploy:cluster:
+    desc: >-
+      Deploy postgres cluster
+      [
+      RELEASE
+      NAMESPACE
+      POSTGIS
+      PG_VERSION
+      INSTANCES
+      SIZE
+      STORAGE_CLASS
+      S3
+      AWS_ENDPOINTS
+      AWS_ACCESS_KEY_ID
+      AWS_SECRET_ACCESS_KEY
+      AWS_BUCKET
+      AWS_REGION
+      AWS_PATH
+      CRON
+      RETENTION
+      ]
+      -- [
+      helm_upgrade_options
+      ]
     vars:
-      NS: '{{if .NAMESPACE}}{{.NAMESPACE}}{{else}}cnpg-database{{end}}'
-      RELEASE: '{{if .NAME}}{{.NAME}}{{else}}database{{end}}'
+      _NAME: '{{default "postgres" .NAME}}'
+      _NAMESPACE: '{{default "database" .NAMESPACE}}'
+      _POSTGIS: >-
+        {{if eq .POSTGIS "yes" -}}
+        --set type=postgis
+        {{- end}}
+      _PG_VERSION: '--set-string version.postgresql={{default 16 .PG_VERSION}}'
+      # `cluster` mode
+      _INSTANCES: '--set cluster.instances={{default 1 .INSTANCES}}'
+      _SIZE: '--set cluster.storage.size={{default "8Gi" .SIZE}}'
+      _STORAGE_CLASS: >-
+        {{if .STORAGE_CLASS -}}
+        --set cluster.storage.storageClass={{.STORAGE_CLASS}}
+        {{- end}}
+      # Backup
+      _S3: >-
+        {{if eq .S3 "yes" -}}
+        --set backups.enabled=true
+        --set backups.provider=s3
+        --set backups.endpointURL={{.AWS_ENDPOINTS}}
+        --set backups.s3.region="{{default "" .AWS_REGION}}"
+        --set backups.s3.accessKey={{.AWS_ACCESS_KEY_ID}}
+        --set backups.s3.secretKey={{.AWS_SECRET_ACCESS_KEY}}
+        --set backups.s3.bucket={{.AWS_BUCKET}}
+        --set backups.s3.path="{{default "/" .AWS_PATH}}"
+        --set backups.scheduledBackups[0].name=daily-backup
+        --set backups.scheduledBackups[0].backupOwnerReference=self
+        --set backups.scheduledBackups[0].method=barmanObjectStore
+        --set backups.scheduledBackups[0].schedule="{{default "0 0 3 * * *" .CRON}}"
+        --set backups.retentionPolicy={{default "30d" .RETENTION}}
+        {{- end}}
     cmds:
-      - helm repo add cnpg https://cloudnative-pg.github.io/charts
-      - helm repo update
-      - helm upgrade --install {{.RELEASE}} cnpg/cluster --namespace {{.NS}} --create-namespace {{.CLI_ARGS}}
+      - helm repo add cnpg https://cloudnative-pg.github.io/charts --force-update
+      - >
+        helm upgrade --install
+        {{._NAME}} cnpg/cluster
+        --namespace {{._NAMESPACE}} --create-namespace
+        --reuse-values
+        {{._POSTGIS}}
+        {{._PG_VERSION}}
+        {{._INSTANCES}}
+        {{._SIZE}}
+        {{._STORAGE_CLASS}}
+        {{._S3}}
+        {{.CLI_ARGS}}
 
   consul:deploy:self:
     cmds:
