@@ -1506,15 +1506,39 @@ tasks:
         prometheus-community prometheus-community/kube-prometheus-stack
         --values https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/main/docs/src/samples/monitoring/kube-stack-config.yaml
 
-  rainbond:deploy:self:k3s:
+  rainbond:deploy:self:
+    desc: >-
+      [
+      K3S
+      CONTAINERD
+      ]
+      -- [helm_upgrade_options]
+    vars:
+      _K3S: >-
+        {{if eq .K3S "yes" -}}
+        --set useK3sContainerd=true
+        {{- end}}
+      _CONTAINERD: >-
+        {{if and (eq .CONTAINERD "yes") (ne .K3S "yes") -}}
+        --set operator.env[0].name=CONTAINER_RUNTIME
+        --set operator.env[0].value=containerd
+        {{- end}}
     cmds:
-      - helm repo add rainbond https://openchart.goodrain.com/goodrain/rainbond
-      - helm repo update
-      - >
+      - helm repo add rainbond https://openchart.goodrain.com/goodrain/rainbond --force-update
+      - >-
         helm upgrade --install
         rainbond rainbond/rainbond-cluster
         -n rbd-system --create-namespace
-        --set useK3sContainerd=true
+        --reuse-values
+        {{._K3S}}
+        {{._CONTAINERD}}
+        {{.CLI_ARGS}}
+
+  rainbond:deploy:self:k3s:
+    cmds:
+      - task: rainbond:deploy:self
+        vars:
+          K3S: "yes"
 
   rancher:deploy:self:
     vars:
