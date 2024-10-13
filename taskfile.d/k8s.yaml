@@ -959,6 +959,7 @@ tasks:
             - flame
             - kc
             - tree
+            - vela
 
   krew:install:plugin:curated-list:unix:
     platforms: [linux, darwin]
@@ -1039,13 +1040,36 @@ tasks:
 
   kubevela:deploy:self:
     cmds:
-      - helm repo add kubevela https://kubevela.github.io/charts
-      - helm repo update
+      - helm repo add kubevela https://kubevela.github.io/charts --force-update
       - >
         helm upgrade --install
         kubevela kubevela/vela-core
         -n vela-system --create-namespace
         --wait
+      - task: kubevela:deploy:velaux
+
+  kubevela:deploy:velaux:
+    vars:
+      VELA:
+        sh: >-
+          if command -v vela > /dev/null 2>&1; then
+            echo "vela";
+          elif command -v kubectl > /dev/null 2>&1; then
+            echo "kubectl vela";
+          fi;
+    cmds:
+      - '{{.VELA}} addon enable velaux'
+
+  kubevela:velaux:forward:
+      VELA:
+        sh: >-
+          if command -v vela > /dev/null 2>&1; then
+            echo "vela";
+          elif command -v kubectl > /dev/null 2>&1; then
+            echo "kubectl vela";
+          fi;
+    cmds:
+      - '{{.VELA}} port-forward -n vela-system addon-velaux 8000:8000'
 
   local-path-provisioner:deploy:self:k3s:
     cmds:
