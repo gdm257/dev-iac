@@ -1487,6 +1487,16 @@ tasks:
         ingress-nginx ingress-nginx --repo https://kubernetes.github.io/ingress-nginx
         --namespace ingress-nginx --create-namespace
 
+  nuclio:deploy:self:
+    cmds:
+      - helm repo add nuclio https://nuclio.github.io/nuclio/charts --force-update
+      - >-
+        helm upgrade --install
+        nuclio nuclio/nuclio
+        --namespace nuclio --create-namespace
+        --reuse-values
+        {{.CLI_ARGS}}
+
   openfaas:deploy:self:
     cmds:
       - kubectl apply -f https://raw.githubusercontent.com/openfaas/faas-netes/master/namespaces.yml
