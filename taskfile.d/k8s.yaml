@@ -503,6 +503,16 @@ tasks:
         --version {{._VERSION}}
         {{.CLI_ARGS}}
 
+  directus:deploy:self:
+    cmds:
+      - helm repo add directus https://directus-labs.github.io/helm-chart/ --force-update
+      - >-
+        helm upgrade --install
+        directus directus/directus
+        -n directus --create-namespace
+        --reuse-values
+        {{.CLI_ARGS}}
+
   envoy-gateway:deploy:self:
     desc: 'Deploy Envoy Gateway that supports gwapi v1.1.0'
     cmds:
@@ -1130,6 +1140,7 @@ tasks:
       - '{{.VELA}} addon enable velaux'
 
   kubevela:velaux:forward:
+    vars:
       VELA:
         sh: >-
           if command -v vela > /dev/null 2>&1; then
