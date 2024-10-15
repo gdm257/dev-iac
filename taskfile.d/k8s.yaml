@@ -155,6 +155,75 @@ tasks:
         --namespace cert-manager --create-namespace
         {{.CLI_ARGS}}
 
+  cert-manager:deploy:issuer:letsencrypt:
+    desc: >-
+      [
+      ISSUER_NAME
+      IS_CLUSTER
+      NAMESPACE
+      IS_HTTP01
+      INGRESS_CLASS
+      IS_DNS01
+      IS_LETSENCRYPT
+      IS_CF
+      EMAIL
+      SECRET
+      SECRET_KEY_NAME
+      SECRET_KEY_VALUE
+      ]
+    vars:
+      _IS_CLUSTER: >-
+        {{if eq .IS_CLUSTER "yes" -}}
+        ClusterIssuer
+        {{- else -}}
+        Issuer
+        {{- end}}
+      _ACME_SERVER: >-
+        {{if ne .IS_LETSENCRYPT "no" -}}
+        https://acme-staging-v02.api.letsencrypt.org/directory
+        {{- end}}
+    cmds:
+      - |-
+        kubectl apply -f - <<EOF
+        ---
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: {{default "cert-manager-dns01-secret" .SECRET}}
+          namespace: {{default "default" .NAMESPACE}}
+        type: Opaque
+        data:
+          {{default "api-token" .SECRET_KEY_NAME}}: {{.SECRET_KEY_VALUE}}
+        ---
+        apiVersion: cert-manager.io/v1
+        kind: {{._ISSUER_KIND}}
+        metadata:
+          name: {{default "letsencrypt" .ISSUER_NAME}}
+        spec:
+          acme:
+            email: {{.EMAIL}}
+            server: {{._ACME_SERVER}}
+            privateKeySecretRef:
+              # Secret resource that will be used to store the account's private key.
+              name: example-issuer-account-key
+            # Add a single challenge solver, HTTP01 using nginx
+            solvers:
+            {{- if ne .IS_DNS01 "no"}}
+            - dns01:
+                {{- if ne .IS_CF "no"}}
+                cloudflare:
+                  apiTokenSecretRef:
+                    name: {{default "cert-manager-dns01-secret" .SECRET}}
+                    key: {{default "api-token" .SECRET_KEY_NAME}}
+                {{- end}}
+            {{- end}}
+            {{- if ne .IS_HTTP01 "no"}}
+            - http01:
+                ingress:
+                  ingressClassName: {{default "nginx" .INGRESS_CLASS}}
+            {{- end}}
+        EOF
+
   cilium:deploy:self:k3s:
     desc: >-
       Deploy cilium
