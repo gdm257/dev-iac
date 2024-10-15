@@ -161,18 +161,24 @@ tasks:
       ISSUER_NAME
       IS_CLUSTER
       NAMESPACE
+
       IS_HTTP01
       INGRESS_CLASS
+
       IS_DNS01
       IS_LETSENCRYPT
       IS_CF
       EMAIL
-      SECRET
+      ACCOUNT_SECRET_NAME
+      SECRET_NAME
       SECRET_KEY_NAME
       SECRET_KEY_VALUE
+
+      DNS_NAMES
+      DNS_ZONES
       ]
     vars:
-      _IS_CLUSTER: >-
+      _CLUSTER_KIND: >-
         {{if eq .IS_CLUSTER "yes" -}}
         ClusterIssuer
         {{- else -}}
@@ -189,7 +195,7 @@ tasks:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: {{default "cert-manager-dns01-secret" .SECRET}}
+          name: {{default "issuer-dns01-secret" .SECRET_NAME}}
           namespace: {{default "default" .NAMESPACE}}
         type: Opaque
         data:
@@ -198,30 +204,86 @@ tasks:
         apiVersion: cert-manager.io/v1
         kind: {{._ISSUER_KIND}}
         metadata:
-          name: {{default "letsencrypt" .ISSUER_NAME}}
+          name: {{default "letsencrypt-issuer" .ISSUER_NAME}}
         spec:
           acme:
             email: {{.EMAIL}}
             server: {{._ACME_SERVER}}
             privateKeySecretRef:
-              # Secret resource that will be used to store the account's private key.
-              name: example-issuer-account-key
-            # Add a single challenge solver, HTTP01 using nginx
+              name: {{default "letsencrypt-account-key" .ACCOUNT_SECRET_NAME}}
             solvers:
             {{- if ne .IS_DNS01 "no"}}
             - dns01:
                 {{- if ne .IS_CF "no"}}
                 cloudflare:
                   apiTokenSecretRef:
-                    name: {{default "cert-manager-dns01-secret" .SECRET}}
+                    name: {{default "cert-manager-dns01-secret" .SECRET_NAME}}
                     key: {{default "api-token" .SECRET_KEY_NAME}}
                 {{- end}}
+              {{- if or .DNS_NAMES .DNS_ZONES}}
+              selector:
+                dnsNames: [{{.DNS_NAMES}}]
+              {{- end}}
             {{- end}}
-            {{- if ne .IS_HTTP01 "no"}}
+            {{- if eq .IS_HTTP01 "yes"}}
             - http01:
                 ingress:
                   ingressClassName: {{default "nginx" .INGRESS_CLASS}}
+              {{- if or .DNS_NAMES .DNS_ZONES}}
+              selector:
+                {{- if or .DNS_NAMES}}
+                dnsNames: [{{.DNS_NAMES}}]
+                {{- end}}
+                {{- if or .DNS_ZONES}}
+                dnsZones: [{{.DNS_ZONES}}]
+                {{- end}}
+              {{- end}}
             {{- end}}
+        EOF
+
+  cert-manager:deploy:cert:
+    desc: >-
+      [
+      CERT_NAME
+      NAMESPACE
+      ISSUER_NAME
+      IS_CLUSTER
+      DOMAINS
+      IPS
+      LENGTH
+      SECRET_NAME
+      ]
+    vars:
+      _ISSUER_KIND: >-
+        {{if eq .IS_CLUSTER "yes" -}}
+        ClusterIssuer
+        {{- else -}}
+        Issuer
+        {{- end}}
+    cmds:
+      - |-
+        kubectl apply -f - <<EOF
+        apiVersion: cert-manager.io/v1
+        kind: Certificate
+        metadata:
+          name: {{default "letsencrypt-cert" .CERT_NAME}}
+          namespace: {{default "default" .NAMESPACE}}
+        spec:
+          issuerRef:
+            name: {{default "letsencrypt-issuer" .ISSUER_NAME}}
+            kind: {{._ISSUER_KIND}}
+          secretName: {{default "letsencrypt-cert-secret" .SECRET_NAME}}
+          {{- if .DOMAINS}}
+          dnsNames: [{{.DOMAINS}}]
+          {{- end}}
+          {{- if .IPS}}
+          ipAddresses: [{{.IPS}}]
+          {{- end}}
+          privateKey:
+            algorithm: RSA
+            encoding: PKCS1
+            size: {{default 2048 .LENGTH}}
+          renewBefore: 1440h
         EOF
 
   cilium:deploy:self:k3s:
