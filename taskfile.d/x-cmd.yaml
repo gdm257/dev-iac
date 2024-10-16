@@ -2,9 +2,7 @@ version: '3'
 
 tasks:
 
-  # TODO: Support Windows
   install:self:
-    platforms: [linux, darwin]
     vars:
       CMD:
         sh: >-
@@ -25,14 +23,24 @@ tasks:
       - task: '{{.TASK}}'
 
   install:self:curl:
-    platforms: [linux, darwin]
     cmds:
-      - eval "$(curl https://get.x-cmd.com)"
+      - >-
+        {{if eq OS "windows" -}}
+        sh -c 'eval "$(curl https://get.x-cmd.com)"'
+        {{- else -}}
+        eval "$(curl https://get.x-cmd.com)"
+        {{- end}}
 
   install:self:wget:
-    platforms: [linux, darwin]
+    vars:
+      _IS_WINDOWS: '{{if eq OS "windows"}}yes{{end}}'
     cmds:
-      - eval "$(wget -O- https://get.x-cmd.com)"
+      - >-
+        {{if eq OS "windows" -}}
+        sh -c 'eval "$(curl https://get.x-cmd.com)"'
+        {{- else -}}
+        eval "$(wget -O- https://get.x-cmd.com)"
+        {{- end}}
 
   install:
     requires:
