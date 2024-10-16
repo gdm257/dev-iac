@@ -1036,14 +1036,16 @@ tasks:
           {{.CLI_ARGS}}
     vars:
       _LOCAL: >-
-        {{if .IS_LOCAL -}}
+        {{if eq .IS_LOCAL "yes" -}}
         --local
         {{- end}}
       _SSH: >-
+        {{if eq .IS_SSH "yes" -}}
         --host {{default "127.0.0.1" .SSH_HOST}}
         --ssh-port {{default "22" .SSH_PORT}}
         --user {{default .USER .SSH_USER}}
         {{if .SSH_KEY}}--ssh-key {{.SSH_KEY}}{{end}}
+        {{- end}}
       _NODE_INFO: >-
         {{if .IP -}}
         --ip {{.IP}}
