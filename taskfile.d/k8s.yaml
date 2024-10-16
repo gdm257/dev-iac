@@ -990,10 +990,13 @@ tasks:
     desc: >-
       Initial k3s cluster via SSH
       [
+      IS_LOCAL
+      IS_SSH
       SSH_HOST
       SSH_PORT
       SSH_USER
       SSH_KEY
+
       IP
       DOMAIN
       NODE_NAME
@@ -1069,7 +1072,7 @@ tasks:
         {{- end}}
       _K3S: >-
         --k3s-extra-args '--data-dir {{default "/var/lib/rancher/k3s" .DATA_DIR}}
-        {{if eq IS_DISABLE "yes" -}}
+        {{if eq .IS_DISABLE "yes" -}}
         --disable
         {{if eq .IS_TRAEFIK "no" -}}
         traefik
