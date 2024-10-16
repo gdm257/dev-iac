@@ -983,17 +983,121 @@ tasks:
         --namespace kanister --create-namespace
 
   k3sup-init-master:
-    desc: 'Initial k3s cluster via SSH [SSH_HOST SSH_PORT SSH_USER SSH_KEY IS_EMBEDDED_ETCD IS_MERGE_EXISTING]'
+    desc: >-
+      Initial k3s cluster via SSH
+      [
+      SSH_HOST
+      SSH_PORT
+      SSH_USER
+      SSH_KEY
+      IP
+      DOMAIN
+      NODE_NAME
+
+      VERSION
+      IS_EMBEDDED_ETCD
+      IS_MERGE_EXISTING
+
+      DATA_DIR
+      IS_DISABLE
+      IS_TRAEFIK
+      IS_SERVICELB
+      DISABLE
+      IS_ENCRYPT
+      CRON
+      IS_S3
+      AWS_ENDPOINTS
+      AWS_ACCESS_KEY_ID
+      AWS_SECRET_ACCESS_KEY
+      AWS_BUCKET
+      AWS_REGION
+      AWS_FOLDER
+      IS_INSECURE
+
+      CONTEXT
+      ]
+      -- [options]
+    vars:
+      _LOCAL: >-
+        {{if .IS_LOCAL -}}
+        --local
+        {{- end}}
+      _SSH: >-
+        --host {{default "127.0.0.1" .SSH_HOST}}
+        --ssh-port {{default "22" .SSH_PORT}}
+        --user {{default .USER .SSH_USER}}
+        {{if .SSH_KEY}}--ssh-key {{.SSH_KEY}}{{end}}
+      _NODE_INFO: >-
+        {{if .IP -}}
+        --ip {{.IP}}
+        {{- end}}
+        {{if .DOMAIN -}}
+        --host {{.DOMAIN}}
+        {{- end}}
+      _VERSION: >-
+        {{if .VERSION -}}
+        --k3s-version {{.VERSION}}
+        {{- else -}}
+        --k3s-channel stable
+        {{- end}}
+      _DB: >-
+        {{if ne .IS_EMBEDDED_ETCD "no" -}}
+        --cluster
+        {{- end}}
+      _MERGE: >-
+        {{if ne .IS_MERGE_EXISTING "no" -}}
+        --merge
+        {{- end}}
+      _K3S: >-
+        --k3s-extra-args '--data-dir {{default "/var/lib/rancher/k3s" .DATA_DIR}}
+        {{if eq IS_DISABLE "yes" -}}
+        --disable
+        {{if eq .IS_TRAEFIK "no" -}}
+        traefik
+        {{- end}}
+        {{if eq .IS_SERVICELB "no" -}}
+        ,servicelb
+        {{- end}}
+        {{if .DISABLE -}}
+        ,{{.DISABLE}}
+        {{- end}}
+        {{- end}}
+        {{if eq .IS_ENCRYPT "yes" -}}
+        --secrets-encryption
+        {{- end}}
+        {{if .NODE_NAME -}}
+        --node-name {{.NODE_NAME}}
+        {{- end}}
+        {{if .LOG -}}
+        --log {{.LOG}}
+        {{- end}}
+        --etcd-snapshot-schedule-cron {{default "0 */12 * * *" .CRON}}
+        {{if eq .IS_S3 "yes" -}}
+        --etcd-s3
+        --etcd-s3-endpoint {{default "s3.amazonaws.com" .AWS_ENDPOINTS}}
+        --etcd-s3-access-key {{.AWS_ACCESS_KEY_ID}}
+        --etcd-s3-secret-key {{.AWS_SECRET_ACCESS_KEY}}
+        --etcd-s3-bucket {{.AWS_BUCKET}}
+        --etcd-s3-region {{default "us-east-1" .AWS_REGION}}
+        {{if .AWS_FOLDER}}--etcd-s3-folder {{.AWS_FOLDER}}{{end}}
+        {{if eq .IS_INSECURE "yes"}}--etcd-s3-insecure{{end}}
+        {{- end}}
+        '
+      _PRINT: --print-command
+      _CONTEXT: --context {{default "default" .CONTEXT}}
     cmds:
-      - cmd: >
+      - cmd: >-
           k3sup install
-          {{if not .IS_EMBEDDED_ETCD}} {{else}} --cluster {{end}}
-          {{if not .IS_MERGE_EXISTING}} {{else}} --merge {{end}}
-          --host {{if .SSH_HOST}} {{.SSH_HOST}} {{else}} 127.0.0.1 {{end}}
-          --ssh-port {{if .SSH_PORT}} {{.SSH_PORT}} {{else}} 22 {{end}}
-          --user {{if .SSH_USER}} {{.SSH_USER}} {{else}} {{.USER}} {{end}}
-          {{if .SSH_KEY}} --ssh-key {{.SSH_KEY}} {{end}}
-          --k3s-channel stable
+          {{._LOCAL}}
+          {{._SSH}}
+          {{._NODE_INFO}}
+          {{._VERSION}}
+          {{._DB}}
+          {{._MERGE}}
+          {{._K3S}}
+          {{._PRINT}}
+          {{._CONTEXT}}
+          {{.CLI_ARGS}}
 
   k3sup-join-worker:
     desc: 'Join a k3s cluster via SSH <SSH_HOST SSH_USER MASTER_SSH_HOST MASTER_SSH_PORT>'
