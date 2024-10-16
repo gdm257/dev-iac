@@ -1076,7 +1076,7 @@ tasks:
         --disable
         {{if eq .IS_TRAEFIK "no" -}}
         traefik
-        {{- end}}
+        {{- end -}}
         {{if eq .IS_SERVICELB "no" -}}
         ,servicelb
         {{- end}}
@@ -1093,7 +1093,7 @@ tasks:
         {{if .LOG -}}
         --log {{.LOG}}
         {{- end}}
-        --etcd-snapshot-schedule-cron {{default "0 */12 * * *" .CRON}}
+        --etcd-snapshot-schedule-cron "{{default "0 */12 * * *" .CRON}}"
         {{if eq .IS_S3 "yes" -}}
         --etcd-s3
         --etcd-s3-endpoint {{default "s3.amazonaws.com" .AWS_ENDPOINTS}}
