@@ -1017,6 +1017,19 @@ tasks:
       CONTEXT
       ]
       -- [options]
+    cmds:
+      - cmd: >-
+          k3sup install
+          {{._LOCAL}}
+          {{._SSH}}
+          {{._NODE_INFO}}
+          {{._VERSION}}
+          {{._DB}}
+          {{._MERGE}}
+          {{._K3S}}
+          {{._PRINT}}
+          {{._CONTEXT}}
+          {{.CLI_ARGS}}
     vars:
       _LOCAL: >-
         {{if .IS_LOCAL -}}
@@ -1085,19 +1098,6 @@ tasks:
         '
       _PRINT: --print-command
       _CONTEXT: --context {{default "default" .CONTEXT}}
-    cmds:
-      - cmd: >-
-          k3sup install
-          {{._LOCAL}}
-          {{._SSH}}
-          {{._NODE_INFO}}
-          {{._VERSION}}
-          {{._DB}}
-          {{._MERGE}}
-          {{._K3S}}
-          {{._PRINT}}
-          {{._CONTEXT}}
-          {{.CLI_ARGS}}
 
   k3sup-join-worker:
     desc: 'Join a k3s cluster via SSH <SSH_HOST SSH_USER MASTER_SSH_HOST MASTER_SSH_PORT>'
