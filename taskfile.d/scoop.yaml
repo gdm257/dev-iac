@@ -1160,7 +1160,7 @@ tasks:
             # - kubectl-ai
             - kubeconform
             - k8sgpt
-            # - cilium-cli
+            - cilium-cli
             # - istioctl
             # - kwok
             # - kubeshark
