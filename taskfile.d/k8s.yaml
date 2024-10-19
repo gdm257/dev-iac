@@ -182,16 +182,21 @@ tasks:
       DNS_ZONES
       ]
     vars:
-      _CLUSTER_KIND: >-
+      _ISSUER_KIND: >-
         {{if eq .IS_CLUSTER "yes" -}}
         ClusterIssuer
         {{- else -}}
         Issuer
         {{- end}}
       _ACME_SERVER: >-
-        {{if ne .IS_LETSENCRYPT "no" -}}
+        {{if eq .IS_STAGING "yes" -}}
         https://acme-staging-v02.api.letsencrypt.org/directory
+        {{- else -}}
+        https://acme-v02.api.letsencrypt.org/directory
         {{- end}}
+      SECRET_KEY_VALUE_BASE64:
+        sh: >-
+          echo "{{.SECRET_KEY_VALUE}}" | base64
     cmds:
       - |-
         kubectl apply -f - <<EOF
