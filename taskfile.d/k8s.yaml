@@ -208,12 +208,13 @@ tasks:
           namespace: {{default "default" .NAMESPACE}}
         type: Opaque
         data:
-          {{default "api-token" .SECRET_KEY_NAME}}: {{.SECRET_KEY_VALUE}}
+          {{default "api-token" .SECRET_KEY_NAME}}: {{.SECRET_KEY_VALUE_BASE64}}
         ---
         apiVersion: cert-manager.io/v1
         kind: {{._ISSUER_KIND}}
         metadata:
           name: {{default "letsencrypt-issuer" .ISSUER_NAME}}
+          namespace: {{default "default" .NAMESPACE}}
         spec:
           acme:
             email: {{.EMAIL}}
@@ -226,7 +227,7 @@ tasks:
                 {{- if ne .IS_CF "no"}}
                 cloudflare:
                   apiTokenSecretRef:
-                    name: {{default "cert-manager-dns01-secret" .SECRET_NAME}}
+                    name: {{default "issuer-dns01-secret" .SECRET_NAME}}
                     key: {{default "api-token" .SECRET_KEY_NAME}}
                 {{- end}}
               {{- if or .DNS_NAMES .DNS_ZONES}}
@@ -259,7 +260,9 @@ tasks:
       IS_CLUSTER
       DOMAINS
       IPS
-      LENGTH
+      ALGORITHM
+      ENCODING
+      SIZE
       SECRET_NAME
       ]
     vars:
@@ -289,17 +292,41 @@ tasks:
           ipAddresses: [{{.IPS}}]
           {{- end}}
           privateKey:
-            algorithm: RSA
-            encoding: PKCS1
-            size: {{default 2048 .LENGTH}}
+            algorithm: {{default "RSA" .ALGORITHM}}
+            encoding: {{default "PKCS1" .ENCODING}}
+            size: {{default 2048 .SIZE}}
           renewBefore: 1440h
+        EOF
+
+  cert-manager:grant:
+    requires:
+      vars:
+        - NAMESPACE
+        - GATEWAY_NAMESPACE
+    cmds:
+      - |-
+        kubectl apply -f - <<EOF
+        apiVersion: gateway.networking.k8s.io/v1beta1
+        kind: ReferenceGrant
+        metadata:
+          name: {{default "gateway-cert-rg" .NAME}}
+          namespace: {{default "default" .NAMESPACE}}
+        spec:
+          from:
+          - group: gateway.networking.k8s.io
+            kind: Gateway
+            namespace: {{default "default" .GATEWAY_NAMESPACE}}
+          to:
+          - kind: Secret
+            group: ""
         EOF
 
   cilium:deploy:self:k3s:
     desc: >-
       Deploy cilium
       [
-
+      POD_CIDR
+      ISTIO
       ]
       -- [options]
     vars:
@@ -310,66 +337,72 @@ tasks:
       _POD_CIDR: >-
         {{if .POD_CIDR -}}
         --set ipam.clusterPoolIPv4PodCIDRList[0]={{.POD_CIDR}}
+        --set ipam.operator.clusterPoolIPv4PodCIDRList[0]={{.POD_CIDR}}
         {{- end}}
       _ISTIO: >-
-        {{if .ISTIO -}}
+        {{if ne .IS_ISTIO "no" -}}
         --set kubeProxyReplacement=true
         --set socketLB.hostNamespaceOnly=true
         {{- end}}
       _INGRESS: >-
-        {{if eq INGRESS "yes" -}}
+        {{if eq .INGRESS "yes" -}}
         --set ingressController.enabled=true
         --set ingressController.loadbalancerMode=dedicated
         --set ingressController.default=true
         {{- end}}
       _EGRESS: >-
-        {{if eq EGRESS "yes" -}}
+        {{if eq .EGRESS "yes" -}}
         --set egressGateway.enabled=true
         --set bpf.masquerade=true
         --set kubeProxyReplacement=true
         {{- end}}
       _GATEWAY_API: >-
-        {{if eq GATEWAY_API "yes" -}}
+        {{if eq .GATEWAY_API "yes" -}}
         --set kubeProxyReplacement=true
         --set gatewayAPI.enabled=true
         {{- end}}
       _NODE_PORT: >-
-        {{if eq NODE_PORT "yes" -}}
+        {{if eq .NODE_PORT "yes" -}}
         --set nodePort.enabled=true
         {{- end}}
       _HOST_PORT: >-
-        {{if eq HOST_PORT "yes" -}}
+        {{if eq .HOST_PORT "yes" -}}
         --set hostPort.enabled=true
         {{- end}}
       _IPAM_LB: >-
-        {{if eq IPAM_LB "yes" -}}
+        {{if eq .IPAM_LB "yes" -}}
         --set nodeIPAM.enabled=true
         {{- end}}
       _SOCKET_LB: >-
-        {{if eq LB "yes" -}}
+        {{if eq .LB "yes" -}}
         --set externalIPs.enabled=true
         {{- end}}
       _SOCKET_LB: >-
-        {{if eq SOCKET_LB "yes" -}}
+        {{if eq .SOCKET_LB "yes" -}}
         --set socketLB.enabled=true
         --set socketLB.hostNamespaceOnly=true
         {{- end}}
       _FIREWALL: >-
-        {{if eq FIREWALL "yes" -}}
+        {{if eq .FIREWALL "yes" -}}
         --set hostFirewall.enabled=true
         {{- end}}
       _PROMETHEUS: >-
-        {{if eq PROMETHEUS "yes" -}}
+        {{if eq .PROMETHEUS "yes" -}}
         --set prometheus.enabled=true
         --set operator.prometheus.enabled=true
         {{- end}}
       _GRAFANA: >-
-        {{if eq GRAFANA "yes" -}}
+        {{if eq .GRAFANA "yes" -}}
         --set dashboards.enabled=true
         {{- end}}
+      _OPERATOR: >-
+        {{if .REPLICAS -}}
+        --set operator.replicas={{.REPLICAS}}
+        {{- else -}}
+        --set operator.replicas=1
+        {{- end}}
     cmds:
-      - helm repo add cilium https://helm.cilium.io/
-      - helm repo update
+      - helm repo add cilium https://helm.cilium.io/ --force-update
       - >
         helm upgrade --install
         cilium cilium/cilium
@@ -377,18 +410,20 @@ tasks:
         --namespace kube-system
         --reuse-values
         {{._POD_CIDR}}
+        {{._ISTIO}}
         {{._INGRESS}}
         {{._EGRESS}}
         {{._GATEWAY_API}}
         {{._PROMETHEUS}}
         {{._GRAFANA}}
+        {{._OPERATOR}}
         {{.CLI_ARGS}}
       # Restart unmanaged Pods
-      - >-
-        kubectl get pods --all-namespaces -o custom-columns=NAMESPACE:.metadata.namespace,NAME:.metadata.name,HOSTNETWORK:.spec.hostNetwork --no-headers=true
-        | grep '<none>'
-        | awk '{print "-n "$1" "$2}'
-        | xargs -L 1 -r kubectl delete pod
+      # - >-
+      #   kubectl get pods --all-namespaces -o custom-columns=NAMESPACE:.metadata.namespace,NAME:.metadata.name,HOSTNETWORK:.spec.hostNetwork --no-headers=true
+      #   | grep '<none>'
+      #   | awk '{print "-n "$1" "$2}'
+      #   | xargs -L 1 -r kubectl delete pod
       - >-
         {{if eq ._INGRESS "yes" -}}
         kubectl -n kube-system rollout restart deployment/cilium-operator;
@@ -529,10 +564,11 @@ tasks:
   csi:s3:deploy:self:
     requires:
       vars:
-        - S3_ENDPOINT
-        - ACCESS_KEY_ID
-        - SECRET_ACCESS_KEY
-        - S3_BUCKET
+        - AWS_ENDPOINTS
+        - AWS_ACCESS_KEY_ID
+        - AWS_SECRET_ACCESS_KEY
+        - AWS_BUCKET
+        - RECLAIM_POLICY
     vars:
       _S3_REGION: >-
         {{if .S3_REGION -}}
@@ -540,17 +576,18 @@ tasks:
         {{- end}}
       _RELEASE: '{{default "csi-s3" .RELEASE}}'
     cmds:
-      - helm repo add yandex-s3 https://yandex-cloud.github.io/k8s-csi-s3/charts
-      - helm repo update
+      - helm repo add yandex-s3 https://yandex-cloud.github.io/k8s-csi-s3/charts --force-update
       - >
         helm upgrade --install
         {{._RELEASE}} yandex-s3/csi-s3
         -n csi-s3 --create-namespace
+        --reuse-values
         {{._S3_REGION}}
-        --set secret.endpoint={{.S3_ENDPOINT}}
-        --set secret.accessKey={{.ACCESS_KEY_ID}}
-        --set secret.secretKey={{.SECRET_ACCESS_KEY}}
-        --set storageClass.singleBucket={{.S3_BUCKET}}
+        --set secret.endpoint={{.AWS_ENDPOINTS}}
+        --set secret.accessKey={{.AWS_ACCESS_KEY_ID}}
+        --set secret.secretKey={{.AWS_SECRET_ACCESS_KEY}}
+        --set storageClass.singleBucket={{.AWS_BUCKET}}
+        --set storageClass.reclaimPolicy={{default "Retain" .RECLAIM_POLICY}}
 
   csi:smb:deploy:self:
     _VERSION: '{{if .VERSION}}{{.VERSION}}{{else}}v1.16.0{{end}}'
@@ -605,7 +642,13 @@ tasks:
     desc: >-
       [
       GATEWAY_SERVICE_TYPE
+      NAMESPACE
+      CERT_NAME
+      CERT_NAMESPACE
       ]
+    vars:
+      _NAMESPACE: >-
+        {{default "envoy-gateway-system" .NAMESPACE}}
     cmds:
       - |-
         kubectl apply -f - <<EOF
@@ -615,7 +658,7 @@ tasks:
         kind: EnvoyProxy
         metadata:
           name: custom-eg-config
-          namespace: envoy-gateway-system
+          namespace: {{._NAMESPACE}}
         spec:
           provider:
             type: Kubernetes
@@ -627,7 +670,8 @@ tasks:
         apiVersion: gateway.networking.k8s.io/v1
         kind: GatewayClass
         metadata:
-          name: eg
+          name: envoy-gateway
+          namespace: {{._NAMESPACE}}
         spec:
           controllerName: gateway.envoyproxy.io/gatewayclass-controller
           {{- if .GATEWAY_SERVICE_TYPE}}
@@ -635,23 +679,41 @@ tasks:
             group: gateway.envoyproxy.io
             kind: EnvoyProxy
             name: custom-eg-config
-            namespace: envoy-gateway-system
+            namespace: {{._NAMESPACE}}
           {{- end}}
         ---
         apiVersion: gateway.networking.k8s.io/v1
         kind: Gateway
         metadata:
-          name: eg-web
-          namespace: envoy-gateway-system
+          name: envoy-gateway-web
+          namespace: {{._NAMESPACE}}
         spec:
-          gatewayClassName: eg
+          gatewayClassName: envoy-gateway
           listeners:
             - name: http
               protocol: HTTP
               port: 80
+              allowedRoutes:
+                namespaces:
+                  from: Selector
+                  selector:
+                    matchLabels:
+                      gateway-namespace: "true"
             - name: https
               protocol: HTTPS
               port: 443
+              tls:
+                mode: Terminate
+                certificateRefs:
+                  - name: {{.CERT_NAME}}
+                    namespace: {{default ._NAMESPACE .CERT_NAMESPACE}}
+                    kind: Secret
+              allowedRoutes:
+                namespaces:
+                  from: Selector
+                  selector:
+                    matchLabels:
+                      gateway-namespace: "true"
         EOF
 
   fission:deploy:self:
@@ -813,8 +875,7 @@ tasks:
 
   juicefs:csi:deploy:self:
     cmds:
-      - helm repo add juicefs https://juicedata.github.io/charts/
-      - helm repo update
+      - helm repo add juicefs https://juicedata.github.io/charts/ --force-update
       - >
         helm upgrade --install
         juicefs-csi-driver juicefs/juicefs-csi-driver
@@ -827,7 +888,7 @@ tasks:
   juicefs:csi:deploy:storage-class:
     cmds:
       - |-
-        helm upgrade --install juicefs-csi-driver juicefs/juicefs-csi-driver --namespace kube-system --create-namespace --reuse-values --values - <<'EOF'
+        helm upgrade --install juicefs juicefs/juicefs-csi-driver --namespace kube-system --create-namespace --reuse-values --values - <<'EOF'
         # For production environment, manually create & manage storageClass outside Helm is recommended, ref: https://juicefs.com/docs/csi/guide/pv#create-storage-class
         storageClasses:
         - name: "juicefs-sc"
@@ -970,6 +1031,23 @@ tasks:
           format-options: --block-size=2M,--compress=lz4,trash-days=3{{._ENCRYPT_RSA_KEY}}
         EOF
 
+  kubectl:exec:shell:
+    requires:
+      vars:
+        - NAMESPACE
+        - POD
+        - CONTAINER
+    cmds:
+      - >-
+        kubectl exec
+        -i -t
+        -n {{.NAMESPACE}}
+        {{.POD}}
+        --container {{.CONTAINER}}
+        --
+        sh -c
+        "clear; (bash || ash || sh)"
+
   kadalu:deploy:self:
     vars:
       _VERSION: '1.3.0'
@@ -1015,6 +1093,7 @@ tasks:
       IS_TRAEFIK
       IS_SERVICELB
       DISABLE
+      IS_CUSTOM_CNI
       IS_ENCRYPT
       CRON
       IS_S3
@@ -1088,6 +1167,10 @@ tasks:
         {{if .DISABLE -}}
         ,{{.DISABLE}}
         {{- end}}
+        {{- end}}
+        {{if eq .IS_CUSTOM_CNI "yes" -}}
+        --flannel-backend=none
+        --disable-network-policy
         {{- end}}
         {{if eq .IS_ENCRYPT "yes" -}}
         --secrets-encryption
@@ -1307,7 +1390,24 @@ tasks:
         --wait
       - task: kubevela:deploy:velaux
 
-  kubevela:deploy:velaux:
+  kubevela:addon:registry:official:
+    vars:
+      VELA:
+        sh: >-
+          if command -v vela > /dev/null 2>&1; then
+            echo "vela";
+          elif command -v kubectl > /dev/null 2>&1; then
+            echo "kubectl vela";
+          fi;
+    cmds:
+      - >-
+        {{.VELA}} addon registry update
+        KubeVela --type helm --endpoint=https://kubevela.github.io/catalog/official
+      - >-
+        {{.VELA}} addon registry update
+        KubeVela --type helm --endpoint=https://kubevela.github.io/catalog/experimental
+
+  kubevela:addon:velaux:install:
     vars:
       VELA:
         sh: >-
@@ -1319,7 +1419,7 @@ tasks:
     cmds:
       - '{{.VELA}} addon enable velaux'
 
-  kubevela:velaux:forward:
+  kubevela:addon:velaux:forward:
     vars:
       VELA:
         sh: >-
@@ -1330,6 +1430,34 @@ tasks:
           fi;
     cmds:
       - '{{.VELA}} port-forward -n vela-system addon-velaux 8000:8000'
+
+  kubevela:crd:list:
+    vars:
+      VELA:
+        sh: >-
+          if command -v vela > /dev/null 2>&1; then
+            echo "vela";
+          elif command -v kubectl > /dev/null 2>&1; then
+            echo "kubectl vela";
+          fi;
+    cmds:
+      - >-
+        {{.VELA}} def list
+
+  kubevela:crd:describe:
+    requires:
+      vars: [KIND]
+    vars:
+      VELA:
+        sh: >-
+          if command -v vela > /dev/null 2>&1; then
+            echo "vela";
+          elif command -v kubectl > /dev/null 2>&1; then
+            echo "kubectl vela";
+          fi;
+    cmds:
+      - >-
+        {{.VELA}} show {{.KIND}} {{.CLI_ARGS}}
 
   local-path-provisioner:deploy:self:k3s:
     cmds:
@@ -1995,60 +2123,100 @@ tasks:
         --set operatorNamespace=rook-ceph
 
   traefik:deploy:self:
-    desc: 'Deploy traefik [RELEASE VERSION CRD INGRESS GWAPI] -- [options]'
+    desc: >-
+      Deploy traefik
+      [
+      RELEASE
+      VERSION
+
+      IS_DAEMONSET
+      IS_NODEPORT
+      IS_HOSTPORT
+
+      IS_CRD
+      IS_INGRESS
+      IS_DEFAULT_INGRESS
+      IS_GATEWAY_API
+
+      IS_PROMETHEUS
+      ]
+      -- [options]
     vars:
-      _RELEASE: >
-        {{if .RELEASE -}}
-        {{.RELEASE}}
-        {{- else -}}
-        traefik
-        {{- end}}
-      _VERSION: >
-        {{if .VERSION -}}
-        {{.VERSION}}
-        {{- else -}}
-        32.0.0
-        {{- end}}
-      _NAMESPACE: '--namespace {{if .NAMESPACE}}{{.NAMESPACE}}{{else}}traefik{{end}} --create-namespace'
-      _METRICS: >
-        {{if true -}}
-        --set metrics.prometheus.enabled=true
-        --set metrics.prometheus.service.enabled=true
-        {{- end}}
-      _DAEMONSET: '{{if ne .DAEMONSET "false"}}--set deployment.kind=DaemonSet{{end}}'
-      _CRD: >
-        {{if eq .CRD "false" -}}
-        --set providers.kubernetesCRD.enabled=false
-        {{- else -}}
-        --set providers.kubernetesCRD.allowCrossNamespace=true
-        --set providers.kubernetesCRD.allowExternalNameServices=true
-        --set ingressRoute.dashboard.enabled=true
-        {{- end}}
-      _INGRESS: >
-        {{if eq .INGRESS "false" -}}
-        --set providers.kubernetesIngress.enabled=false
-        {{- else -}}
-        --set providers.kubernetesIngress.allowExternalNameServices=true
-        {{if ne .INGRESS_DEFAULT "true"}}--set ingressClass.isDefaultClass=false{{end}}
-        {{- end}}
-      _GWAPI: >
-        {{if ne .GWAPI "false" -}}
-        --set providers.kubernetesGateway.enabled=true
-        --set providers.kubernetesGateway.experimentalChannel=true
-        {{- end}}
-    cmds:
-      - helm repo add traefik https://traefik.github.io/charts
-      - helm repo update
-      - >
+      _RELEASE: '{{default "traefik" .RELEASE}}'
+      _VERSION: '{{default "32.0.0" .VERSION}}'
+      _NAMESPACE: '--namespace {{default "traefik" .NAMESPACE}} --create-namespace'
+      _ENTRYPOINT: >-
         helm upgrade --install
         {{._RELEASE}} traefik/traefik --version {{._VERSION}}
         {{._NAMESPACE}}
-        {{._METRICS}}
-        {{._DAEMONSET}}
-        {{._CRD}}
-        {{._INGRESS}}
-        {{._GWAPI}}
         {{.CLI_ARGS}}
+    cmds:
+      - helm repo add traefik https://traefik.github.io/charts --force-update
+      - |-
+        {{._ENTRYPOINT}} --values - <<EOF
+        deployment:
+          kind: {{if eq .IS_DAEMONSET "false"}}Deployment{{else}}DaemonSet{{end}}
+
+        service:
+          type: {{default "NodePort" .SERVICE_TYPE}}
+
+        ports:
+          web:
+            {{- if eq .IS_HOSTPORT "true"}}
+            hostPort: 80
+            {{- end}}
+          websecure:
+            {{- if eq .IS_HOSTPORT "true"}}
+            hostPort: 443
+            {{- end}}
+            http3:
+              enabled: true
+
+        providers:
+          kubernetesGateway:
+            enabled: {{if eq .IS_GATEWAY_API "false"}}false{{else}}true{{end}}
+            experimentalChannel: true
+
+          kubernetesIngress:
+            allowExternalNameServices: {{if eq .IS_INGRESS "false"}}false{{else}}true{{end}}
+
+        {{if eq .CRD "false" -}}
+          kubernetesCRD:
+            enabled: false
+
+        {{- else -}}
+          kubernetesCRD:
+            allowCrossNamespace: true
+            allowExternalNameServices: true
+
+        ingressRoute:
+          dashboard:
+            enabled: true
+        {{- end}}
+
+        ingressClass:
+          isDefaultClass: {{if eq .IS_DEFAULT_INGRESS "false"}}false{{else}}true{{end}}
+
+        gateway:
+          listeners:
+            web:
+              namespacePolicy: All
+            websecure:
+              port: 8443
+              protocol: HTTPS
+              namespacePolicy: All
+              mode: Terminate
+              certificateRefs:
+                - kind: Secret
+                  name: master-general-secret
+                  namespace: infra
+
+        metrics:
+          prometheus:
+            enabled: {{if eq .IS_PROMETHEUS "false"}}false{{else}}true{{end}}
+            service:
+              enabled: true
+        EOF
 
   tsuru:deploy:self:
     cmds:
