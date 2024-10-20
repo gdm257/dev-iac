@@ -1314,6 +1314,10 @@ tasks:
             - ns
             - node-shell
 
+  kuboard:deploy:self:
+    cmds:
+      - kubectl apply -f https://addons.kuboard.cn/kuboard/kuboard-v3.yaml
+
   kube-vip:deploy:self:
     desc: 'Deploy kube-vip'
     cmds:
@@ -1388,7 +1392,6 @@ tasks:
         kubevela kubevela/vela-core
         -n vela-system --create-namespace
         --wait
-      - task: kubevela:deploy:velaux
 
   kubevela:addon:registry:official:
     vars:
@@ -1416,8 +1419,28 @@ tasks:
           elif command -v kubectl > /dev/null 2>&1; then
             echo "kubectl vela";
           fi;
+      _GATEWAY: >-
+        {{if eq .IS_TRAEFIK "true" -}}
+        gatewayDriver="traefik"
+        {{- end}}
+        {{if .DOMAIN -}}
+        domain="{{.DOMAIN}}"
+        {{- end}}
+      _DB: >-
+        {{if eq .IS_POSTGRES "true" -}}
+        dbType="postgres"
+        {{- end}}
+        {{if .DB_NAME -}}
+        database="{{.DB_NAME}}"
+        {{- end}}
+        {{if .DB_URL -}}
+        dbURL="{{.DB_URL}}"
+        {{- end}}
     cmds:
-      - '{{.VELA}} addon enable velaux'
+      - >-
+        {{.VELA}} addon enable velaux
+        {{._DB}}
+        {{._GATEWAY}}
 
   kubevela:addon:velaux:forward:
     vars:
@@ -2220,14 +2243,13 @@ tasks:
 
   tsuru:deploy:self:
     cmds:
-      - helm repo add tsuru https://tsuru.github.io/charts
-      - helm repo update
+      - helm repo add tsuru https://tsuru.github.io/charts --force-update
       - >
         helm upgrade --install
         tsuru tsuru/tsuru-stack
         --create-namespace --namespace tsuru-system
-        --set ingress-nginx.enabled=false
-        --set tsuru-api.service.type=ClusterIP
+        --set ingress-nginx.enabled=true
+        --set tsuru-api.service.type=NodePort
 
   velero:deploy:self:
     desc: 'Deploy velero 1.14.1'
