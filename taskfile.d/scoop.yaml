@@ -1167,6 +1167,7 @@ tasks:
             # - kops
             - main/flux
             - argocd
+            - tsuru
             # - wsl2-distro-manager
             # - WsaToolbox
             # - wsldl
