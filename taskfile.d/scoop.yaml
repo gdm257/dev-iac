@@ -321,7 +321,7 @@ tasks:
             - lessmsi
             - age
             - enc
-            - sops
+            # - sops
             - vault
             - dirhash
             # - chezmoi
@@ -465,7 +465,7 @@ tasks:
             # - notepadplusplus
             # - islide
             # - vscode-portable
-            - emeditor
+            # - emeditor
             - sublime-text
             # - notepad2-mod
             # - notepad3
@@ -1168,6 +1168,7 @@ tasks:
             - main/flux
             - argocd
             - tsuru
+            - velero
             # - wsl2-distro-manager
             # - WsaToolbox
             # - wsldl

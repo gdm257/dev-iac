@@ -9,6 +9,7 @@ tasks:
         vars:
           APPS:
             - Microsoft.WindowsTerminal
+            - Mozilla.SOPS
             - Espanso.Espanso
             # - kapitainsky.RcloneBrowser
             # - FastCopy.FastCopy
