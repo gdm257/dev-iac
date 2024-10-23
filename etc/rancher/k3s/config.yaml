@@ -1,0 +1,27 @@
+tls-san:
+  - '127.0.0.1'
+
+data-dir: /home/rancher/k3s
+
+# Embedded Etcd
+cluster-init: true
+
+etcd-snapshot-schedule-cron: '45 */8 * * *'
+etcd-snapshot-retention: 10
+
+etcd-s3: true
+etcd-s3-endpoint: s3.example.com
+etcd-s3-access-key: foo
+etcd-s3-secret-key: bar
+
+service-node-port-range: '30000-32767'
+
+disable:
+  - servicelb
+  - traefik
+
+flannel-backend: "none"
+disable-network-policy: true
+
+secrets-encryption: true
+
