@@ -1,0 +1,94 @@
+version: '3'
+
+tasks:
+
+  encrypt:
+    desc: >-
+      Encrypt a file
+      <FILE>
+      [
+      FORMAT
+      OUTPUT
+      ]
+      -- [options]
+    vars:
+      # yaml, json, env
+      _FORMAT: >-
+        {{if .FORAMT -}}
+        --input-format {{.FORAMT}}
+        --output-format {{.FORMAT}}
+        {{- end}}
+      _OUTPUT: >-
+        {{if .OUTPUT -}}
+        --output {{.OUTPUT}}
+        {{- else -}}
+        --in-place
+        {{- end}}
+    cmds:
+      - >-
+        sops --encrypt
+        {{._FORMAT}}
+        {{._OUTPUT}}
+        {{.CLI_ARGS}}
+        {{.FILE}}
+
+  edit:
+    desc: >-
+      Edit a encrypted file interactively
+      <FILE>
+      [
+      FORMAT
+      ]
+      -- [options]
+    vars:
+      # yaml, json, env
+      _FORMAT: >-
+        {{if .FORAMT -}}
+        --input-format {{.FORAMT}}
+        --output-format {{.FORMAT}}
+        {{- end}}
+    cmds:
+      - >-
+        sops
+        {{._FORMAT}}
+        {{.CLI_ARGS}}
+        {{.FILE}}
+
+  decrypt:
+    desc: >-
+      Decrypt a file
+      <FILE>
+      [
+      FORMAT
+      MAC
+      OUTPUT
+      ]
+      -- [options]
+    requests:
+      vars:
+        - FILE
+    vars:
+      # yaml, json, env
+      _FORMAT: >-
+        {{if .FORAMT -}}
+        --input-format {{.FORAMT}}
+        --output-format {{.FORMAT}}
+        {{- end}}
+      _MAC: >-
+        {{if eq .MODIFIED "true" -}}
+        --ignore-mac
+        {{- end}}
+      _OUTPUT: >-
+        {{if .OUTPUT -}}
+        --output {{.OUTPUT}}
+        {{- else -}}
+        --in-place
+        {{- end}}
+    cmds:
+      - >-
+        sops --decrypt
+        {{._FORMAT}}
+        {{._MAC}}
+        {{.CLI_ARGS}}
+        {{._OUTPUT}}
+        {{.FILE}}
