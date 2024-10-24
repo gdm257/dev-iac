@@ -19,6 +19,7 @@ service-node-port-range: '30000-32767'
 disable:
   - servicelb
   - traefik
+  - local-storage
 
 flannel-backend: "none"
 disable-network-policy: true
