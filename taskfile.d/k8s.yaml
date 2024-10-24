@@ -2253,11 +2253,98 @@ tasks:
 
   velero:deploy:self:
     desc: 'Deploy velero 1.14.1'
+    vars:
+      _VERSION: '{{default "7.2.1" .VERSION}}'
+      _AGENT: >-
+        --set deployNodeAgent=true
+      _PROVIDERS: >-
+        --set initContainers[0].name=velero-plugin-for-aws
+        --set initContainers[0].image=velero/velero-plugin-for-aws:v1.10.0
+        --set initContainers[0].imagePullPolicy=IfNotPresent
+        --set initContainers[0].volumeMounts[0].mountPath=/target
+        --set initContainers[0].volumeMounts[0].name=plugins
+      _LOCATION: >-
+        --set backupsEnabled=true
+        --set configuration.volumeSnapshotLocation=[]
+        --set configuration.backupStorageLocation=[]
+      _SNAPSHOTTER: >-
+        --set configuration.uploaderType=kopia
+      _RESOURCES: >-
+        --set resources.requests.cpu=100m
+        --set resources.requests.memory=100Mi
+        --set resources.limits.cpu=300m
+        --set resources.limits.memory=300Mi
     cmds:
-      - helm repo add vmware-tanzu https://vmware-tanzu.github.io/helm-charts
-      - helm repo update
+      - helm repo add vmware-tanzu https://vmware-tanzu.github.io/helm-charts --force-update
       - >
         helm upgrade --install
         velero vmware-tanzu/velero
-        --version 7.2.1
+        --version {{._VERSION}}
+        -n velero --create-namespace
+        --reuse-values
+        {{._PROVIDERS}}
+        {{._LOCATION}}
+        {{._SNAPSHOTTER}}
+        {{._RESOURCES}}
+        {{.CLI_ARGS}}
+
+  velero:location:create:s3:
+    desc: >-
+      <
+      AWS_ENDPOINTS
+      AWS_ACCESS_KEY_ID
+      AWS_SECRET_ACCESS_KEY
+      AWS_BUCKET
+      >
+      [
+      NAME
+      NAMESPACE
+      AWS_REGION
+      SECRET_NAME
+      SECRET_KEY
+      IS_DEFAULT
+      ]
+      -- [options]
+    requires:
+      vars:
+        - AWS_ENDPOINTS
+        - AWS_ACCESS_KEY_ID
+        - AWS_SECRET_ACCESS_KEY
+        - AWS_BUCKET
+    vars:
+      _NAME: '{{default "s3-backup" .NAME}}'
+      _CRED_BASE64:
+        sh: |-
+          base64 -w 0 <<EOF
+          [default]
+          aws_access_key_id = {{.AWS_ACCESS_KEY_ID}}
+          aws_secret_access_key = {{.AWS_SECRET_ACCESS_KEY}}
+          EOF
+      _S3: >-
+        --provider aws
+        --bucket {{.AWS_BUCKET}}
+        --config region={{default "us-east-1" .AWS_REGION}}
+        --config s3ForcePathStyle="true"
+        --config s3Url={{.AWS_ENDPOINTS}}
+        --credential {{default "velero-location-credentials" .SECRET_NAME}}={{default "s3" .SECRET_KEY}}
+      _DEFAULT: >-
+        {{if eq .IS_DEFAULT "true" -}}
+        --default
+        {{- end}}
+    cmds:
+      - |-
+        kubectl apply -f - <<EOF
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: {{default "velero-location-credentials" .SECRET_NAME}}
+          namespace: {{default "velero" .NAMESPACE}}
+        type: Opaque
+        data:
+          {{default "s3" .SECRET_KEY}}: {{._CRED_BASE64}}
+        EOF
+      - >-
+        velero backup-location create {{._NAME}}
+        {{._S3}}
+        {{._DEFAULT}}
         {{.CLI_ARGS}}
