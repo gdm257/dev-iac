@@ -2259,7 +2259,7 @@ tasks:
         --set deployNodeAgent=true
       _PROVIDERS: >-
         --set initContainers[0].name=velero-plugin-for-aws
-        --set initContainers[0].image=velero/velero-plugin-for-aws:v1.10.0
+        --set initContainers[0].image=velero/velero-plugin-for-aws:v1.9.0
         --set initContainers[0].imagePullPolicy=IfNotPresent
         --set initContainers[0].volumeMounts[0].mountPath=/target
         --set initContainers[0].volumeMounts[0].name=plugins
@@ -2267,8 +2267,9 @@ tasks:
         --set backupsEnabled=true
         --set configuration.volumeSnapshotLocation=[]
         --set configuration.backupStorageLocation=[]
+      # kopia/restic
       _SNAPSHOTTER: >-
-        --set configuration.uploaderType=kopia
+        --set configuration.uploaderType=restic
       _RESOURCES: >-
         --set resources.requests.cpu=100m
         --set resources.requests.memory=100Mi
@@ -2323,10 +2324,10 @@ tasks:
       _S3: >-
         --provider aws
         --bucket {{.AWS_BUCKET}}
-        --config region={{default "us-east-1" .AWS_REGION}}
-        --config s3ForcePathStyle="true"
-        --config s3Url={{.AWS_ENDPOINTS}}
         --credential {{default "velero-location-credentials" .SECRET_NAME}}={{default "s3" .SECRET_KEY}}
+        --config s3Url={{.AWS_ENDPOINTS}}
+        --config s3ForcePathStyle="true"
+        --config region={{default "us-east-1" .AWS_REGION}}
       _DEFAULT: >-
         {{if eq .IS_DEFAULT "true" -}}
         --default
