@@ -196,7 +196,7 @@ tasks:
         {{- end}}
       SECRET_KEY_VALUE_BASE64:
         sh: >-
-          echo "{{.SECRET_KEY_VALUE}}" | base64
+          echo -n "{{.SECRET_KEY_VALUE}}" | base64
     cmds:
       - |-
         kubectl apply -f - <<EOF
@@ -326,7 +326,7 @@ tasks:
       Deploy cilium
       [
       POD_CIDR
-      ISTIO
+      IS_ISTIO
       ]
       -- [options]
     vars:
@@ -1398,9 +1398,9 @@ tasks:
       VELA:
         sh: >-
           if command -v vela > /dev/null 2>&1; then
-            echo "vela";
+            echo -n "vela";
           elif command -v kubectl > /dev/null 2>&1; then
-            echo "kubectl vela";
+            echo -n "kubectl vela";
           fi;
     cmds:
       - >-
@@ -1415,9 +1415,9 @@ tasks:
       VELA:
         sh: >-
           if command -v vela > /dev/null 2>&1; then
-            echo "vela";
+            echo -n "vela";
           elif command -v kubectl > /dev/null 2>&1; then
-            echo "kubectl vela";
+            echo -n "kubectl vela";
           fi;
       _GATEWAY: >-
         {{if eq .IS_TRAEFIK "true" -}}
@@ -1447,9 +1447,9 @@ tasks:
       VELA:
         sh: >-
           if command -v vela > /dev/null 2>&1; then
-            echo "vela";
+            echo -n "vela";
           elif command -v kubectl > /dev/null 2>&1; then
-            echo "kubectl vela";
+            echo -n "kubectl vela";
           fi;
     cmds:
       - '{{.VELA}} port-forward -n vela-system addon-velaux 8000:8000'
@@ -1459,9 +1459,9 @@ tasks:
       VELA:
         sh: >-
           if command -v vela > /dev/null 2>&1; then
-            echo "vela";
+            echo -n "vela";
           elif command -v kubectl > /dev/null 2>&1; then
-            echo "kubectl vela";
+            echo -n "kubectl vela";
           fi;
     cmds:
       - >-
@@ -1474,9 +1474,9 @@ tasks:
       VELA:
         sh: >-
           if command -v vela > /dev/null 2>&1; then
-            echo "vela";
+            echo -n "vela";
           elif command -v kubectl > /dev/null 2>&1; then
-            echo "kubectl vela";
+            echo -n "kubectl vela";
           fi;
     cmds:
       - >-
@@ -1767,7 +1767,7 @@ tasks:
           if [[ -z "${OS}" ]];
           then OS=$(grep -E "^ID=" /etc/os-release | cut -d '=' -f 2);
           fi;
-          echo ${OS};
+          echo -n ${OS};
       DEBIAN:
         sh: >-
           if [[ "{{.OS}}" == *"debian"* ]]; then echo "yes"; else echo "no"; fi
@@ -1892,11 +1892,11 @@ tasks:
         longhorn-backup-s3-compatible-secret
         {{- end}}
       AWS_ACCESS_KEY_ID_BASE64:
-        sh: 'echo {{.AWS_ACCESS_KEY_ID}} | base64'
+        sh: 'echo -n {{.AWS_ACCESS_KEY_ID}} | base64'
       AWS_SECRET_ACCESS_KEY_BASE64:
-        sh: 'echo {{.AWS_SECRET_ACCESS_KEY}} | base64'
+        sh: 'echo -n {{.AWS_SECRET_ACCESS_KEY}} | base64'
       AWS_ENDPOINTS_BASE64:
-        sh: 'echo {{.AWS_ENDPOINTS}} | base64'
+        sh: 'echo -n {{.AWS_ENDPOINTS}} | base64'
       VIRTUAL_HOSTED_STYLE_BASE64: >-
         {{if eq .VIRTUAL_HOSTED_STYLE "false" -}}
         ZmFsc2U=
@@ -2255,8 +2255,6 @@ tasks:
     desc: 'Deploy velero 1.14.1'
     vars:
       _VERSION: '{{default "7.2.1" .VERSION}}'
-      _AGENT: >-
-        --set deployNodeAgent=true
       _PROVIDERS: >-
         --set initContainers[0].name=velero-plugin-for-aws
         --set initContainers[0].image=velero/velero-plugin-for-aws:v1.10.1
@@ -2268,13 +2266,19 @@ tasks:
         --set configuration.volumeSnapshotLocation=[]
         --set configuration.backupStorageLocation=[]
       # kopia/restic
-      _SNAPSHOTTER: >-
-        --set configuration.uploaderType=restic
+      _FSB: >-
+        --set deployNodeAgent=true
+        --set configuration.defaultVolumesToFsBackup=true
+        --set configuration.uploaderType=kopia
       _RESOURCES: >-
         --set resources.requests.cpu=100m
         --set resources.requests.memory=100Mi
         --set resources.limits.cpu=300m
         --set resources.limits.memory=300Mi
+        --set nodeAgent.resources.requests.cpu=100m
+        --set nodeAgent.resources.requests.memory=100Mi
+        --set nodeAgent.resources.limits.cpu=400m
+        --set nodeAgent.resources.limits.memory=400Mi
     cmds:
       - helm repo add vmware-tanzu https://vmware-tanzu.github.io/helm-charts --force-update
       - >
@@ -2285,9 +2289,30 @@ tasks:
         --reuse-values
         {{._PROVIDERS}}
         {{._LOCATION}}
-        {{._SNAPSHOTTER}}
+        {{._FSB}}
         {{._RESOURCES}}
         {{.CLI_ARGS}}
+
+  velero:repo:passwd:
+    dir: '{{.USER_WORKING_DIR}}'
+    requires:
+      vars: [PASSWORD]
+    vars:
+      _PASSWORD_BASE64:
+        sh: >-
+          echo -n '{{default "static-passw0rd" .PASSWORD}}' | base64
+    cmds:
+      - |-
+        cat > temp-manifest.yaml <<EOF
+        data:
+          repository-password: '{{._PASSWORD_BASE64}}'
+        EOF
+      - >-
+        kubectl patch
+        Secret velero-repo-credentials
+        -n velero
+        --patch-file temp-manifest.yaml
+      - defer: rm temp-manifest.yaml
 
   velero:location:create:s3:
     desc: >-
