@@ -2259,7 +2259,7 @@ tasks:
         --set deployNodeAgent=true
       _PROVIDERS: >-
         --set initContainers[0].name=velero-plugin-for-aws
-        --set initContainers[0].image=velero/velero-plugin-for-aws:v1.9.0
+        --set initContainers[0].image=velero/velero-plugin-for-aws:v1.10.1
         --set initContainers[0].imagePullPolicy=IfNotPresent
         --set initContainers[0].volumeMounts[0].mountPath=/target
         --set initContainers[0].volumeMounts[0].name=plugins
@@ -2328,6 +2328,7 @@ tasks:
         --config s3Url={{.AWS_ENDPOINTS}}
         --config s3ForcePathStyle="true"
         --config region={{default "us-east-1" .AWS_REGION}}
+        --config checksumAlgorithm=""
       _DEFAULT: >-
         {{if eq .IS_DEFAULT "true" -}}
         --default
