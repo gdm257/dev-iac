@@ -2384,4 +2384,4 @@ tasks:
         --default-volumes-to-fs-backup=true
         {{if .LOCATION}}--storage-location {{.LOCATION}}{{end}}
         --ttl {{default "30d" .TTL}}
-      {{.CLI_ARGS}}
+        {{.CLI_ARGS}}
