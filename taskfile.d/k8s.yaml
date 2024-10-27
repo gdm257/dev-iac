@@ -2375,3 +2375,13 @@ tasks:
         {{._S3}}
         {{._DEFAULT}}
         {{.CLI_ARGS}}
+
+  velero:schedule:create:
+    cmds:
+      - >-
+        velero schedule create {{.NAME}}
+        --schedule='{{default "0 */10 * * *" .CRON}}'
+        --default-volumes-to-fs-backup=true
+        {{if .LOCATION}}--storage-location {{.LOCATION}}{{end}}
+        --ttl {{default "30d" .TTL}}
+      {{.CLI_ARGS}}
