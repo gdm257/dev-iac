@@ -504,21 +504,26 @@ tasks:
         {{- end}}
       # Backup
       _S3: >-
-        {{if eq .S3 "yes" -}}
+        {{if eq .S3 "true" -}}
         --set backups.enabled=true
         --set backups.provider=s3
         --set backups.endpointURL={{.AWS_ENDPOINTS}}
-        --set backups.s3.region="{{default "" .AWS_REGION}}"
+        --set backups.s3.region="{{default "us-east-1" .AWS_REGION}}"
         --set backups.s3.accessKey={{.AWS_ACCESS_KEY_ID}}
         --set backups.s3.secretKey={{.AWS_SECRET_ACCESS_KEY}}
         --set backups.s3.bucket={{.AWS_BUCKET}}
         --set backups.s3.path="{{default "/" .AWS_PATH}}"
-        --set backups.scheduledBackups[0].name=daily-backup
+        --set backups.scheduledBackups[0].name={{default "daily-backup" .BACKUP_NAME}}
         --set backups.scheduledBackups[0].backupOwnerReference=self
         --set backups.scheduledBackups[0].method=barmanObjectStore
         --set backups.scheduledBackups[0].schedule="{{default "0 0 3 * * *" .CRON}}"
         --set backups.retentionPolicy={{default "30d" .RETENTION}}
         {{- end}}
+      _RESOURCES: >-
+        --set cluster.resources.limits.cpu=700m
+        --set cluster.resources.limits.memory=700Mi
+        --set cluster.resources.requests.cpu=200m
+        --set cluster.resources.requests.memory=200Mi
     cmds:
       - helm repo add cnpg https://cloudnative-pg.github.io/charts --force-update
       - >
@@ -528,6 +533,7 @@ tasks:
         --reuse-values
         {{._POSTGIS}}
         {{._PG_VERSION}}
+        {{._RESOURCES}}
         {{._INSTANCES}}
         {{._SIZE}}
         {{._STORAGE_CLASS}}
@@ -568,7 +574,6 @@ tasks:
         - AWS_ACCESS_KEY_ID
         - AWS_SECRET_ACCESS_KEY
         - AWS_BUCKET
-        - RECLAIM_POLICY
     vars:
       _S3_REGION: >-
         {{if .S3_REGION -}}
@@ -588,6 +593,7 @@ tasks:
         --set secret.secretKey={{.AWS_SECRET_ACCESS_KEY}}
         --set storageClass.singleBucket={{.AWS_BUCKET}}
         --set storageClass.reclaimPolicy={{default "Retain" .RECLAIM_POLICY}}
+        --set storageClass.mountOptions='--memory-limit 1000 --dir-mode 0777 --file-mode 0666 --no-systemd --enable-mtime --enable-perms'
 
   csi:smb:deploy:self:
     _VERSION: '{{if .VERSION}}{{.VERSION}}{{else}}v1.16.0{{end}}'
@@ -1483,186 +1489,36 @@ tasks:
         {{.VELA}} show {{.KIND}} {{.CLI_ARGS}}
 
   local-path-provisioner:deploy:self:k3s:
+    vars:
+      _DATA_DIR: '{{default "/var/lib/rancher/k3s/storage" .DATA_DIR}}'
     cmds:
       - task: local-path-provisioner:deploy:self
         vars:
-          K3S: "true"
+          DATA_DIR: "{{._DATA_DIR}}"
 
   local-path-provisioner:deploy:self:
-    silent: true
+    dir: '{{.USER_WORKING_DIR}}'
     vars:
-      _DATA_DIR: >-
-        {{if .DATA_DIR -}}
-        {{.DATA_DIR}}
-        {{- else -}}
-        /opt/local-path-provisioner
-        {{- end}}
+      _CSI_VERSION: '--set image.tag={{default "v0.0.30" .CSI_VERSION}}'
+      _PATH: >-
+        --set nodePathMap[0].node=DEFAULT_PATH_FOR_NON_LISTED_NODES
+        --set nodePathMap[0].paths[0]='{{default "/opt/local-path-provisioner" .DATA_DIR}}'
+      _SC: >-
+        --set storageClass.defaultClass={{default "false" .DEFAULT}}
+        --set storageClass.defaultVolumeType={{default "local" .VOLUME_TYPE}}
     cmds:
-      # - kubectl apply -f https://raw.githubusercontent.com/rancher/local-path-provisioner/v0.0.30/deploy/local-path-storage.yaml
-      - |-
-        kubectl apply -f - <<'EOF'
-        apiVersion: v1
-        kind: Namespace
-        metadata:
-          name: local-path-storage
-
-        ---
-        apiVersion: v1
-        kind: ServiceAccount
-        metadata:
-          name: local-path-provisioner-service-account
-          namespace: local-path-storage
-
-        ---
-        apiVersion: rbac.authorization.k8s.io/v1
-        kind: Role
-        metadata:
-          name: local-path-provisioner-role
-          namespace: local-path-storage
-        rules:
-          - apiGroups: [""]
-            resources: ["pods"]
-            verbs: ["get", "list", "watch", "create", "patch", "update", "delete"]
-
-        ---
-        apiVersion: rbac.authorization.k8s.io/v1
-        kind: ClusterRole
-        metadata:
-          name: local-path-provisioner-role
-        rules:
-          - apiGroups: [""]
-            resources: ["nodes", "persistentvolumeclaims", "configmaps", "pods", "pods/log"]
-            verbs: ["get", "list", "watch"]
-          - apiGroups: [""]
-            resources: ["persistentvolumes"]
-            verbs: ["get", "list", "watch", "create", "patch", "update", "delete"]
-          - apiGroups: [""]
-            resources: ["events"]
-            verbs: ["create", "patch"]
-          - apiGroups: ["storage.k8s.io"]
-            resources: ["storageclasses"]
-            verbs: ["get", "list", "watch"]
-
-        ---
-        apiVersion: rbac.authorization.k8s.io/v1
-        kind: RoleBinding
-        metadata:
-          name: local-path-provisioner-bind
-          namespace: local-path-storage
-        roleRef:
-          apiGroup: rbac.authorization.k8s.io
-          kind: Role
-          name: local-path-provisioner-role
-        subjects:
-          - kind: ServiceAccount
-            name: local-path-provisioner-service-account
-            namespace: local-path-storage
-
-        ---
-        apiVersion: rbac.authorization.k8s.io/v1
-        kind: ClusterRoleBinding
-        metadata:
-          name: local-path-provisioner-bind
-        roleRef:
-          apiGroup: rbac.authorization.k8s.io
-          kind: ClusterRole
-          name: local-path-provisioner-role
-        subjects:
-          - kind: ServiceAccount
-            name: local-path-provisioner-service-account
-            namespace: local-path-storage
-
-        ---
-        apiVersion: apps/v1
-        kind: Deployment
-        metadata:
-          name: local-path-provisioner
-          namespace: local-path-storage
-        spec:
-          replicas: 1
-          selector:
-            matchLabels:
-              app: local-path-provisioner
-          template:
-            metadata:
-              labels:
-                app: local-path-provisioner
-            spec:
-              serviceAccountName: local-path-provisioner-service-account
-              containers:
-                - name: local-path-provisioner
-                  image: rancher/local-path-provisioner:v0.0.30
-                  imagePullPolicy: IfNotPresent
-                  command:
-                    - local-path-provisioner
-                    - --debug
-                    - start
-                    - --config
-                    - /etc/config/config.json
-                  volumeMounts:
-                    - name: config-volume
-                      mountPath: /etc/config/
-                  env:
-                    - name: POD_NAMESPACE
-                      valueFrom:
-                        fieldRef:
-                          fieldPath: metadata.namespace
-                    - name: CONFIG_MOUNT_PATH
-                      value: /etc/config/
-              volumes:
-                - name: config-volume
-                  configMap:
-                    name: local-path-config
-
-        ---
-        apiVersion: storage.k8s.io/v1
-        kind: StorageClass
-        metadata:
-          name: local-path
-        provisioner: rancher.io/local-path
-        volumeBindingMode: WaitForFirstConsumer
-        reclaimPolicy: Delete
-
-        ---
-        kind: ConfigMap
-        apiVersion: v1
-        metadata:
-          name: local-path-config
-          namespace: local-path-storage
-        data:
-          config.json: |-
-            {
-                    "nodePathMap":[
-                    {
-                            "node":"DEFAULT_PATH_FOR_NON_LISTED_NODES",
-                            "paths":["{{._DATA_DIR}}"]
-                    }
-                    ]
-            }
-          setup: |-
-            #!/bin/sh
-            set -eu
-            mkdir -m 0777 -p "$VOL_DIR"
-          teardown: |-
-            #!/bin/sh
-            set -eu
-            rm -rf "$VOL_DIR"
-          helperPod.yaml: |-
-            apiVersion: v1
-            kind: Pod
-            metadata:
-              name: helper-pod
-            spec:
-              priorityClassName: system-node-critical
-              tolerations:
-                - key: node.kubernetes.io/disk-pressure
-                  operator: Exists
-                  effect: NoSchedule
-              containers:
-              - name: helper-pod
-                image: busybox
-                imagePullPolicy: IfNotPresent
-        EOF
+      - cmd: git clone https://github.com/rancher/local-path-provisioner.git
+      - cmd: >-
+          helm upgrade --install
+          local-path-provisioner ./local-path-provisioner/deploy/chart/local-path-provisioner
+          -n local-path-storage --create-namespace
+          --reuse-values
+          {{._CSI_VERSION}}
+          {{._PATH}}
+          {{._SC}}
+          {{.CLI_ARGS}}
+        ignore_error: true
+      - defer: rm -r local-path-provisioner
 
   kmesh:deploy:self:
     desc: 'Deploy kmesh. Please install istio ahead'
