@@ -373,7 +373,7 @@ tasks:
         {{if eq .IPAM_LB "yes" -}}
         --set nodeIPAM.enabled=true
         {{- end}}
-      _SOCKET_LB: >-
+      _EXTERNAL_LB: >-
         {{if eq .LB "yes" -}}
         --set externalIPs.enabled=true
         {{- end}}
@@ -1977,29 +1977,59 @@ tasks:
   rook:deploy:self:
     cmds:
       - task: rook:deploy:operator
-      - task: rook:deploy:cluster
+      # - task: rook:deploy:cluster
 
   rook:deploy:operator:
     cmds:
-      - helm repo add rook-release https://charts.rook.io/release
-      - helm repo update
+      - helm repo add rook-release https://charts.rook.io/release --force-update
       - >-
         helm upgrade --install
-        --create-namespace --namespace rook-ceph
         rook-ceph rook-release/rook-ceph
-        --wait
+        -n rook-ceph --create-namespace
+        --reuse-values
         --set resources.requests.cpu=100m
+        --set resources.requests.memory=128Mi
+        --set csi.provisionerReplicas=1
+      # --set csi.enableCSIEncryption=true
+      # --wait
 
   rook:deploy:cluster:
     cmds:
-      - helm repo add rook-release https://charts.rook.io/release
-      - helm repo update
+      - helm repo add rook-release https://charts.rook.io/release --force-update
       - >-
         helm upgrade --install
+        rook-ceph-cluster rook-release/rook-ceph-cluster
         --create-namespace --namespace rook-ceph
-        rook-ceph-cluster
-        rook-release/rook-ceph-cluster
-        --set operatorNamespace=rook-ceph
+        --set cephClusterSpec.dataDirHostPath=/var/lib/rook
+        --set cephClusterSpec.mon.count=1
+        --set cephClusterSpec.mon.allowMultiplePerNode=false
+        --set cephClusterSpec.mgr.count=1
+        --set cephClusterSpec.mgr.allowMultiplePerNode=false
+        --set cephClusterSpec.resources.mgr.limits.memory
+        --set cephClusterSpec.resources.mgr.requests.cpu
+        --set cephClusterSpec.resources.mgr.requests.memory
+        --set cephClusterSpec.resources.mgr-sidecar.limits.memory
+        --set cephClusterSpec.resources.mgr-sidecar.requests.cpu
+        --set cephClusterSpec.resources.mgr-sidecar.requests.memory
+        --set cephClusterSpec.resources.mon.limits.memory
+        --set cephClusterSpec.resources.mon.requests.cpu
+        --set cephClusterSpec.resources.mon.requests.memory
+        --set cephClusterSpec.resources.osd.limits.memory
+        --set cephClusterSpec.resources.osd.requests.cpu
+        --set cephClusterSpec.resources.osd.requests.memory
+        --set cephClusterSpec.resources.crashcollector.limits.memory
+        --set cephClusterSpec.resources.crashcollector.requests.cpu
+        --set cephClusterSpec.resources.crashcollector.requests.memory
+        --set cephClusterSpec.resources.logcollector.limits.memory
+        --set cephClusterSpec.resources.logcollector.requests.cpu
+        --set cephClusterSpec.resources.logcollector.requests.memory
+        --set cephClusterSpec.resources.cleanup.limits.memory
+        --set cephClusterSpec.resources.cleanup.requests.cpu
+        --set cephClusterSpec.resources.cleanup.requests.memory
+        --set cephClusterSpec.resources.exporter.limits.memory
+        --set cephClusterSpec.resources.exporter.requests.cpu
+        --set cephClusterSpec.resources.exporter.requests.memory
+      # TODO: cephBlockPools and after
 
   traefik:deploy:self:
     desc: >-

@@ -3,8 +3,7 @@ tls-san:
 
 data-dir: /home/rancher/k3s
 
-# Embedded Etcd
-cluster-init: true
+cluster-init: true # Embedded Etcd
 
 etcd-snapshot-schedule-cron: '45 */8 * * *'
 etcd-snapshot-retention: 10
@@ -25,4 +24,3 @@ flannel-backend: "none"
 disable-network-policy: true
 
 secrets-encryption: true
-
