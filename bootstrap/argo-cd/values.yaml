@@ -1,0 +1,82 @@
+configs:
+  cm:
+    exec.enabled: true
+  cmp:
+    create: true
+
+controller:
+  resources:
+    limits:
+      cpu: 500m
+      memory: 500Mi
+    requests:
+      cpu: 50m
+      memory: 100Mi
+  metrics:
+    enabled: true
+
+dex:
+  resources:
+    limits:
+      cpu: 50m
+      memory: 50Mi
+    requests:
+      cpu: 10m
+      memory: 20Mi
+  metrics:
+    enabled: true
+
+redis:
+  resources:
+    limits:
+      cpu: 200m
+      memory: 100Mi
+    requests:
+      cpu: 50m
+      memory: 50Mi
+  metrics:
+    enabled: true
+
+server:
+  resources:
+    limits:
+      cpu: 100m
+      memory: 100Mi
+    requests:
+      cpu: 10m
+      memory: 50Mi
+  metrics:
+    enabled: true
+
+repoServer:
+  # resources:
+  #   limits:
+  #     cpu: 50m
+  #     memory: 128Mi
+  #   requests:
+  #     cpu: 10m
+  #     memory: 64Mi
+  metrics:
+    enabled: true
+
+applicationSet:
+  resources:
+    limits:
+      cpu: 100m
+      memory: 100Mi
+    requests:
+      cpu: 10m
+      memory: 50Mi
+  metrics:
+    enabled: true
+
+notifications:
+  resources:
+    limits:
+      cpu: 100m
+      memory: 100Mi
+    requests:
+      cpu: 10m
+      memory: 50Mi
+  metrics:
+    enabled: true

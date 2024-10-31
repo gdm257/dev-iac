@@ -1,0 +1,20 @@
+# Pod CIDR Pool
+ipam:
+  clusterPoolIPv4PodCIDRList:
+    - 100.64.0.0/10
+  operator:
+    clusterPoolIPv4PodCIDRList:
+    - 100.64.0.0/10
+
+# kube-proxy
+kubeProxyReplacement: true
+# Istio
+socketLB:
+  hostNamespaceOnly: true
+
+# Node IPAM LB
+nodeIPAM:
+  enabled: true
+
+gatewayAPI:
+  enabled: true
