@@ -93,13 +93,25 @@ tasks:
         {{.CLI_ARGS}}
 
   argocd:deploy:self:helm:
-    desc: 'Deploy ArgoCD controllers to cluster [CONTEXT]'
+    desc: >-
+      Deploy ArgoCD controllers to cluster
+      [
+      ENABLE_KUSTOMIZE_HELM
+      ]
     vars:
-      _CONTEXT: '{{if .CONTEXT}}--kube-context {{.CONTEXT}}{{end}}'
+      _ENABLE_HELM: >-
+        {{if ne .ENABLE_KUSTOMIZE_HELM "false" -}}
+        --set configs.cm.kustomize.buildOptions=--enable-helm
+        {{- end}}
     cmds:
-      - helm repo add argo https://argoproj.github.io/argo-helm
-      - helm repo update
-      - helm upgrade --install argocd argo/argo-cd --namespace argocd --create-namespace {{._CONTEXT}}
+      - helm repo add argo https://argoproj.github.io/argo-helm --force-update
+      - >-
+        helm upgrade --install
+        argocd argo/argo-cd
+        --namespace argocd --create-namespace
+        --reuse-values
+        {{_ENABLE_HELM}}
+        {{.CLI_ARGS}}
 
   argocd:deploy:self:kubectl:
     desc: 'Deploy ArgoCD controllers without HA to cluster [CONTEXT]'

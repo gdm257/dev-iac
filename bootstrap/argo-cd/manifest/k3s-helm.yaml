@@ -1,18 +1,26 @@
+# apiVersion: helm.cattle.io/v1
+# kind: HelmChart
+# metadata:
+#   name: argocd
+#   namespace: infra
+# spec:
+#   repo: https://argoproj.github.io/argo-helm
+#   chart: argo-cd
+#   version: 7.6.12
+#   targetNamespace: argocd
+#   createNamespace: true
+---
 apiVersion: helm.cattle.io/v1
-kind: HelmChart
+kind: HelmChartConfig
 metadata:
   name: argocd
   namespace: infra
 spec:
-  repo: https://argoproj.github.io/argo-helm
-  chart: argo-cd
-  version: 7.6.12
-  targetNamespace: argocd
-  createNamespace: true
   valuesContent: |-
     configs:
       cm:
         exec.enabled: true
+        kustomize.buildOptions: --enable-helm
       cmp:
         create: true
 
