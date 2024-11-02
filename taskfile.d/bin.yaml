@@ -27,6 +27,15 @@ tasks:
           BIN: '{{.ITEM}}'
         for: {var: BINS}
 
+  install:curated-list:common:
+    vars:
+      _DIR: '{{if .DIR}}{{.DIR}}{{else}}$HOME/.local/bin{{end}}'
+    cmds:
+      - task: install:bulk
+        vars:
+          BINS:
+            - usagi-flow/evil-helix
+
   install:curated-list:linux:
     platforms: [linux]
     vars:

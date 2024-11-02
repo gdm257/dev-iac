@@ -802,26 +802,12 @@ tasks:
       - task: 'helm:repo:add:bulk'
         vars:
           REPOS:
-            - anteon https://getanteon.github.io/anteon-helm-charts/
-            - argo https://argoproj.github.io/argo-helm
             - authentik https://charts.goauthentik.io
             - bitnami https://charts.bitnami.com/bitnami
-            - cnpg https://cloudnative-pg.github.io/charts/
             - datawire https://app.getambassador.io
-            - fission-charts https://fission.github.io/fission-charts/
             - fluxcd https://charts.fluxcd.io
             - fluxcd-community https://fluxcd-community.github.io/helm-charts
-            - istio https://istio-release.storage.googleapis.com/charts
-            - jetstack https://charts.jetstack.io
-            - kanister https://charts.kanister.io/
-            - kong https://charts.konghq.com
-            - kubeshark https://helm.kubeshark.co
-            - longhorn https://charts.longhorn.io
-            - traefik https://traefik.github.io/charts
-            - openebs https://openebs.github.io/openebs
-            - openfaas https://openfaas.github.io/faas-netes/
             - prometheus-community https://prometheus-community.github.io/helm-charts
-            - vmware-tanzu https://vmware-tanzu.github.io/helm-charts
 
   hwameistor:deploy:self:
     cmds:

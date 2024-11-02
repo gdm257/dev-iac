@@ -151,6 +151,7 @@ tasks:
             - vim
             # - vimtutor
             - neovim
+            - neovide
             # - helix
             # - emacs
             - hexyl
