@@ -1,0 +1,71 @@
+apiVersion: 
+kind: Application
+metadata:
+  name: cert-manager
+  namespace: argocd
+spec:
+  project: default
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: cert-manager
+  source:
+    repoURL: https://charts.jetstack.io
+    chart: cert-manager
+    targetRevision: v1.15.3
+    helm:
+      valuesObject:
+        crds:
+          enabled: true
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: issuer-dns01-secret
+  namespace: infra
+type: Opaque
+data:
+  api-token: xxxxxxx
+
+---
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: letsencrypt-issuer
+  namespace: infra
+spec:
+  acme:
+    server: https://acme-v02.api.letsencrypt.org/directory
+    # server: https://acme-staging-v02.api.letsencrypt.org/directory # Debug ONLY without quota
+    email: abc@example.com
+    privateKeySecretRef:
+      name: letsencrypt-account-key
+    solvers:
+      - dns01:
+          cloudflare:
+            apiTokenSecretRef:
+              name: issuer-dns01-secret
+              key: api-token
+
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: master-general-cert
+  namespace: infra
+spec:
+  issuerRef:
+    kind: Issuer
+    name: letsencrypt-issuer
+  dnsNames:
+    - foo.example.com
+    - example.com
+    - '*.example.com'
+  renewBefore: 1440h
+  secretName: master-general-cert
+  privateKey:
+    algorithm: ECDSA
+    encoding: PKCS1
+    size: 256

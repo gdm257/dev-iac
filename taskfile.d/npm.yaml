@@ -29,6 +29,7 @@ tasks:
             - '@openapitools/openapi-generator-cli'
             - whistle
             - neoss
+            - eslint
             # - pxder
             # - npkill
             # - fkill-cli

@@ -1,0 +1,19 @@
+apiVersion: 
+kind: Application
+metadata:
+  name: envoy-gateway
+  namespace: argocd
+spec:
+  project: default
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: envoy-gateway-system
+  source:
+    repoURL: oci://docker.io/envoyproxy
+    chart: gateway-helm
+    targetRevision: v1.1.2
+    helm:
+      type: oci
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true

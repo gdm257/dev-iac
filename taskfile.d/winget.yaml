@@ -11,6 +11,8 @@ tasks:
             - Microsoft.WindowsTerminal
             - Mozilla.SOPS
             - Espanso.Espanso
+            - SublimeHQ.SublimeText.3
+            - 115.115Chrome
             # - kapitainsky.RcloneBrowser
             # - FastCopy.FastCopy
             # - Falcosoft.SoundfontMidiPlayer
@@ -133,7 +135,6 @@ tasks:
             # - GnuPG.Gpg4win
             # - AOMEI.PartitionAssistant
             # - *KeppySoftware.OmniMIDI*
-            - 115.115Chrome
             # - Nlitesoft.NTLite
 
   winget:install:bulk:

@@ -267,6 +267,7 @@ tasks:
             # - Baulk_dodorz
             # - shovel
             # - npackd
+            - snappy-driver-installer-origin
             # - lux
             # - bbdown-beta
             # - bbdown
@@ -467,7 +468,7 @@ tasks:
             # - islide
             # - vscode-portable
             # - emeditor
-            - sublime-text
+            # - sublime-text
             # - notepad2-mod
             # - notepad3
             # - geany

@@ -1,0 +1,163 @@
+apiVersion: 
+kind: Application
+metadata:
+  name: velero
+  namespace: argocd
+spec:
+  project: default
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: velero
+  source:
+    repoURL: https://vmware-tanzu.github.io/helm-charts
+    chart: velero
+    targetRevision: 7.2.1
+    helm:
+      valuesObject:
+        # Providers
+        initContainers:
+          - name: velero-plugin-for-aws
+            image: velero/velero-plugin-for-aws:v1.10.1
+            imagePullPolicy: IfNotPresent
+            volumeMounts:
+              - mountPath: /target
+                name: plugins
+
+        # FSB
+        deployNodeAgent: true
+        configuration:
+          defaultVolumesToFsBackup: true
+          uploaderType: kopia
+
+          # Locations
+          volumeSnapshotLocation: []
+          backupStorageLocation: []
+        backupsEnabled: true
+
+        # Resources
+        resources:
+          requests:
+            cpu: 50m
+            memory: 50Mi
+          limits:
+            cpu: 300m
+            memory: 300Mi
+        nodeAgent:
+          resources:
+            requests:
+              cpu: 50m
+              memory: 50Mi
+            limits:
+              cpu: 400m
+              memory: 400Mi
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+---
+apiVersion: velero.io/v1
+kind: BackupStorageLocation
+metadata:
+  name: r2
+  namespace: velero
+spec:
+  default: true
+  provider: aws
+  config:
+    s3Url: https://xxxxxxxxxx.r2.cloudflarestorage.com
+    s3ForcePathStyle: 'true'
+    region: us-east-1
+    checksumAlgorithm: '' # Cloudflare R2
+  credential:
+    key: r2
+    name: velero-location-credentials
+  objectStorage:
+    bucket: velero
+
+---
+apiVersion: velero.io/v1
+kind: BackupStorageLocation
+metadata:
+  name: c2
+  namespace: velero
+spec:
+  provider: aws
+  config:
+    s3Url: https://xxxx.s3.synologyc2.net
+    s3ForcePathStyle: 'true'
+    region: us-east-1
+    checksumAlgorithm: ''
+  credential:
+    key: c2
+    name: velero-location-credentials
+  objectStorage:
+    bucket: xxxxxx
+
+---
+apiVersion: velero.io/v1
+kind: BackupStorageLocation
+metadata:
+  name: e2
+  namespace: velero
+spec:
+  provider: aws
+  config:
+    s3Url: https://xxxx.xxxx.com
+    s3ForcePathStyle: 'true'
+    region: us-east-1
+    checksumAlgorithm: ''
+  credential:
+    key: e2
+    name: velero-location-credentials
+  objectStorage:
+    bucket: velero
+
+---
+apiVersion: velero.io/v1
+kind: BackupStorageLocation
+metadata:
+  name: b2
+  namespace: velero
+spec:
+  provider: aws
+  config:
+    s3Url: http://s3.xxxxxx.backblazeb2.com
+    s3ForcePathStyle: 'true'
+    region: us-east-1
+    checksumAlgorithm: ''
+  credential:
+    key: b2
+    name: velero-location-credentials
+  objectStorage:
+    bucket: xxxxx
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: velero-location-credentials
+  namespace: velero
+type: Opaque
+data:
+  b2: >-
+    xxxxxxxx
+  c2: >-
+    xxxxxxxx
+  e2: >-
+    xxxxxxxx
+  r2: >-
+    xxxxxxxx
+
+---
+apiVersion: velero.io/v1
+kind: Schedule
+metadata:
+  name: daily-all-to-r2
+  namespace: velero
+spec:
+  template:
+    includedNamespaces:
+      - '*'
+    defaultVolumesToFsBackup: true
+    storageLocation: r2
+    ttl: 720h0m0s
+  schedule: '0 5 * * *'

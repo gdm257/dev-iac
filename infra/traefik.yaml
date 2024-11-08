@@ -1,0 +1,291 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: traefik
+  namespace: argocd
+spec:
+  project: default
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: traefik
+  source:
+    repoURL: https://traefik.github.io/charts
+    chart:  traefik
+    targetRevision: 32.0.0
+    helm:
+      valuesObject:
+        deployment:
+          kind: DaemonSet
+
+        service:
+          type: NodePort
+
+        additionalArguments:
+          - --serverstransport.insecureskipverify
+
+        providers:
+          kubernetesCRD:
+            allowCrossNamespace: true
+            allowExternalNameServices: true
+
+          kubernetesGateway:
+            enabled: true
+
+          kubernetesIngress:
+            allowExternalNameServices: true
+
+        ingressClass:
+          isDefaultClass: true
+
+        ingressRoute:
+          dashboard:
+            enabled: true
+
+        metrics:
+          prometheus:
+            enabled: true
+          service:
+            enabled: true
+
+        ports:
+          web:
+            hostPort: 80
+            port: 8000
+          websecure:
+            hostPort: 443
+            port: 8443
+
+          # udp:
+          #   hostPort: 80
+          #   port: 8000
+          #   protocol: UDP
+          # udps:
+          #   hostPort: 443
+          #   port: 8443
+          #   protocol: UDP
+
+          dns:
+            port: 8053
+            protocol: UDP
+          dot:
+            port: 8853
+            protocol: TCP
+
+          ftp-data:
+            port: 8020
+            protocol: TCP
+          ftp:
+            port: 8021
+            protocol: TCP
+          ftps-data:
+            port: 8989
+            protocol: TCP
+          ftps:
+            port: 8990
+            protocol: TCP
+          smb1:
+            port: 8139
+            protocol: TCP
+          smb:
+            port: 8445
+            protocol: TCP
+          rsync:
+            port: 8873
+            protocol: TCP
+          nfs:
+            port: 2049
+            protocol: TCP
+          svn:
+            port: 3690
+            protocol: TCP
+
+          ssh:
+            port: 8022
+            protocol: TCP
+          telnet:
+            port: 8023
+            protocol: TCP
+          telnets:
+            port: 8992
+            protocol: TCP
+          rdp:
+            port: 3389
+            protocol: TCP
+          vnc:
+            port: 5900
+            protocol: TCP
+          x11:
+            port: 6000
+            protocol: TCP
+
+          smtp-legacy:
+            port: 8025
+            protocol: TCP
+          smtp:
+            port: 8587
+            protocol: TCP
+          smtps:
+            port: 8465
+            protocol: TCP
+          imap:
+            port: 8143
+            protocol: TCP
+          imaps:
+            port: 8993
+            protocol: TCP
+          pop3:
+            port: 8110
+            protocol: TCP
+          pop3s:
+            port: 8995
+            protocol: TCP
+
+          ldap:
+            port: 8389
+            protocol: TCP
+          ldaps:
+            port: 8636
+            protocol: TCP
+
+          mssql:
+            port: 1433
+            protocol: TCP
+          mssqlm:
+            port: 1434
+            protocol: TCP
+          mysql:
+            port: 3306
+            protocol: TCP
+          postgres:
+            port: 5432
+            protocol: TCP
+          couchdb:
+            port: 5984
+            protocol: TCP
+          redis:
+            port: 6379
+            protocol: TCP
+          mongodb:
+            port: 27017
+            protocol: TCP
+
+          l2tp:
+            port: 1701
+            protocol: TCP
+          docker:
+            port: 2375
+            protocol: TCP
+          dockers:
+            port: 2376
+            protocol: TCP
+          docker-swarm:
+            port: 2377
+            protocol: TCP
+          kubernetes:
+            port: 6443
+            protocol: TCP
+
+        gateway:
+          listeners:
+            # Require same name and port within `ports`
+            web:
+              port: 8000
+              protocol: HTTP
+              namespacePolicy: All
+            websecure:
+              port: 8443
+              protocol: HTTPS
+              namespacePolicy: All
+              mode: Terminate
+              certificateRefs:
+                - kind: Secret
+                  namespace: infra
+                  name: master-general-cert
+
+            # udp:
+            #   port: 8000
+            #   protocol: UDP
+            #   namespacePolicy: All
+            # udps:
+            #   port: 8443
+            #   protocol: UDP
+            #   namespacePolicy: All
+
+            ssh:
+              port: 8022
+              protocol: TCP
+              namespacePolicy: All
+
+            smtps:
+              port: 8465
+              protocol: TLS
+              namespacePolicy: All
+              mode: Passthrough
+            imaps:
+              port: 8993
+              protocol: TLS
+              namespacePolicy: All
+              mode: Passthrough
+            pop3s:
+              port: 8995
+              protocol: TLS
+              namespacePolicy: All
+              mode: Passthrough
+
+            ldaps:
+              port: 8389
+              protocol: TLS
+              namespacePolicy: All
+              mode: Passthrough
+
+            mssql:
+              port: 1433
+              protocol: TLS
+              namespacePolicy: All
+              mode: Passthrough
+            mssqlm:
+              port: 1434
+              protocol: TLS
+              namespacePolicy: All
+              mode: Passthrough
+            mysql:
+              port: 3306
+              protocol: TLS
+              namespacePolicy: All
+              mode: Passthrough
+            postgres:
+              port: 5432
+              protocol: TLS
+              namespacePolicy: All
+              mode: Passthrough
+            couchdb:
+              port: 5984
+              protocol: TLS
+              namespacePolicy: All
+              mode: Passthrough
+            redis:
+              port: 6379
+              protocol: TLS
+              namespacePolicy: All
+              mode: Passthrough
+            mongodb:
+              port: 27017
+              protocol: TLS
+              namespacePolicy: All
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+---
+apiVersion: gateway.networking.k8s.io/v1beta1
+kind: ReferenceGrant
+metadata:
+  name: gateway-cert-rg
+  namespace: infra
+spec:
+  from:
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      namespace: traefik
+  to:
+    - group: ''
+      kind: Secret

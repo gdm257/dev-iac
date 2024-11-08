@@ -1,0 +1,28 @@
+apiVersion: 
+kind: Application
+metadata:
+  name: rook
+  namespace: argocd
+spec:
+  project: default
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: rook-ceph
+  source:
+    repoURL: https://charts.rook.io/release
+    chart: rook-ceph
+    targetRevision: v1.15.4
+    helm:
+      valuesObject:
+        csi:
+          provisionerReplicas: 1
+
+          # enableCSIEncryption: false
+
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true

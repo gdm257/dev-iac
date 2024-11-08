@@ -1851,6 +1851,33 @@ tasks:
         --reuse-values
         {{.CLI_ARGS}}
 
+  openebs:deploy:self:
+    desc: >-
+      [
+      VERSION
+
+      IS_ONLY_LOCAL_ENGINE
+      LOCAL_ENGINE_DIR
+      ]
+    vars:
+      _VERSION: '{{default "4.1.1" .VERSION}}'
+      _ENGINE: >-
+        {{if eq .IS_ONLY_LOCAL_ENGINE "true" -}}
+        --set engines.replicated.mayastor.enabled=false
+        {{- end}}
+
+        --set hostpathClass.basePath='{{default "/var/openebs/local" .LOCAL_ENGINE_DIR}}'
+    cmds:
+      - helm repo add openebs https://openebs.github.io/openebs --force-update
+      - >-
+        helm upgrade --install
+        openebs openebs/openebs
+        --version {{._VERSION}}
+        -n openebs --create-namespace
+        --reuse-values
+        {{_ENGINE}}
+        {{.CLI_ARGS}}
+
   openfaas:deploy:self:
     cmds:
       - kubectl apply -f https://raw.githubusercontent.com/openfaas/faas-netes/master/namespaces.yml
