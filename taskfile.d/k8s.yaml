@@ -1200,6 +1200,27 @@ tasks:
       _PRINT: --print-command
       _CONTEXT: --context {{default "default" .CONTEXT}}
 
+  # TODO: improvement
+  k3sup:join:master:
+    vars:
+      _CLUSTER: >-
+        --server-url https://x.x.x.x:6443
+        --node-token xxxxx
+      _NODE: >-
+        --ip '{{.SSH_IP}}'
+        --user {{.SSH_USER}}
+        --ssh-port 22
+        --ssh-key idrsa
+      _NODE_TYPE: --server
+      _K3S_ARGS: >-
+        --server-data-dir '/home/rancher/k3s'
+        --k3s-extra-args ''
+    cmds:
+      - cmd: >-
+          k3sup join
+          --print-command
+          {{.CLI_ARGS}}
+
   k3sup-join-worker:
     desc: 'Join a k3s cluster via SSH <SSH_HOST SSH_USER MASTER_SSH_HOST MASTER_SSH_PORT>'
     cmds:
