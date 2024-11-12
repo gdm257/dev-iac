@@ -1202,23 +1202,59 @@ tasks:
 
   # TODO: improvement
   k3sup:join:master:
+    desc: >-
+      <
+      CLUSTER_IP
+      TOKEN
+
+      SSH_IP
+      SSH_PORT
+      SSH_USER
+      SSH_KEY
+      NODE_NAME
+
+      AWS_ENDPOINTS
+      AWS_REGION
+      AWS_ACCESS_KEY_ID
+      AWS_SECRET_ACCESS_KEY
+      AWS_BUCKET
+      >
+      -- [OPTIONS]
     vars:
       _CLUSTER: >-
-        --server-url https://x.x.x.x:6443
-        --node-token xxxxx
+        --server-url https://{{.CLUSTER_IP}}:6443
+        --node-token '{{.TOKEN}}'
       _NODE: >-
         --ip '{{.SSH_IP}}'
         --user {{.SSH_USER}}
-        --ssh-port 22
-        --ssh-key idrsa
-      _NODE_TYPE: --server
+        --ssh-port {{.SSH_PORT}}
+        --ssh-key '{{.SSH_KEY}}'
+      _NODE_TYPE: '--server'
       _K3S_ARGS: >-
         --server-data-dir '/home/rancher/k3s'
-        --k3s-extra-args ''
+        --k3s-extra-args
+        '
+        --disable traefik,servicelb,local-storage
+        --flannel-backend=none
+        --disable-network-policy
+        --secrets-encryption
+        --node-name {{.NODE_NAME}}
+        etcd-snapshot-schedule-cron "44 */8 * * *"
+        etcd-s3
+        etcd-s3-endpoint {{.AWS_ENDPOINTS}}
+        etcd-s3-region {{default "us-east-1" .AWS_REGION}}
+        etcd-s3-access-key {{.AWS_ACCESS_KEY_ID}}
+        etcd-s3-secret-key {{.AWS_SECRET_ACCESS_KEY}}
+        etcd-s3-bucket {{.AWS_BUCKET}}
+        '
     cmds:
       - cmd: >-
           k3sup join
           --print-command
+          {{._CLUSTER}}
+          {{._NODE}}
+          {{._NODE_TYPE}}
+          {{._K3S_ARGS}}
           {{.CLI_ARGS}}
 
   k3sup-join-worker:
