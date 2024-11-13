@@ -1,12 +1,11 @@
-version: '3'
+version: "3"
 
 tasks:
-
   add:
     platforms: [windows]
-    desc: 'Add a bucket [NAME URL] -- [NAME URL]'
+    desc: "Add a bucket [NAME URL] -- [NAME URL]"
     vars:
-      _BUCKET: '{{if and .NAME .URL}}{{.NAME}} {{.URL}}{{else if .CLI_ARGS}}{{.CLI_ARGS}}{{else}}--help{{end}}'
+      _BUCKET: "{{if and .NAME .URL}}{{.NAME}} {{.URL}}{{else if .CLI_ARGS}}{{.CLI_ARGS}}{{else}}--help{{end}}"
     cmds:
       - scoop bucket add {{._BUCKET}}
 
@@ -17,19 +16,19 @@ tasks:
       vars:
         - BUCKETS
     cmds:
-      - for: {var: BUCKETS, as: BUCKET}
+      - for: { var: BUCKETS, as: BUCKET }
         task: add
         vars:
-          NAME: '{{.BUCKET.NAME}}'
-          URL: '{{.BUCKET.URL}}'
+          NAME: "{{.BUCKET.NAME}}"
+          URL: "{{.BUCKET.URL}}"
 
   install:
     platforms: [windows]
-    desc: 'Install an app [APP GLOBAL SKIP] -- [APP]'
+    desc: "Install an app [APP GLOBAL SKIP] -- [APP]"
     vars:
-      _APP: '{{if .APP}}{{.APP}}{{else if .CLI_ARGS}}{{.CLI_ARGS}}{{else}}--help{{end}}'
-      _GLOBAL: '{{if not .GLOBAL}}{{else}}-g{{end}}'
-      _SKIP: '{{if .SKIP}}-s{{end}}'
+      _APP: "{{if .APP}}{{.APP}}{{else if .CLI_ARGS}}{{.CLI_ARGS}}{{else}}--help{{end}}"
+      _GLOBAL: "{{if not .GLOBAL}}{{else}}-g{{end}}"
+      _SKIP: "{{if .SKIP}}-s{{end}}"
     cmds:
       - scoop install {{._GLOBAL}} {{._SKIP}} {{._APP}}
 
@@ -40,10 +39,10 @@ tasks:
       vars:
         - APPS
     cmds:
-      - for: {var: APPS, as: APP}
+      - for: { var: APPS, as: APP }
         task: install
         vars:
-          APP: '{{.APP}}'
+          APP: "{{.APP}}"
 
   add:curated-list:
     cmds:
@@ -1123,6 +1122,7 @@ tasks:
             - vita3k
             - shadps4
             - xenia
+            - mame
             - LDPlayer-Portable
             - onscripter-w
             - onscripter-jh
