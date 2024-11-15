@@ -1152,6 +1152,7 @@ tasks:
             # - kubeadm
             - openlens
             # - lens
+            # - headlamp
             # - seabird
             - kdash
             - k9s
