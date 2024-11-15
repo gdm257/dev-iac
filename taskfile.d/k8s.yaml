@@ -629,6 +629,17 @@ tasks:
         --version {{._VERSION}}
         {{.CLI_ARGS}}
 
+  devtron:deploy:self:
+    vars:
+      _VERSION: '{{default "0.22.78" .VERSION}}'
+    cmds:
+      - helm repo add devtron https://helm.devtron.ai --force-update
+      - >-
+        helm upgrade --install
+        devtron devtron/devtron-operator
+        --version {{._VERSION}}
+        -n devtroncd --create-namespace
+
   directus:deploy:self:
     cmds:
       - helm repo add directus https://directus-labs.github.io/helm-chart/ --force-update
