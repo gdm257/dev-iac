@@ -1361,6 +1361,7 @@ tasks:
             - explore
             - flame
             - kc
+            - stern
             - tree
             - vela
 
