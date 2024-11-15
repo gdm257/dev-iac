@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: rainbond
+  namespace: argocd
+spec:
+  project: default
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: rbd-system
+  source:
+    repoURL: https://openchart.goodrain.com/goodrain/rainbond
+    chart: rainbond-cluster
+    targetRevision: 5.17.3
+    helm:
+      valuesObject:
+        useK3sContainerd: true
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
