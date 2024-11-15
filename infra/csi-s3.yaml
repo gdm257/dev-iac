@@ -1,4 +1,4 @@
-apiVersion: 
+apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: csi-s3
@@ -22,7 +22,7 @@ spec:
 
         storageClass:
           create: true
-          singleBucket: 
+          singleBucket:
           reclaimPolicy: Retain
           mountOptions: >-
             --memory-limit 1000

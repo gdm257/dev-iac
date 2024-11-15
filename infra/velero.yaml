@@ -1,4 +1,4 @@
-apiVersion: 
+apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: velero
@@ -64,9 +64,9 @@ spec:
   provider: aws
   config:
     s3Url: https://xxxxxxxxxx.r2.cloudflarestorage.com
-    s3ForcePathStyle: 'true'
+    s3ForcePathStyle: "true"
     region: us-east-1
-    checksumAlgorithm: '' # Cloudflare R2
+    checksumAlgorithm: "" # Cloudflare R2
   credential:
     key: r2
     name: velero-location-credentials
@@ -83,9 +83,9 @@ spec:
   provider: aws
   config:
     s3Url: https://xxxx.s3.synologyc2.net
-    s3ForcePathStyle: 'true'
+    s3ForcePathStyle: "true"
     region: us-east-1
-    checksumAlgorithm: ''
+    checksumAlgorithm: ""
   credential:
     key: c2
     name: velero-location-credentials
@@ -102,9 +102,9 @@ spec:
   provider: aws
   config:
     s3Url: https://xxxx.xxxx.com
-    s3ForcePathStyle: 'true'
+    s3ForcePathStyle: "true"
     region: us-east-1
-    checksumAlgorithm: ''
+    checksumAlgorithm: ""
   credential:
     key: e2
     name: velero-location-credentials
@@ -121,9 +121,9 @@ spec:
   provider: aws
   config:
     s3Url: http://s3.xxxxxx.backblazeb2.com
-    s3ForcePathStyle: 'true'
+    s3ForcePathStyle: "true"
     region: us-east-1
-    checksumAlgorithm: ''
+    checksumAlgorithm: ""
   credential:
     key: b2
     name: velero-location-credentials
@@ -156,8 +156,8 @@ metadata:
 spec:
   template:
     includedNamespaces:
-      - '*'
+      - "*"
     defaultVolumesToFsBackup: true
     storageLocation: r2
     ttl: 720h0m0s
-  schedule: '0 5 * * *'
+  schedule: "0 5 * * *"

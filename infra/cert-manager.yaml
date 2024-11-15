@@ -1,4 +1,4 @@
-apiVersion: 
+apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: cert-manager
@@ -62,7 +62,7 @@ spec:
   dnsNames:
     - foo.example.com
     - example.com
-    - '*.example.com'
+    - "*.example.com"
   renewBefore: 1440h
   secretName: master-general-cert
   privateKey:
