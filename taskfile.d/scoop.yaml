@@ -455,7 +455,10 @@ tasks:
             - ditto
             # - copyq
             # - clipboard
+            - anytype
             - obsidian
+            # - focalboard
+            # - appflowy
             # - bookxnote
             - BookXNotePro
             # - rendevoz
