@@ -207,6 +207,7 @@ tasks:
             - git
             - bit
             - gitui
+            - gitu
             - lazygit
             # - legit
             # - git-branchless
