@@ -136,6 +136,7 @@ tasks:
             # - AOMEI.PartitionAssistant
             # - *KeppySoftware.OmniMIDI*
             # - Nlitesoft.NTLite
+            - Huawei.HiSuite
 
   winget:install:bulk:
     platforms: [windows]
