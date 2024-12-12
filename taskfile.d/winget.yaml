@@ -10,6 +10,7 @@ tasks:
           APPS:
             - Microsoft.WindowsTerminal
             - Mozilla.SOPS
+            - commercialhaskell.stack
             - Espanso.Espanso
             - SublimeHQ.SublimeText.3
             - 115.115Chrome

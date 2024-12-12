@@ -130,9 +130,11 @@ tasks:
             - shellcheck
             - shfmt
             - luajit
+            - lua51
             - lua53
-            - lua
             - luarocks
+            - haskell
+            # - stack
             - go
             - golangci-lint
             - goreleaser
