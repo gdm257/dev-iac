@@ -41,6 +41,7 @@ includes:
   scoop: {taskfile: './taskfile.d/scoop.yaml', optional: true}
   sops: {taskfile: './taskfile.d/sops.yaml', optional: true}
   ssh: {taskfile: './taskfile.d/ssh.yaml', optional: true}
+  stack: {taskfile: './taskfile.d/stack.yaml', optional: true}
   systemd: {taskfile: './taskfile.d/systemd.yaml', optional: true}
   task: {taskfile: './taskfile.d/task.yaml', optional: true}
   vfox: {taskfile: './taskfile.d/vfox.yaml', optional: true}

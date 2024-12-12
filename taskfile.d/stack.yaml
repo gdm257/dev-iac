@@ -1,0 +1,28 @@
+version: '3'
+tasks:
+  install:pkg:
+    requires:
+      vars:
+        - PKG
+    cmds:
+      - stack install {{.PKG}}
+
+  install:bulk:
+    internal: true
+    requires:
+      vars:
+        - PKGS
+    cmds:
+      - task: install:pkg
+        vars:
+          PKG: '{{.PKG}}'
+        for:
+          var: PKGS
+          as: PKG
+
+  install:curated-list:
+    cmds:
+      - task: install:bulk
+        vars:
+          PKGS:
+            - BNFC
