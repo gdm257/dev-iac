@@ -1014,6 +1014,7 @@ tasks:
             # - direnv
             # - flow-launcher
             - utools
+            - rubick
             # - spc/capslock-plus
             # - keymouse
             # - vim-ahk
