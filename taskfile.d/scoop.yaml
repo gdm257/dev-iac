@@ -456,6 +456,7 @@ tasks:
             - eudic
             - ting-en
             - ditto
+            # - ecopaste
             # - copyq
             # - clipboard
             - anytype
