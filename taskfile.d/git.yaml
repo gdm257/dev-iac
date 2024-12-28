@@ -2,6 +2,11 @@ version: '3'
 
 tasks:
 
+  branch:refs:
+    dir: '{{.USER_WORKING_DIR}}'
+    cmds:
+      - git show-ref
+
   log:graph:
     dir: '{{.USER_WORKING_DIR}}'
     cmds:
