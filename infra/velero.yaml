@@ -32,6 +32,9 @@ spec:
           # Locations
           volumeSnapshotLocation: []
           backupStorageLocation: []
+
+          # Repo maitain jobs
+          defaultRepoMaintainFrequency: 24h
         backupsEnabled: true
 
         # Resources
