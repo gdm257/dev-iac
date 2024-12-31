@@ -806,7 +806,7 @@ tasks:
             # - clash-for-windows-portable
             # - clashweb
             # - clashy
-            - clash-verge-rev
+            - clash-verge-rev_chawyehsu
             - clash-nyanpasu
             # - clash-verge
             - geoip-country-mmdb
@@ -1191,6 +1191,7 @@ tasks:
             # - WSABuildsWindows11
             # - wsl-centos-7
             # - wsl-centos-8
+            - nixos-wsl
 
   install:curated-list:toolbox:
     platforms: [windows]
