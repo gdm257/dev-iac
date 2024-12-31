@@ -22,15 +22,15 @@ spec:
 
         storageClass:
           create: true
-          singleBucket:
+          singleBucket: mybucket
           reclaimPolicy: Retain
           mountOptions: >-
             --memory-limit 1000
             --dir-mode 0777
             --file-mode 0666
             --no-systemd
-            --enable-mtime
-            --enable-perms
+          # --enable-mtime
+          # --enable-perms
   syncPolicy:
     syncOptions:
       - CreateNamespace=true
