@@ -4,14 +4,15 @@ tasks:
 
   backup:windows:
     desc: "Backup Windows ${RESTIC_REPOSITORY RESTIC_PASSWORD}"
+    dir: "{{.USER_WORKING_DIR}}"
     cmds:
       - >
         restic backup
         -v
         --no-lock
-        --no-scan
-        -H win10
-        --tag daily,win10
+        --ignore-ctime
+        --ignore-inode
+        --pack-size 64
         'D:/apps'
         'D:/.home'
         'C:/Users/{{.USERNAME}}/AppData/Roaming/Microsoft/VisualStudio/'
@@ -29,6 +30,7 @@ tasks:
         --iexclude 'virtualenvwrapper/*'
         --iexclude 'pipx/.cache/'
         --iexclude 'pipx/venvs/'
+        --iexclude 'pdm/Cache/'
         --iexclude '.gradle/'
         --iexclude '.tmp/'
         --iexclude '.pnpm-store/'
@@ -48,6 +50,7 @@ tasks:
         --iexclude 'PowerShell/Modules'
         --iexclude 'WindowsPowerShell/Help'
         --iexclude 'WindowsPowerShell/Modules'
+        --iexclude 'AppData/Local/BraveSoftware/Brave-Browser/Application/'
         --iexclude 'AppData/Local/cache/'
         --iexclude 'AppData/Local/conda/'
         --iexclude 'AppData/Local/D3DSCache/'
@@ -57,13 +60,27 @@ tasks:
         --iexclude 'AppData/Local/EevisionDownload/'
         --iexclude 'AppData/Local/electron/'
         --iexclude 'AppData/Local/electron-builder/'
+        --iexclude 'AppData/Local/hatch/Cache/'
+        --iexclude 'AppData/Local/hatch/env/'
+        --iexclude 'AppData/Local/hatch/pythons/'
+        --iexclude 'AppData/Local/nvim-data/'
+        --iexclude 'AppData/Local/rancher-desktop/'
+        --iexclude 'AppData/Local/restic/'
         --iexclude 'AppData/LocalLow/Temp/'
+        --iexclude 'AppData/Roaming/Tencent/WeMeet/Global/'
+        --iexclude 'AppData/Roaming/Listary/Cache/'
         --iexclude '.local/share/wezterm/gui-sock*'
         --iexclude '.cache/'
+        --iexclude '.conda/envs/*'
+        --iexclude '.codeium/'
         --iexclude '.bgmi/bangumi/'
         --iexclude '.bgmi/tmp/'
         --iexclude '.emacs.d/.cache/'
+        --iexclude '.emacs.d/.local/'
+        --iexclude '.kube/cache/'
         --iexclude '.lingma/'
+        --iexclude '.local/bin/*'
+        --iexclude '.version-fox/cache/*'
         --iexclude 'GPUCache/'
         --iexclude 'Typora/Cache/'
         --iexclude 'Typora/Code Cache/'
@@ -88,15 +105,20 @@ tasks:
         --iexclude 'Rime/build/'
         --iexclude 'scoop/cache/*'
         --iexclude 'apps/scoop/apps/*'
+        --iexclude 'User Data/Default/Cache/*'
+        --iexclude 'User Data/Default/Code Cache/*'
         --iexclude 'bitwarden-appdata/'
+        --iexclude 'catsxp/Cache/*'
         --iexclude 'centbrowser/User Data/Default/Cache/*'
         --iexclude 'centbrowser/User Data/Default/Code Cache/*'
         --iexclude 'io.github.clash-verge-rev.clash-verge-rev/logs/*'
         --iexclude 'everything/*/Everything.db'
         --iexclude 'Everything.db'
         --iexclude '.cargo/registry/*'
+        --iexclude 'ppsspp/memstick/PSP/GAME/*'
         --iexclude 'steamapps/common/'
         --iexclude 'telegram/tdata/user_data*/'
         --iexclude 'virtualbox-with-extension-pack-np/'
         --iexclude 'winfsp-np/'
         --iexclude 'zeal/docsets/'
+        {{.CLI_ARGS}}
