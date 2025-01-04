@@ -138,6 +138,7 @@ tasks:
             # - *KeppySoftware.OmniMIDI*
             # - Nlitesoft.NTLite
             - Huawei.HiSuite
+            - SabakiHQ.Sabaki
 
   winget:install:bulk:
     platforms: [windows]
