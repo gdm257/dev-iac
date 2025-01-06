@@ -1,0 +1,58 @@
+version: "3"
+
+tasks:
+  profile:list:
+    platforms: [linux, darwin]
+    dir: "{{.USER_WORKING_DIR}}"
+    cmds:
+      - nix-env --list-generations --profile /nix/var/nix/profiles/per-user/$USER/profile {{.CLI_ARGS}}
+
+  profile:list:home-manager:
+    platforms: [linux, darwin]
+    dir: "{{.USER_WORKING_DIR}}"
+    cmds:
+      - home-manager generations
+
+  profile:build:home-manager:
+    platforms: [linux, darwin]
+    dir: "{{.USER_WORKING_DIR}}"
+    cmds:
+      - home-manager build {{.CLI_ARGS}}
+
+  profile:remove:home-manager:
+    platforms: [linux, darwin]
+    dir: "{{.USER_WORKING_DIR}}"
+    requires:
+      vars:
+        - ID
+    vars:
+    cmds:
+      - home-manager remove-generations {{.ID}}
+
+  package:list:
+    aliases: ["pkg:list", "pkg:ls", "pkg:ll"]
+    platforms: [linux, darwin]
+    dir: "{{.USER_WORKING_DIR}}"
+    cmds:
+      - nix profile list {{.CLI_ARGS}}
+
+  package:list:home-manager:
+    aliases: ["pkg:list:home-manager", "pkg:ls:hm", "pkg:ll:hm"]
+    platforms: [linux, darwin]
+    dir: "{{.USER_WORKING_DIR}}"
+    cmds:
+      - home-manager packages
+
+  package:search:
+    aliases: ["pkg:search"]
+    platforms: [linux, darwin]
+    dir: "{{.USER_WORKING_DIR}}"
+    vars:
+      _REGISTRY: >-
+        {{if ._REGISTRY}}
+        {{- ._REGISTRY}}
+        {{- else -}}
+        nixpkgs
+        {{- end}}
+    cmds:
+      - nix search {{._REGISTRY}} {{.CLI_ARGS}}
