@@ -4,7 +4,7 @@ metadata:
   name: envoy-gateway
   namespace: argocd
 spec:
-  project: default
+  project: infra
   destination:
     server: https://kubernetes.default.svc
     namespace: envoy-gateway-system
