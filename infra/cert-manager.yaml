@@ -20,15 +20,32 @@ spec:
     syncOptions:
       - CreateNamespace=true
 ---
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-ci
+spec:
+  acme:
+    server: https://acme-v02.api.letsencrypt.org/directory
+    # server: https://acme-staging-v02.api.letsencrypt.org/directory # Debug ONLY without quota
+    email: abc@example.com
+    privateKeySecretRef:
+      name: letsencrypt-ci-account-key
+    solvers:
+      - dns01:
+          cloudflare:
+            apiTokenSecretRef:
+              name: dns01-cluster-apitoken
+              key: api-token
+---
 apiVersion: v1
 kind: Secret
 metadata:
-  name: issuer-dns01-secret
-  namespace: infra
+  name: dns01-cluster-apitoken
+  namespace: cert-manager
 type: Opaque
 data:
   api-token: xxxxxxx
-
 ---
 apiVersion: cert-manager.io/v1
 kind: Issuer
@@ -46,14 +63,22 @@ spec:
       - dns01:
           cloudflare:
             apiTokenSecretRef:
-              name: issuer-dns01-secret
+              name: dns01-infra-apitoken
               key: api-token
-
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: dns01-infra-apitoken
+  namespace: infra
+type: Opaque
+data:
+  api-token: xxxxxxx
 ---
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: master-general-cert
+  name: cluster-wildcard-cert
   namespace: infra
 spec:
   issuerRef:
@@ -64,7 +89,7 @@ spec:
     - example.com
     - "*.example.com"
   renewBefore: 1440h
-  secretName: master-general-cert
+  secretName: wildcard-cert
   privateKey:
     algorithm: ECDSA
     encoding: PKCS1

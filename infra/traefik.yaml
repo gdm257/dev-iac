@@ -10,7 +10,7 @@ spec:
     namespace: traefik
   source:
     repoURL: https://traefik.github.io/charts
-    chart:  traefik
+    chart: traefik
     targetRevision: 32.0.0
     helm:
       valuesObject:
@@ -197,10 +197,11 @@ spec:
               protocol: HTTPS
               namespacePolicy: All
               mode: Terminate
+              # TODO: FIXME
               certificateRefs:
                 - kind: Secret
                   namespace: infra
-                  name: master-general-cert
+                  name: wildcard-cert
 
             # udp:
             #   port: 8000
@@ -287,5 +288,5 @@ spec:
       kind: Gateway
       namespace: traefik
   to:
-    - group: ''
+    - group: ""
       kind: Secret
