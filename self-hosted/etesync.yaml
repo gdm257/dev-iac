@@ -1,0 +1,148 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: etesync
+  namespace: self-hosted
+  labels:
+    app: etesync
+spec:
+  parentRefs:
+    - kind: Gateway
+      name: traefik-gateway
+      namespace: traefik
+      sectionName: websecure
+  # TODO: FIXME
+  hostnames:
+    - etesync.xxxxxxxxx.com
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: etesync
+          namespace: self-hosted
+          kind: Service
+          port: 80
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: etesync-http
+  namespace: self-hosted
+  labels:
+    app: etesync
+spec:
+  parentRefs:
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      namespace: traefik
+      name: traefik-gateway
+      sectionName: web
+  # TODO: FIXME
+  hostnames:
+    - etesync.xxxxxxxxx.com
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      filters:
+        - type: RequestRedirect
+          requestRedirect:
+            scheme: https
+            statusCode: 301
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: etesync
+  namespace: self-hosted
+  labels:
+    app: etesync
+spec:
+  selector:
+    app: etesync
+  type: ClusterIP
+  ports:
+    - name: etesync
+      protocol: TCP
+      port: 80
+      targetPort: 3735
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: etesync
+  namespace: self-hosted
+  labels:
+    app: etesync
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: etesync
+  template:
+    metadata:
+      annotations:
+        kubectl.kubernetes.io/default-container: etesync
+      labels:
+        app: etesync
+    spec:
+      terminationGracePeriodSeconds: 30
+      tolerations:
+        # this toleration is to have the daemonset runnable on master nodes
+        # remove it if your masters can't run pods
+        - key: node-role.kubernetes.io/master
+          effect: NoSchedule
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: etesync-data
+      initContainers:
+        - name: init-permissions
+          image: busybox
+          command: ["sh", "-c", "chmod -R 777 /data"]
+          volumeMounts:
+            - mountPath: /data
+              name: data
+      containers:
+        - name: etesync
+          image: victorrds/etesync:alpine
+          ports:
+            - containerPort: 3735
+          volumeMounts:
+            - name: data
+              mountPath: /data
+          env:
+            - name: SERVER
+              value: http
+            - name: AUTO_UPDATE
+              value: "true"
+            - name: SUPER_USER
+              value: admin
+            - name: SUPER_EMAIL
+              value: admin@xxxxxxxxx.com
+            # TODO: use secret
+            - name: SUPER_PASS
+              value: "abc123456"
+          resources:
+            limits:
+              cpu: 200m
+              memory: 200Mi
+            requests:
+              cpu: 30m
+              memory: 30Mi
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: etesync-data
+  namespace: self-hosted
+spec:
+  storageClassName: local-path
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi

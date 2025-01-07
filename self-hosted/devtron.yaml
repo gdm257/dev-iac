@@ -1,0 +1,46 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: devtron
+  namespace: self-hosted
+spec:
+  parentRefs:
+    - kind: Gateway
+      name: traefik-gateway
+      namespace: traefik
+      sectionName: web
+    - kind: Gateway
+      name: traefik-gateway
+      namespace: traefik
+      sectionName: websecure
+  # TODO: FIXME
+  hostnames:
+    - devtron.xxxxxxxxxxx.com
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: devtron
+          namespace: self-hosted
+          kind: Service
+          port: 80
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: devtron
+  namespace: argocd
+spec:
+  project: self-hosted
+  source:
+    repoURL: https://helm.devtron.ai
+    chart: devtron-operator
+    targetRevision: 0.22.78
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: devtroncd
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true

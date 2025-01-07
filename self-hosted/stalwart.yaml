@@ -1,0 +1,175 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: stalwart-admin
+  namespace: self-hosted
+  labels:
+    app.kubernetes.io/name: stalwart
+spec:
+  parentRefs:
+    - kind: Gateway
+      name: traefik-gateway
+      namespace: traefik
+      sectionName: websecure
+  # TODO: FIXME
+  hostnames:
+    - stalwart.xxxxxxxxx.com
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: stalwart
+          namespace: self-hosted
+          kind: Service
+          port: 80
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: stalwart-admin-http
+  namespace: self-hosted
+  labels:
+    app.kubernetes.io/name: stalwart
+spec:
+  parentRefs:
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      namespace: traefik
+      name: traefik-gateway
+      sectionName: web
+  # TODO: FIXME
+  hostnames:
+    - stalwart.xxxxxxxxx.com
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      filters:
+        - type: RequestRedirect
+          requestRedirect:
+            scheme: https
+            statusCode: 301
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: stalwart
+  namespace: self-hosted
+  labels:
+    app.kubernetes.io/name: stalwart
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: stalwart
+  ports:
+    - port: 80
+      targetPort: admin
+      name: admin
+    - port: 25
+      targetPort: 25
+      name: smtp-legacy
+      protocol: TCP
+      appProtocol: smtp
+    - port: 587
+      targetPort: 587
+      name: smtp
+      protocol: TCP
+      appProtocol: smtp
+    - port: 465
+      targetPort: 465
+      name: smtps
+      protocol: TCP
+      appProtocol: smtp
+    - port: 143
+      targetPort: 143
+      name: imap
+      protocol: TCP
+    - port: 993
+      targetPort: 993
+      name: imaps
+      protocol: TCP
+    - port: 110
+      targetPort: 110
+      name: pop3
+      protocol: TCP
+    - port: 995
+      targetPort: 995
+      name: pop3s
+      protocol: TCP
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: stalwart
+  namespace: self-hosted
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: stalwart
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: stalwart
+    spec:
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: stalwart-pvc
+      containers:
+        - name: stalwart
+          image: stalwartlabs/mail-server:v0.10.5
+          volumeMounts:
+            - name: data
+              mountPath: /opt/stalwart-mail
+          ports:
+            - containerPort: 8080
+              name: admin
+            - containerPort: 443
+              name: admin-tls
+            - containerPort: 25
+              hostPort: 25
+              name: smtp-legacy
+            - containerPort: 587
+              hostPort: 587
+              name: smtp
+            - containerPort: 465
+              hostPort: 465
+              name: smtps
+            - containerPort: 143
+              hostPort: 143
+              name: imap
+            - containerPort: 993
+              hostPort: 993
+              name: imaps
+            - containerPort: 110
+              hostPort: 110
+              name: pop3
+            - containerPort: 995
+              hostPort: 995
+              name: pop3s
+          resources:
+            limits:
+              cpu: 250m
+              memory: 400Mi
+            requests:
+              cpu: 50m
+              memory: 50Mi
+      nodeSelector:
+        kubernetes.io/os: linux
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: stalwart-pvc
+  namespace: self-hosted
+spec:
+  storageClassName: local-path
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 4Gi

@@ -1,0 +1,129 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: gitea
+  namespace: self-hosted
+  labels:
+    app: gitea
+spec:
+  parentRefs:
+    - kind: Gateway
+      name: traefik-gateway
+      namespace: traefik
+      sectionName: websecure
+  # TODO: FIXME
+  hostnames:
+    - git.xxxxxxxxx.com
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: gitea
+          namespace: self-hosted
+          kind: Service
+          port: 80
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: gitea-http
+  namespace: self-hosted
+  labels:
+    app: gitea
+spec:
+  parentRefs:
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      namespace: traefik
+      name: traefik-gateway
+      sectionName: web
+  # TODO: FIXME
+  hostnames:
+    - git.xxxxxxxxx.com
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      filters:
+        - type: RequestRedirect
+          requestRedirect:
+            scheme: https
+            statusCode: 301
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gitea
+  namespace: self-hosted
+  labels:
+    app: gitea
+spec:
+  selector:
+    app: gitea
+  type: ClusterIP
+  ports:
+    - name: gitea
+      protocol: TCP
+      port: 80
+      targetPort: 3000
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gitea
+  namespace: self-hosted
+  labels:
+    app: gitea
+spec:
+  replicas: 0
+  selector:
+    matchLabels:
+      app: gitea
+  template:
+    metadata:
+      annotations:
+        kubectl.kubernetes.io/default-container: gitea
+      labels:
+        app: gitea
+    spec:
+      terminationGracePeriodSeconds: 30
+      tolerations:
+        # this toleration is to have the daemonset runnable on master nodes
+        # remove it if your masters can't run pods
+        - key: node-role.kubernetes.io/master
+          effect: NoSchedule
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: gitea-data
+      containers:
+        - name: gitea
+          image: gitea/gitea:latest
+          ports:
+            - containerPort: 3000
+          volumeMounts:
+            - name: data
+              mountPath: /data
+          resources:
+            limits:
+              cpu: 300m
+              memory: 200Mi
+            requests:
+              cpu: 50m
+              memory: 50Mi
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: gitea-data
+  namespace: self-hosted
+spec:
+  storageClassName: local-path
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi
