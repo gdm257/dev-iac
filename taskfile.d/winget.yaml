@@ -14,6 +14,7 @@ tasks:
             - Espanso.Espanso
             - SublimeHQ.SublimeText.3
             - 115.115Chrome
+            - Ollama.Ollama
             # - kapitainsky.RcloneBrowser
             # - FastCopy.FastCopy
             # - Falcosoft.SoundfontMidiPlayer

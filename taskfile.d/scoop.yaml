@@ -89,15 +89,16 @@ tasks:
             # - version-manager
             # - python27 python37 python38 python39 python310 python311 micromamba_ShuguangSun micromamba
             - rye
+            - uv
             - gdm257/micromamba
             - ruff
-            # - uv
             # - hatch
             - volta
             # - tailwindcss
             # - nvm
             # - yarn pnpm
             # - php74 php74-xdebug composer
+            - jbang
             # - openjdk9 openjdk8-redhat openjdk11 openjdk17
             - maven
             - gradle
@@ -134,7 +135,7 @@ tasks:
             - lua53
             - luarocks
             - haskell
-            # - stack
+            - stack
             - go
             - golangci-lint
             - goreleaser
@@ -243,7 +244,7 @@ tasks:
             # - glab
             # - teleport
             # - jenkins-lts
-            - nomad
+            # - nomad
             # - semaphore
             # - prometheus
             # - openobserve
