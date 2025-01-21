@@ -1,3 +1,4 @@
+# TODO: FIXME
 tls-san:
   - '127.0.0.1'
 
@@ -8,10 +9,12 @@ cluster-init: true # Embedded Etcd
 etcd-snapshot-schedule-cron: '45 */8 * * *'
 etcd-snapshot-retention: 10
 
+# TODO: FIXME
 etcd-s3: true
 etcd-s3-endpoint: s3.example.com
 etcd-s3-access-key: foo
 etcd-s3-secret-key: bar
+etcd-s3-bucket: baz
 
 service-node-port-range: '30000-32767'
 
