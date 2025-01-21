@@ -12,17 +12,21 @@ tasks:
       - 'sudo $(which {{.CONDA}}) run -n pipx pipx install --global pipx'
 
   install:
-    desc: 'Install package <PACKAGE> [INCLUDE_DEPS GLOBAL]'
+    desc: 'Install package <PACKAGE> [PIPX INCLUDE_DEPS GLOBAL]'
     requires:
       vars:
         - PACKAGE
     vars:
+      _PIPX: '{{if .PIPX}}{{.PIPX}}{{else}}pipx{{end}}'
       _INCLUDE_DEPS: '{{if .INCLUDE_DEPS}}--include-deps{{end}}'
       _GLOBAL: '{{if and (eq OS "linux") (eq .GLOBAL "true")}}--global{{end}}'
     cmds:
-      - pipx install {{._GLOBAL}} {{._INCLUDE_DEPS}} {{.PACKAGE}}
+      - >-
+        {{._PIPX}} install {{._GLOBAL}} {{._INCLUDE_DEPS}} {{.PACKAGE}} {{.ARGS}}
 
   install:bulk:
+    vars:
+      _ARGS: '{{.CLI_ARGS}}'
     internal: true
     requires:
       vars:
@@ -31,6 +35,7 @@ tasks:
       - for: {var: PACKAGES, as: PACKAGE}
         task: install
         vars:
+          ARGS: '{{._ARGS}}'
           PACKAGE: '{{.PACKAGE}}'
 
   install:curated-list:
@@ -38,7 +43,7 @@ tasks:
       - task: install:bulk
         vars:
           PACKAGES:
-            - pipx
+            # - pipx
             # - virtualenvwrapper-win
             # - pipenv
             # - ipython
@@ -122,7 +127,7 @@ tasks:
             # - deadlink
             # - tiptop
             # - toolong
-            - ciphey
+            # - ciphey
             # - pyscaffold[all]
             - stego-lsb
             # - copier
@@ -136,12 +141,13 @@ tasks:
             # - yen
             # - packaged
             - radon
-            - basic-pitch
+            # - basic-pitch
             # - dotdrop
             # - pretzelai
             # - openapi-python-client
-            - openbb-cli
+            # - openbb-cli
             - rexi
+            - dotbot
 
   install:curated-list:unix:
     platforms: [linux, darwin]
