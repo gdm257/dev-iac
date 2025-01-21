@@ -135,7 +135,7 @@ tasks:
             - lua53
             - luarocks
             - haskell
-            - stack
+            # - stack
             - go
             - golangci-lint
             - goreleaser
@@ -294,6 +294,7 @@ tasks:
             - 115
             - BaiduNetdisk
             - alist
+            - alist-helper
             # - hfs
             # - sftpgo
             - dukto
@@ -568,7 +569,7 @@ tasks:
             - tachidesk-jui
             # - suwayomi-jui
             - tachidesk
-            - quicklook
+            # - quicklook
             # - sizer
             - WindowResizer
             # - SetBrightness
@@ -942,6 +943,7 @@ tasks:
             # - ntop
             # - procs
             # - gotop
+            - commandtrayhost
             - winsw
             # - nssm
             # - activitywatch
@@ -998,8 +1000,10 @@ tasks:
             # - cheat
             # - tldr
             - tealdeer
+            - kanata
+            - kanata-tray
             - gdm257/mykeymap-beta
-            - gdm257/capslock-plus
+            # - komokana
             - gdm257/dotenvx
             - starship
             # - oh-my-posh

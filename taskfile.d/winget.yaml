@@ -31,6 +31,7 @@ tasks:
             - Chocolatey.Chocolatey
             # - Chocolatey.ChocolateyGUI
             - Microsoft.VisualStudio.2022.BuildTools
+            - Microsoft.EdgeWebView2Runtime
             # - *Microsoft.VisualStudio.2022.Community*
             # - Microsoft.VisualStudio.2022.Enterprise
             - Microsoft.VCRedist.2005.x64
@@ -50,6 +51,7 @@ tasks:
             - Microsoft.DotNet.DesktopRuntime.6
             - Microsoft.DotNet.DesktopRuntime.7
             - Microsoft.DotNet.DesktopRuntime.8
+            - Microsoft.DotNet.DesktopRuntime.9
             # - Microsoft.DotNet.Framework.DeveloperPack_4
             - Microsoft.XNARedist
             # - Microsoft.DirectX
