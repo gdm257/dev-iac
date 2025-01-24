@@ -11,6 +11,7 @@ tasks:
             - Microsoft.WindowsTerminal
             - Mozilla.SOPS
             - commercialhaskell.stack
+            - JRSoftware.InnoSetup
             - Espanso.Espanso
             - SublimeHQ.SublimeText.3
             - 115.115Chrome
@@ -125,7 +126,7 @@ tasks:
             # - *115.115*
             # - *Muse.MuseHub*
             # - *Musescore.Musescore*
-            - Drumstick.dmidiplayer
+            # - Drumstick.dmidiplayer
             # - Falcosoft.VSTMidiDriver
             # - CodingWondersSoftware.DISMTools.Stable
             # - CrystalDewWorld.CrystalDiskMark.ShizukuEdition

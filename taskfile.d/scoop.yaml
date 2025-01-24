@@ -291,7 +291,7 @@ tasks:
             # - synctrayzor
             # - landrop
             # - megasync
-            - 115
+            # - 115
             - BaiduNetdisk
             - alist
             - alist-helper
