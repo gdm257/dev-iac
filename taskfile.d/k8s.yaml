@@ -1243,20 +1243,22 @@ tasks:
       _NODE_TYPE: '--server'
       _K3S_ARGS: >-
         --server-data-dir '/home/rancher/k3s'
+        --k3s-version v1.28.14+k3s1
         --k3s-extra-args
         '
         --disable traefik,servicelb,local-storage
-        --flannel-backend=none
+        --flannel-backend none
         --disable-network-policy
         --secrets-encryption
         --node-name {{.NODE_NAME}}
-        etcd-snapshot-schedule-cron "44 */8 * * *"
-        etcd-s3
-        etcd-s3-endpoint {{.AWS_ENDPOINTS}}
-        etcd-s3-region {{default "us-east-1" .AWS_REGION}}
-        etcd-s3-access-key {{.AWS_ACCESS_KEY_ID}}
-        etcd-s3-secret-key {{.AWS_SECRET_ACCESS_KEY}}
-        etcd-s3-bucket {{.AWS_BUCKET}}
+        --etcd-snapshot-schedule-cron "44 */8 * * *"
+        --etcd-snapshot-retention 10
+        --etcd-s3
+        --etcd-s3-endpoint {{.AWS_ENDPOINTS}}
+        --etcd-s3-region {{default "us-east-1" .AWS_REGION}}
+        --etcd-s3-access-key {{.AWS_ACCESS_KEY_ID}}
+        --etcd-s3-secret-key {{.AWS_SECRET_ACCESS_KEY}}
+        --etcd-s3-bucket {{.AWS_BUCKET}}
         '
     cmds:
       - cmd: >-
