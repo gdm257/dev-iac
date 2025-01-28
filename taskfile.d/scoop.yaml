@@ -981,6 +981,7 @@ tasks:
             - wezterm
             - ttyd
             # - cmder-full
+            # - waveterm
             # - xpipe
             - electerm
             # - mobaxterm
