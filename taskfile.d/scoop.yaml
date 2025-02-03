@@ -150,6 +150,7 @@ tasks:
             # - gdm257/cursor
             # - imhex
             - vscode
+            - vscodium
             - vim
             # - vimtutor
             - neovim
@@ -804,6 +805,7 @@ tasks:
             # - xcaddy
             # - clash
             - mihomo
+            # - clashtui
             # - clash-for-windows
             # - clash-for-windows-portable
             # - clashweb
@@ -904,8 +906,8 @@ tasks:
             # - chatgpt-next-web
             # - binggpt-portable
             # - pidgin
-            - chatbox
-            - ChatALL-Portable
+            # - chatbox
+            # - ChatALL-Portable
             - aichat
             # - tutanota
             - dns-jumper
@@ -928,7 +930,7 @@ tasks:
             # - dug
             # - zpscan
             # - hiddify-next
-            - hiddify-next_noql-net
+            # - hiddify-next_noql-net
             # - teleport
             - hostctl
 

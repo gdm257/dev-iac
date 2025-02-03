@@ -96,7 +96,7 @@ tasks:
             # - eg
             # - git-sim
             # - sqlmodel
-            - shell-gpt
+            # - shell-gpt
             # - Quick-Cut
             # - ansible-lint
             # - speedtest-cli
