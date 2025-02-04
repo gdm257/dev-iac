@@ -155,4 +155,5 @@ tasks:
       - task: install:bulk
         vars:
           PACKAGES:
+            - isd
             - --include-deps --preinstall netaddr ansible

@@ -48,5 +48,5 @@ tasks:
             # - gpg-tui
             # - serie
             - binsider
-            - systeroid
-            - systeroid-tui
+            # - systeroid
+            # - systeroid-tui
