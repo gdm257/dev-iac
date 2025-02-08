@@ -16,7 +16,7 @@ tasks:
             - SublimeHQ.SublimeText.3
             - 115.115Chrome
             - Ollama.Ollama
-            - Bin-Huang.Chatbox.CommunityEdition
+            # - Bin-Huang.Chatbox.CommunityEdition
             # - kapitainsky.RcloneBrowser
             # - FastCopy.FastCopy
             # - Falcosoft.SoundfontMidiPlayer
