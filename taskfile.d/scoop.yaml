@@ -639,6 +639,7 @@ tasks:
             # - mpv-Portable
             # - mpv.net implay mpv.net-cm mpv.net-dw
             - potplayer
+            - extras/tsukimi
             - bilibili-portable
             # - kikoplay
             # - dandanplay
@@ -904,6 +905,7 @@ tasks:
             # - Thunderbird-Portable
             # - simpread-synchelper
             - clumsy
+            - cherry-studio_naderi
             # - chatgpt-next-web
             # - binggpt-portable
             # - pidgin
