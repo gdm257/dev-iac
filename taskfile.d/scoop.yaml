@@ -187,7 +187,7 @@ tasks:
             - mongodb-compass
             - edgedb
             - dbgate
-            - chat2db
+            # - chat2db
             - jailer
             # - dbeaver
             # - dblab
@@ -761,7 +761,7 @@ tasks:
             # - clementine
             - mp3tag-portable
             # - spleeter-gui
-            - polyglot
+            # - polyglot
             - cuetools
             - yesplaymusic
             # - feeluown
@@ -1227,6 +1227,7 @@ tasks:
             # - snap-hutao
             # - collapse
             - starward
+            - game-cheats-manager
             - katrain
             - lizzieyzy
             - pachi

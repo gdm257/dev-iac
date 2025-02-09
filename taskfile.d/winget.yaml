@@ -144,6 +144,8 @@ tasks:
             # - Nlitesoft.NTLite
             - Huawei.HiSuite
             - SabakiHQ.Sabaki
+            - AdrienAllard.FileConverter
+            # - LiTang.QianJi
 
   winget:install:bulk:
     platforms: [windows]

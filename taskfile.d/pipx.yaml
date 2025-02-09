@@ -46,6 +46,7 @@ tasks:
             # - pipx
             # - virtualenvwrapper-win
             # - pipenv
+            # - pex
             # - ipython
             - ptpython
             - pdm
