@@ -301,6 +301,7 @@ tasks:
             - dukto
             - dufs
             - officetoolplus
+            # - lky-officetools
             # - qbittorrent-portable
             - qbittorrent-enhanced
             # - annie
@@ -710,6 +711,7 @@ tasks:
           APPS:
             - gdm257/project-86
             # - project-86-launcher
+            - golly
             - taisei
             - osulazer
             - collection-manager
@@ -1215,6 +1217,7 @@ tasks:
             - sysinternals
             # - sysinternals_ScoopInstaller
             # - gaojitools
+            - fufu-tools
             - officebox
             - playnite
             # - Hen3
