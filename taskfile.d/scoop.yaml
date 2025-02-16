@@ -1125,6 +1125,7 @@ tasks:
             - ventoy
             - wepe
             - rufus
+            - balenaEtcher-Portable
             - virtualbox-extension
             - lxrunoffline
             - vagrant
