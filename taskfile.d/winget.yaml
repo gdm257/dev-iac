@@ -17,6 +17,8 @@ tasks:
             - 115.115Chrome
             - Ollama.Ollama
             - ElementLabs.LMStudio
+            - ChidiWilliams.Buzz
+            - kangfenmao.CherryStudio
             # - Bin-Huang.Chatbox.CommunityEdition
             # - kapitainsky.RcloneBrowser
             # - FastCopy.FastCopy

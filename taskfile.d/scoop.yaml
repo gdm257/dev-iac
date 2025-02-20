@@ -769,8 +769,9 @@ tasks:
             # - feeluown
             # - keyfinder
             - supersonic
+            - gdm257/nsmusics
             - retrieval-based-voice-conversion-webui
-            - Buzz_dodorz
+            # - Buzz_dodorz
 
   install:curated-list:network:
     platforms: [windows]
@@ -907,7 +908,7 @@ tasks:
             # - Thunderbird-Portable
             # - simpread-synchelper
             - clumsy
-            - cherry-studio_naderi
+            # - cherry-studio_naderi
             # - chatgpt-next-web
             # - binggpt-portable
             # - pidgin
