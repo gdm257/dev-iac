@@ -95,6 +95,7 @@ tasks:
             # - hatch
             - volta
             # - tailwindcss
+            # - fnm
             # - nvm
             # - yarn pnpm
             # - php74 php74-xdebug composer

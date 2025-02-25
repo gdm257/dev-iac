@@ -149,6 +149,7 @@ tasks:
             - SabakiHQ.Sabaki
             - AdrienAllard.FileConverter
             # - LiTang.QianJi
+            - Youqu.ToDesk
 
   winget:install:bulk:
     platforms: [windows]
