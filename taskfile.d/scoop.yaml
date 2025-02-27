@@ -851,6 +851,7 @@ tasks:
             - winnfsd
             - telegram
             - wechat
+            - wecom
             # - cleanmywechat
             # - wechat_ScoopInstaller
             # - wechat_akirco
