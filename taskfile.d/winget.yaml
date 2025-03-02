@@ -14,6 +14,7 @@ tasks:
             - JRSoftware.InnoSetup
             - Espanso.Espanso
             - SublimeHQ.SublimeText.3
+            - ByteDance.Trae
             - 115.115Chrome
             - Ollama.Ollama
             - ElementLabs.LMStudio

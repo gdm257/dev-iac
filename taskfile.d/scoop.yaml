@@ -996,6 +996,7 @@ tasks:
             - electerm
             # - mobaxterm
             # - alacritty
+            # - rio
             # - hyper-beta
             # - tabby-portable
             # - putty
