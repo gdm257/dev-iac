@@ -1210,6 +1210,7 @@ tasks:
             # - wsl-centos-7
             # - wsl-centos-8
             - nixos-wsl
+            - devpod
 
   install:curated-list:toolbox:
     platforms: [windows]
