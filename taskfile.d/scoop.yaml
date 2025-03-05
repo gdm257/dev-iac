@@ -917,6 +917,7 @@ tasks:
             # - chatbox
             # - ChatALL-Portable
             - aichat
+            - plandex
             # - tutanota
             - dns-jumper
             - gns3
@@ -1199,6 +1200,7 @@ tasks:
             - argocd
             - tsuru
             - velero
+            - devspace
             # - wsl2-distro-manager
             # - WsaToolbox
             # - wsldl
@@ -1211,6 +1213,7 @@ tasks:
             # - wsl-centos-8
             - nixos-wsl
             - devpod
+            # - vscli
 
   install:curated-list:toolbox:
     platforms: [windows]
