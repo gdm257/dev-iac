@@ -95,6 +95,7 @@ tasks:
             # - Dell.DisplayManager
             - Sandboxie.Plus
             - Oracle.VirtualBox
+            - SUSE.RancherDesktop
             - Docker.DockerDesktop
             # - OpenShot.OpenShot
             # - iSlide.iSlide

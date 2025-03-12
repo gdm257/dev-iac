@@ -833,12 +833,23 @@ tasks:
             - qv2ray-plugin-trojan-go
             - v2rayA
             # - tuic
-            # - xh
-            - curlie
             - grpcurl
             - tproxy
             - websocat
+            - hurl
+            # - xh
+            - curlie
             - atac
+            # - keploy
+            - bruno
+            # - postman
+            # - insomnia
+            - hoppscotch
+            - pororoca
+            # - restfox
+            # - firecamp
+            # - httpie-desktop
+            # - apidash
             - wireshark
             # - termshark
             # - fiddler
@@ -1173,7 +1184,7 @@ tasks:
             # - autok3s
             - k3sup
             - k3d
-            - rancher-desktop
+            # - rancher-desktop
             # - minikube
             # - kind
             # - kubeadm
@@ -1196,11 +1207,10 @@ tasks:
             # - kwok
             # - kubeshark
             # - kops
-            - main/flux
+            # - main/flux
             - argocd
-            - tsuru
+            # - tsuru
             - velero
-            - devspace
             # - wsl2-distro-manager
             # - WsaToolbox
             # - wsldl
@@ -1212,7 +1222,9 @@ tasks:
             # - wsl-centos-7
             # - wsl-centos-8
             - nixos-wsl
+            - devspace
             - devpod
+            - daytona
             # - vscli
 
   install:curated-list:toolbox:
