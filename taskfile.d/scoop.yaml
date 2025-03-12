@@ -188,7 +188,7 @@ tasks:
             - mongodb-compass
             - edgedb
             - dbgate
-            # - chat2db
+            - chat2db
             - jailer
             # - dbeaver
             # - dblab
