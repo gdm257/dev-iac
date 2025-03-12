@@ -1,0 +1,44 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: safeline
+  namespace: argocd
+spec:
+  project: infra
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: safeline
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+  source:
+    # https://github.com/yaencn/safeline-helmchart
+    # To reset admin password, attach to safeline-mgt shell and execute:
+    #     resetadmin
+    repoURL: https://g-otkk6267-helm.pkg.coding.net/Charts/safeline
+    chart: safeline
+    targetRevision: 10.0.4
+    helm:
+      valuesObject:
+        global:
+          ingress:
+            enabled: false
+
+        persistence:
+          persistentVolumeClaim:
+            chaos:
+              accessMode: ReadWriteOnce
+            database:
+              accessMode: ReadWriteOnce
+            detector:
+              accessMode: ReadWriteOnce
+            logs:
+              accessMode: ReadWriteOnce
+            luigi:
+              accessMode: ReadWriteOnce
+            mgt:
+              accessMode: ReadWriteOnce
+            nginx:
+              accessMode: ReadWriteOnce
+            tengine:
+              accessMode: ReadWriteOnce

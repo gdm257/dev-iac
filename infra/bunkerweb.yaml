@@ -1,0 +1,26 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: bunkerweb
+  namespace: argocd
+spec:
+  project: infra
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: bunkerweb # optional
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+  source:
+    repoURL: https://repo.bunkerweb.io/charts
+    chart: bunkerweb
+    targetRevision: 0.0.6
+    helm:
+      valuesObject:
+        service:
+          enabled: true
+          type: ClusterIP
+
+        mariadb:
+          persistence:
+            size: 5Gi
