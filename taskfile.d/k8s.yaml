@@ -651,7 +651,7 @@ tasks:
         {{.CLI_ARGS}}
 
   envoy-gateway:deploy:self:
-    desc: 'Deploy Envoy Gateway that supports gwapi v1.1.0'
+    desc: 'Deploy Envoy Gateway that supports gateway api v1.1.0'
     cmds:
       - >-
         helm upgrade --install
@@ -786,7 +786,7 @@ tasks:
         {{._NAME}} fluxcd-community/flux2
       - flux check
 
-  gwapi:install:v1.1.0:
+  gateway-api:install:v1.1.0:
     cmds:
       - kubectl apply -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.1.0/standard-install.yaml
 

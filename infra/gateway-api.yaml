@@ -1,0 +1,45 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: gateway-api
+  namespace: argocd
+spec:
+  goTemplate: true
+  goTemplateOptions: ["missingkey=error"]
+  generators:
+    - matrix:
+        generators:
+          - list:
+              elements:
+                - targetRevision: release-0.5
+                  version: '0.5'
+                - targetRevision: release-0.6
+                  version: '0.6'
+                - targetRevision: release-0.7
+                  version: '0.7'
+                - targetRevision: release-0.8
+                  version: '0.8'
+                - targetRevision: release-1.0
+                  version: '1.0'
+                - targetRevision: release-1.1
+                  version: '1.1'
+                - targetRevision: release-1.2
+                  version: '1.2'
+          - list:
+              elements:
+                - path: config/crd
+                  variant: standard
+                - path: config/crd/experimental
+                  variant: experimental
+
+  template:
+    metadata:
+      name: 'gateway-api-{{ .version }}-{{ .variant }}'
+    spec:
+      project: infra
+      destination:
+        server: https://kubernetes.default.svc
+      source:
+        repoURL: https://github.com/kubernetes-sigs/gateway-api
+        targetRevision: '{{ .targetRevision }}'
+        path: '{{ .path }}'
