@@ -5,3 +5,4 @@ resources:
   - namespaces.yaml
   - cilium
   - argo-cd
+  - argo-cd/after
