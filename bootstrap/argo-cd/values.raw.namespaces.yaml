@@ -1,0 +1,15 @@
+manifests:
+  - apiVersion: v1
+    kind: Namespace
+    metadata:
+      name: infra
+
+  - apiVersion: v1
+    kind: Namespace
+    metadata:
+      name: self-hosted
+
+  - apiVersion: v1
+    kind: Namespace
+    metadata:
+      name: argocd

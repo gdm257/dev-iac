@@ -11,5 +11,5 @@ helmCharts:
     releaseName: cilium
     namespace: cilium
     includeCRDs: true
-    valuesMerge: override # ‘merge’, ‘override’, ‘replace’
+    valuesMerge: override
     valuesFile: values.yaml

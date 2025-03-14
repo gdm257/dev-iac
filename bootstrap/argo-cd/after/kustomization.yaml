@@ -1,6 +1,0 @@
-apiVersion: kustomize.config.k8s.io/v1beta1
-kind: Kustomization
-
-resources:
-  - manifest/projects.yaml
-  # - manifest/routes.yaml # TODO: fix CRD problem

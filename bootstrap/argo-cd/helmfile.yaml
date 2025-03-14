@@ -1,0 +1,26 @@
+repositories:
+  - name: argo
+    url: https://argoproj.github.io/argo-helm
+  - name: helm-raw
+    url: https://d4nnyx.github.io/helm-raw/
+
+releases:
+  - name: argocd-namespaces
+    chart: helm-raw/helm-raw
+    version: 0.1.0
+    values:
+      - values.raw.namespaces.yaml
+
+  - name: argocd
+    chart: argo/argo-cd
+    version: 7.6.12
+    namespace: argocd
+    createNamespace: true
+    values:
+      - values.yaml
+
+  - name: argocd-projects
+    chart: helm-raw/helm-raw
+    version: 0.1.0
+    values:
+      - values.raw.projects.yaml
