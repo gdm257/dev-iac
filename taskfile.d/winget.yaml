@@ -27,6 +27,7 @@ tasks:
             # - Anaconda.Miniconda3
             # - Mamba.Micromamba
             # - Canonical.Ubuntu.2204
+            - jtroo.kanata_gui
 
   winget:install:curated-list:global:
     platforms: [windows]
@@ -79,6 +80,7 @@ tasks:
             # - DEVCOM.JetBrainsMonoNerdFont
             # - *Nvidia.CUDA*
             # - *Nvidia.GeForceExperience*
+            - ViGEm.ViGEmBus
             # - *MacType.MacType*
             - OpenSC.OpenSC
             - SSHFS-Win.SSHFS-Win
