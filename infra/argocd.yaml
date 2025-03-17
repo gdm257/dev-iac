@@ -1,10 +1,11 @@
+---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: argocd
   namespace: argocd
 spec:
-  project: infra
+  project: default
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd
@@ -100,3 +101,130 @@ spec:
               memory: 50Mi
           metrics:
             enabled: true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argocd-projects
+  namespace: argocd
+spec:
+  project: default
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+  source:
+    repoURL: https://d4nnyx.github.io/helm-raw/
+    chart: helm-raw
+    targetRevision: 0.1.0
+    helm:
+      valuesObject:
+        manifests:
+          - apiVersion: argoproj.io/v1alpha1
+            kind: AppProject
+            metadata:
+              name: infra
+              namespace: argocd
+            spec:
+              clusterResourceWhitelist:
+                - group: "*"
+                  kind: "*"
+              description: infrastructure depended by apps
+              destinations:
+                - name: "*"
+                  namespace: "*"
+                  server: "*"
+              sourceRepos:
+                - "*"
+
+          - apiVersion: argoproj.io/v1alpha1
+            kind: AppProject
+            metadata:
+              name: self-hosted
+              namespace: argocd
+            spec:
+              clusterResourceWhitelist:
+                - group: "*"
+                  kind: "*"
+              description: self-hosted apps
+              destinations:
+                - name: "*"
+                  namespace: self-hosted
+                  server: "*"
+              sourceRepos:
+                - "*"
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argocd-routes
+  namespace: argocd
+spec:
+  project: default
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+  source:
+    repoURL: https://d4nnyx.github.io/helm-raw/
+    chart: helm-raw
+    targetRevision: 0.1.0
+    helm:
+      valuesObject:
+        manifests:
+          - apiVersion: gateway.networking.k8s.io/v1
+            kind: HTTPRoute
+            metadata:
+              name: argocd
+              namespace: argocd
+              labels:
+                app.kubernetes.io/name: argocd
+            spec:
+              parentRefs:
+                - kind: Gateway
+                  namespace: traefik
+                  name: traefik-gateway
+                  sectionName: websecure
+              hostnames:
+                - argo-cd.127.0.0.1.sslip.io
+              rules:
+                - matches:
+                    - path:
+                        type: PathPrefix
+                        value: /
+                  backendRefs:
+                    - kind: Service
+                      namespace: argocd
+                      name: argocd-server
+                      port: 443
+
+          - apiVersion: gateway.networking.k8s.io/v1
+            kind: HTTPRoute
+            metadata:
+              name: argocd-http
+              namespace: argocd
+              labels:
+                app.kubernetes.io/name: argocd
+            spec:
+              parentRefs:
+                - kind: Gateway
+                  namespace: traefik
+                  name: traefik-gateway
+                  sectionName: web
+              hostnames:
+                - argo-cd.127.0.0.1.sslip.io
+              rules:
+                - matches:
+                    - path:
+                        type: PathPrefix
+                        value: /
+                  filters:
+                    - type: RequestRedirect
+                      requestRedirect:
+                        scheme: https
+                        port: 443
+                        statusCode: 301
