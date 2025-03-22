@@ -498,6 +498,7 @@ tasks:
             # - gpg4win
             - fontforge
             - winfontsview
+            - keeweb
             # - keepass
             # - keepass-plugin-kpenhentryview
             # - keepass-plugin-webautotype
