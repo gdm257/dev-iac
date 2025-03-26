@@ -366,6 +366,7 @@ tasks:
             - restic-browser
             # - redu
             - duplicati
+            # - duplicacy
             # - backrest
             - diskgenius-zh
             - SymlinkCreator
@@ -1241,6 +1242,7 @@ tasks:
             # - gaojitools
             - fufu-tools
             - officebox
+            - ludusavi
             - playnite
             # - Hen3
             - thprac

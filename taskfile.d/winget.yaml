@@ -115,6 +115,7 @@ tasks:
             # - RProject.R
             # - RProject.Rtools
             # - Posit.RStudio
+            - Valve.SteamLink
             - EpicGames.EpicGamesLauncher
             - Stellarium.Stellarium
             # - *HeidelbergUniversity.GaiaSky*
