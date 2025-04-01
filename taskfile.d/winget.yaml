@@ -155,11 +155,12 @@ tasks:
             - AdrienAllard.FileConverter
             # - LiTang.QianJi
             - Youqu.ToDesk
+            # - Tencent.Yuanbao
 
   winget:install:bulk:
     platforms: [windows]
     internal: true
-    requires:
+    requires
       vars:
         - APPS
     vars:
