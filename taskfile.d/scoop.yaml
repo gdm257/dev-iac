@@ -326,6 +326,7 @@ tasks:
       - task: install:bulk
         vars:
           APPS:
+            - ntfs2btrfs
             - unar
             - lessmsi
             - age
@@ -1070,6 +1071,7 @@ tasks:
       - task: install:bulk
         vars:
           APPS:
+            # - vcredist-aio
             # - osquery
             - fastfetch
             # - WindowsUpdateBlocker
@@ -1242,6 +1244,7 @@ tasks:
             # - gaojitools
             - fufu-tools
             - officebox
+            - gdm257/EmuDeck
             - ludusavi
             - playnite
             # - Hen3

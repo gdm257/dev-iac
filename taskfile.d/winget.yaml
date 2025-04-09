@@ -87,6 +87,7 @@ tasks:
             - WinFsp.WinFsp
             # - DaiyuuNobori.Win10Pcap
             - Insecure.Npcap
+            - WiresharkFoundation.Wireshark
             - Rime.Weasel
             # - Brave.Brave
             # - AnyDeskSoftwareGmbH.AnyDesk

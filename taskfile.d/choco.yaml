@@ -30,6 +30,7 @@ tasks:
         vars:
           APPS:
             - veracrypt
+            - winbtrfs
             # - omnimidi
             # - softether-vpn-client
             # - sqlserver-odbcdriver
