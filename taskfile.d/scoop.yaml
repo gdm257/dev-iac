@@ -1247,6 +1247,7 @@ tasks:
             - gdm257/EmuDeck
             - ludusavi
             - playnite
+            - gdm257/WinDeckHelper
             # - Hen3
             - thprac
             - steam
