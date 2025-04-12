@@ -266,7 +266,8 @@ tasks:
             - wingetcreate
             # - wingetui
             - UniGetUI
-            - winget-preview
+            - winget
+            # - winget-preview
             # - eget
             - bin-manager
             # - Baulk_dodorz
