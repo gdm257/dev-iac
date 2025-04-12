@@ -325,6 +325,7 @@ tasks:
             # - termscp
             - s3browser
             # - windows-iso-downloader
+            - gopeed
 
   install:curated-list:file:
     platforms: [windows]
