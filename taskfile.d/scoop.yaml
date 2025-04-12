@@ -49,6 +49,12 @@ tasks:
       - task: add:bulk
         vars:
           BUCKETS:
+            - NAME: main
+              URL: ''
+            # - NAME: extras
+            #   URL: ''
+            # - NAME: versions
+            #   URL: ''
             - NAME: apps
               URL: https://github.com/kkzzhizhou/scoop-apps
             - NAME: gdm257
@@ -319,7 +325,6 @@ tasks:
             # - termscp
             - s3browser
             # - windows-iso-downloader
-            - gopeed
 
   install:curated-list:file:
     platforms: [windows]
@@ -645,7 +650,7 @@ tasks:
             # - mpv-Portable
             # - mpv.net implay mpv.net-cm mpv.net-dw
             - potplayer
-            - extras/tsukimi
+            - tsukimi
             - bilibili-portable
             # - kikoplay
             # - dandanplay
@@ -1091,7 +1096,7 @@ tasks:
             - itunes-portable
             - i4tool
             # - windows-application-driver
-            - edgeless-hub
+            # - edgeless-hub
             # - pchunter
             - microsoft-activation-scripts
             - CMWTAT_Digital_Edition
