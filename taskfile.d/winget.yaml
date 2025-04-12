@@ -161,7 +161,7 @@ tasks:
   winget:install:bulk:
     platforms: [windows]
     internal: true
-    requires
+    requires:
       vars:
         - APPS
     vars:
