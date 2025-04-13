@@ -303,7 +303,7 @@ tasks:
             # - 115
             - BaiduNetdisk
             - alist
-            - alist-helper
+            # - alist-helper
             # - hfs
             # - sftpgo
             - dukto
@@ -1157,21 +1157,31 @@ tasks:
             - lxrunoffline
             - vagrant
             - qemu
-            - cemu-dev
-            - xemu
-            - yuzu
+            - gdm257/EmuDeck
+            # - pegasus
+            # - steam-rom-manager
+            # - cemu-dev
+            # - xemu
+            # - yuzu
+            # - azahar
             # - citra-nightly
             - citra
-            - dolphin-dev
-            - mgba
-            - ppsspp
-            - ryujinx
-            - pcsx2
-            - rpcs3
-            - vita3k
-            - shadps4
-            - xenia
-            - mame
+            # - dolphin-dev
+            # - duckstation
+            # - flycast
+            # - mgba
+            # - melonDS
+            # - mame
+            # - ppsspp
+            # - pcsx2
+            # - rpcs3
+            # - ryujinx
+            # - retroarch
+            # - vita3k
+            # - shadps4
+            # - supermodel
+            # - ScummVM
+            # - xenia
             - LDPlayer-Portable
             - onscripter-w
             - onscripter-jh
@@ -1251,7 +1261,6 @@ tasks:
             # - gaojitools
             - fufu-tools
             - officebox
-            - gdm257/EmuDeck
             - ludusavi
             - playnite
             - gdm257/WinDeckHelper

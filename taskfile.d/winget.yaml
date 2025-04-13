@@ -28,6 +28,7 @@ tasks:
             # - Mamba.Micromamba
             # - Canonical.Ubuntu.2204
             - jtroo.kanata_gui
+            - Xmarmalade.AlistHelper
 
   install:curated-list:global:
     platforms: [windows]
