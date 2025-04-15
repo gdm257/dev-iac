@@ -50,8 +50,7 @@ spec:
                     memory: 50Mi
                 image:
                   repository: xhofe/alist
-                  tag: v3.42.0-aio
-                  # pullPolicy: IfNotPresent
+                  tag: v3.44.0-aio
                 ports:
                   - containerPort: 5244
                   - containerPort: 5246
