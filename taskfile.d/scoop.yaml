@@ -1023,6 +1023,7 @@ tasks:
             # - tabby-portable
             # - putty
             - openssh
+            - opkssh
             - lrzsz
             - tssh
             - mosh-client
