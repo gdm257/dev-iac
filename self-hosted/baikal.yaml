@@ -5,8 +5,15 @@ metadata:
   namespace: argocd
 spec:
   project: self-hosted
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: self-hosted
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
   source:
     repoURL: https://rubxkube.github.io/charts/
+    chart: baikal
     targetRevision: 1.2.5
     helm:
       # TODO: FIXME
@@ -36,15 +43,8 @@ spec:
             isIngressRoute: false
             ingressClassName: traefik
             entrypoint: websecure
-            hostName: baikal.xxxxxxxx.com
+            hostName: baikal.127.0.0.1.sslip.io
             tls:
               enabled: true
               certResolver: letsencrypt-issuer
-              secretName: xxxxxxxxxxx
-    chart: baikal
-  destination:
-    server: https://kubernetes.default.svc
-    namespace: self-hosted
-  syncPolicy:
-    syncOptions:
-      - CreateNamespace=true
+              secretName: wildcard-cert
