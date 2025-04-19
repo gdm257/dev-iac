@@ -1,137 +1,104 @@
-apiVersion: gateway.networking.k8s.io/v1
-kind: HTTPRoute
+apiVersion: argoproj.io/v1alpha1
+kind: Application
 metadata:
   name: matrix
-  namespace: self-hosted
-  labels:
-    app: matrix
+  namespace: argocd
 spec:
-  parentRefs:
-    - kind: Gateway
-      name: traefik-gateway
-      namespace: traefik
-      sectionName: websecure
-  # TODO: FIXME
-  hostnames:
-    - matrix.xxxxxxxxx.com
-  rules:
-    - matches:
-        - path:
-            type: PathPrefix
-            value: /
-      backendRefs:
-        - name: matrix
-          namespace: self-hosted
-          kind: Service
-          port: 80
----
-apiVersion: gateway.networking.k8s.io/v1
-kind: HTTPRoute
-metadata:
-  name: matrix-http
-  namespace: self-hosted
-  labels:
-    app: matrix
-spec:
-  parentRefs:
-    - group: gateway.networking.k8s.io
-      kind: Gateway
-      namespace: traefik
-      name: traefik-gateway
-      sectionName: web
-  # TODO: FIXME
-  hostnames:
-    - matrix.xxxxxxxxx.com
-  rules:
-    - matches:
-        - path:
-            type: PathPrefix
-            value: /
-      filters:
-        - type: RequestRedirect
-          requestRedirect:
-            scheme: https
-            statusCode: 301
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: matrix
-  namespace: self-hosted
-  labels:
-    app: matrix
-spec:
-  selector:
-    app: matrix
-  type: ClusterIP
-  ports:
-    - name: matrix
-      protocol: TCP
-      port: 80
-      targetPort: 8008
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: matrix
-  namespace: self-hosted
-  labels:
-    app: matrix
-spec:
-  replicas: 0
-  selector:
-    matchLabels:
-      app: matrix
-  template:
-    metadata:
-      annotations:
-        kubectl.kubernetes.io/default-container: matrix
-      labels:
-        app: matrix
-    spec:
-      terminationGracePeriodSeconds: 30
-      tolerations:
-        # this toleration is to have the daemonset runnable on master nodes
-        # remove it if your masters can't run pods
-        - key: node-role.kubernetes.io/master
-          effect: NoSchedule
-      volumes:
-        - name: data
-          persistentVolumeClaim:
-            claimName: matrix-data
-      containers:
-        - name: matrix
-          image: ghcr.io/element-hq/synapse:latest
-          ports:
-            - containerPort: 8008
-          volumeMounts:
-            - name: data
-              mountPath: /data
-          env:
-            - name: SYNAPSE_HTTP_PORT
-              value: "8008"
-            - name: SYNAPSE_REPORT_STATS
-              value: "yes"
-            # TODO: FIXME
-            - name: SYNAPSE_SERVER_NAME
-              value: "matrix.xxxxxxxxx.com"
-          resources:
-            limits:
-              cpu: 300m
-              memory: 400Mi
-            requests:
-              cpu: 50m
-              memory: 50Mi
----
-kind: PersistentVolumeClaim
-apiVersion: v1
-metadata:
-  name: matrix-data
-  namespace: self-hosted
-spec:
-  storageClassName: local-path
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 8Gi
+  project: self-hosted
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: self-hosted
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+  sources:
+    - repoURL: https://stakater.github.io/stakater-charts
+      chart: stakater/application
+      targetRevision: 6.0.2
+      helm:
+        valuesObject:
+          manifests:
+            - applicationName: matrix
+
+              service:
+                enabled: true
+                type: ClusterIP
+                ports:
+                  - name: web
+                    port: 80
+                    targetPort: 8008
+
+              deployment:
+                enabled: true
+                name: matrix
+                replicas: 1
+                resources:
+                  limits:
+                    cpu: 300m
+                    memory: 400Mi
+                  requests:
+                    cpu: 50m
+                    memory: 50Mi
+                image:
+                  repository: ghcr.io/element-hq/synapse
+                  tag: v1.128.0
+                ports:
+                  - containerPort: 8008
+                envFrom:
+                  config:
+                    type: configmap
+                    name: matrix-config-dotenv
+
+              persistent:
+                enabled: true
+                storageClass: local-path
+                storageSize: 8Gi
+                accessMode: ReadWriteOnce
+                mountPVC: true
+                mountPath: /data
+              configMap:
+                enabled: true
+                files:
+                  matrix-config-dotenv:
+                    SYNAPSE_HTTP_PORT: "8008"
+                    SYNAPSE_REPORT_STATS: "yes"
+                    SYNAPSE_SERVER_NAME: "matrix.127.0.0.1.sslip.io"
+
+    - repoURL: https://d4nnyx.github.io/helm-raw/
+      chart: helm-raw
+      targetRevision: 0.1.0
+      helm:
+        valuesObject:
+          manifests:
+            - apiVersion: gateway.networking.k8s.io/v1
+              kind: HTTPRoute
+              metadata:
+                name: matrix-web
+                namespace: self-hosted
+                labels:
+                  app.kubernetes.io/name: matrix
+                  app.kubernetes.io/component: web
+              spec:
+                parentRefs:
+                  - group: gateway.networking.k8s.io
+                    kind: Gateway
+                    namespace: traefik
+                    name: traefik-gateway
+                    sectionName: websecure
+                  - group: gateway.networking.k8s.io
+                    kind: Gateway
+                    namespace: traefik
+                    name: traefik-gateway
+                    sectionName: web
+                hostnames:
+                  - matrix.127.0.0.1.sslip.io
+                rules:
+                  - matches:
+                      - path:
+                          type: PathPrefix
+                          value: /
+                    backendRefs:
+                      - kind: Service
+                        namespace: self-hosted
+                        name: matrix
+                        port: 80
