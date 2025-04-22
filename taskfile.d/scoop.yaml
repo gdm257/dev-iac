@@ -377,6 +377,7 @@ tasks:
             # - duplicacy
             # - backrest
             - diskgenius-zh
+            - smartmontools
             - SymlinkCreator
             # - VeraCrypt-Portable
             - VeraCryptPortable
@@ -401,7 +402,7 @@ tasks:
             - syncthing
             # - watchexec
             # - kopia
-            # - kopiaui
+            - kopiaui
             # - mc
             # - cryptomator
 
@@ -590,6 +591,7 @@ tasks:
             # - win10_brightnessslider
             # - lightbulb
             - screenoff
+            - project-graph
             # - xmind8
             # - freemind
             # - xmind_ScoopInstaller
@@ -652,7 +654,7 @@ tasks:
             # - mpv.net implay mpv.net-cm mpv.net-dw
             - potplayer
             - tsukimi
-            - bilibili-portable
+            - wiliwili
             # - kikoplay
             # - dandanplay
             - AssFontSubset
