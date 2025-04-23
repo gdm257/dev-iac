@@ -1158,6 +1158,7 @@ tasks:
             - balenaEtcher-Portable
             - virtualbox-extension
             - lxrunoffline
+            - packer
             - vagrant
             - qemu
             - gdm257/EmuDeck
