@@ -45,6 +45,14 @@ spec:
                 ports:
                   - containerPort: 80
 
+              persistence:
+                enabled: true
+                mountPVC: true
+                mountPath: /var/lib/kubepi
+                storageSize: 4Gi
+                accessMode: ReadWriteOnce
+                storageClass:
+
     - repoURL: https://d4nnyx.github.io/helm-raw/
       chart: helm-raw
       targetRevision: 0.1.0
