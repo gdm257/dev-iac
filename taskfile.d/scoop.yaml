@@ -276,6 +276,7 @@ tasks:
             # - winget-preview
             # - eget
             - bin-manager
+            # - stew
             # - Baulk_dodorz
             # - shovel
             # - npackd

@@ -29,6 +29,7 @@ tasks:
             # - Canonical.Ubuntu.2204
             - jtroo.kanata_gui
             - Xmarmalade.AlistHelper
+            - Codeium.Windsurf
 
   install:curated-list:global:
     platforms: [windows]

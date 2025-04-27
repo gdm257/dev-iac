@@ -55,6 +55,7 @@ tasks:
             # - pyinstaller
             # - pyarmor
             # - nuitka
+            - juv
             # - flake8
             # - mypy
             # - ruff

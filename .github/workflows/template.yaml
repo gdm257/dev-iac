@@ -1,0 +1,17 @@
+name: Template
+
+on:
+  workflow_dispatch:
+
+jobs:
+  devenv:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: aldoborrero/use-nix-action@v5
+      - name: Use devenv cache from cachix
+        uses: cachix/cachix-action@v14
+        with:
+            name: devenv
+      - run: nix profile install nixpkgs#devenv
+      - run: nix profile install nixpkgs#go-task
