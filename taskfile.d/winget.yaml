@@ -12,22 +12,21 @@ tasks:
             - Mozilla.SOPS
             - commercialhaskell.stack
             - JRSoftware.InnoSetup
-            - Espanso.Espanso
+            # - Espanso.Espanso
             - SublimeHQ.SublimeText.3
             - ByteDance.Trae
             - 115.115Chrome
-            - Ollama.Ollama
-            - ElementLabs.LMStudio
-            - ChidiWilliams.Buzz
+            # - Ollama.Ollama
+            # - ElementLabs.LMStudio
+            # - ChidiWilliams.Buzz
             - kangfenmao.CherryStudio
-            # - Bin-Huang.Chatbox.CommunityEdition
             # - kapitainsky.RcloneBrowser
             # - FastCopy.FastCopy
             # - Falcosoft.SoundfontMidiPlayer
             # - Anaconda.Miniconda3
             # - Mamba.Micromamba
             # - Canonical.Ubuntu.2204
-            - jtroo.kanata_gui
+            # - jtroo.kanata_gui
             - Xmarmalade.AlistHelper
             - Codeium.Windsurf
 
@@ -38,7 +37,6 @@ tasks:
         vars:
           APPS:
             - Chocolatey.Chocolatey
-            # - Chocolatey.ChocolateyGUI
             - Microsoft.VisualStudio.2022.BuildTools
             - Microsoft.EdgeWebView2Runtime
             # - *Microsoft.VisualStudio.2022.Community*
@@ -84,7 +82,6 @@ tasks:
             # - *Nvidia.GeForceExperience*
             - ViGEm.ViGEmBus
             # - *MacType.MacType*
-            - OpenSC.OpenSC
             - SSHFS-Win.SSHFS-Win
             - WinFsp.WinFsp
             # - DaiyuuNobori.Win10Pcap
@@ -154,11 +151,12 @@ tasks:
             # - *KeppySoftware.OmniMIDI*
             # - Nlitesoft.NTLite
             - Huawei.HiSuite
-            - SabakiHQ.Sabaki
-            - AdrienAllard.FileConverter
             # - LiTang.QianJi
             - Youqu.ToDesk
             # - Tencent.Yuanbao
+            - Eusoft.Eudic
+            - Bandisoft.Honeyview
+            - GOG.Galaxy
 
   install:bulk:
     platforms: [windows]
@@ -178,8 +176,9 @@ tasks:
   install:
     platforms: [windows]
     desc: 'Install an app [APP SOURCE] -- [APP]'
+    ignore_error: true
     vars:
       _APP: '{{if .APP}}{{.APP}}{{else if .CLI_ARGS}}{{.CLI_ARGS}}{{else}}--help{{end}}'
       _SOURCE: '{{if .SOURCE}}{{.SOURCE}}{{else}}winget{{end}}'
     cmds:
-      - winget install --source {{._SOURCE}} --name {{._APP}}
+      - winget install --source {{._SOURCE}} --id {{._APP}}
