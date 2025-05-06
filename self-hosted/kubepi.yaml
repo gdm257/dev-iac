@@ -13,45 +13,48 @@ spec:
       - CreateNamespace=true
   sources:
     - repoURL: https://stakater.github.io/stakater-charts
-      chart: stakater/application
+      chart: application
       targetRevision: 6.0.2
       helm:
         valuesObject:
-          manifests:
-            - applicationName: kubepi
+          applicationName: kubepi
 
-              service:
-                enabled: true
-                type: ClusterIP
-                ports:
-                  - name: web
-                    port: 80
-                    targetPort: 80
+          service:
+            enabled: true
+            type: ClusterIP
+            ports:
+              - name: web
+                port: 80
+                targetPort: 80
 
-              deployment:
-                enabled: true
-                name: kubepi
-                replicas: 1
-                resources:
-                  limits:
-                    cpu: 300m
-                    memory: 300Mi
-                  requests:
-                    cpu: 50m
-                    memory: 50Mi
-                image:
-                  repository: 1panel/kubepi
-                  tag: latest
-                ports:
-                  - containerPort: 80
+          deployment:
+            enabled: true
+            name: kubepi
+            replicas: 1
+            resources:
+              limits:
+                cpu: 300m
+                memory: 300Mi
+              requests:
+                cpu: 50m
+                memory: 50Mi
+            image:
+              repository: 1panel/kubepi
+              tag: latest
+            ports:
+              - containerPort: 80
+            containerSecurityContext:
+              readOnlyRootFilesystem: true
+              runAsNonRoot: false
+              privileged: true
 
-              persistence:
-                enabled: true
-                mountPVC: true
-                mountPath: /var/lib/kubepi
-                storageSize: 4Gi
-                accessMode: ReadWriteOnce
-                storageClass:
+          persistence:
+            enabled: true
+            mountPVC: true
+            mountPath: /var/lib/kubepi
+            storageSize: 4Gi
+            accessMode: ReadWriteOnce
+            storageClass:
 
     - repoURL: https://d4nnyx.github.io/helm-raw/
       chart: helm-raw
