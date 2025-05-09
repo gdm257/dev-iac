@@ -933,6 +933,7 @@ tasks:
             # - simpread-synchelper
             - clumsy
             # - cherry-studio_naderi
+            # - chatwise
             # - chatgpt-next-web
             # - binggpt-portable
             # - pidgin
