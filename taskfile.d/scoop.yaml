@@ -102,6 +102,7 @@ tasks:
             - ruff
             # - hatch
             - volta
+            - bun
             # - tailwindcss
             # - fnm
             # - nvm
