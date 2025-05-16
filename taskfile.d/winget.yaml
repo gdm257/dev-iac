@@ -29,6 +29,7 @@ tasks:
             # - jtroo.kanata_gui
             - Xmarmalade.AlistHelper
             - Codeium.Windsurf
+            - WEIFENG2333.VideoCaptioner
 
   install:curated-list:global:
     platforms: [windows]
