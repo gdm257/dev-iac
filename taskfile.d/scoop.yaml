@@ -828,8 +828,9 @@ tasks:
             # - clash-for-windows-portable
             # - clashweb
             # - clashy
+            - mihomo-party
             - clash-verge-rev_chawyehsu
-            - clash-nyanpasu
+            # - clash-nyanpasu
             # - clash-verge
             # - geoip-country-mmdb
             - v2ray
