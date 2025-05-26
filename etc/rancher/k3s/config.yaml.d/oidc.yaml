@@ -1,0 +1,5 @@
+kube-apiserver-arg:
+  - "oidc-issuer-url=<issuer>"
+  - "oidc-client-id=<app id>"
+  - "oidc-username-claim=<unique claim>"
+  - "oidc-username-prefix=oidc:"
