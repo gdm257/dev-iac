@@ -230,6 +230,7 @@ tasks:
             - git-lfs
             - lfs-dal
             - git-credential-manager
+            - git-credential-oauth
             - gitleaks
             # - gptcommit
             # - gitql
@@ -276,6 +277,7 @@ tasks:
             - UniGetUI
             - winget
             # - winget-preview
+            - pkgx
             # - eget
             - bin-manager
             # - stew
