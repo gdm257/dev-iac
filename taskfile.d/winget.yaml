@@ -2,12 +2,23 @@ version: '3'
 
 tasks:
 
+  install:curated-list:msstore:
+    platforms: [windows]
+    cmds:
+      - task: install:bulk
+        vars:
+          SOURCE: msstore
+          APPS:
+            - XPDNH1FMW7NB40 # huorong internet security
+
   install:curated-list:user:
     platforms: [windows]
     cmds:
       - task: install:bulk
         vars:
+          SOURCE: winget
           APPS:
+            - XPDNH1FMW7NB40 # huorong
             - Microsoft.WindowsTerminal
             - Mozilla.SOPS
             - commercialhaskell.stack
@@ -36,6 +47,7 @@ tasks:
     cmds:
       - task: install:bulk
         vars:
+          SOURCE: winget
           APPS:
             - Chocolatey.Chocolatey
             - Microsoft.VisualStudio.2022.BuildTools
@@ -166,13 +178,13 @@ tasks:
       vars:
         - APPS
     vars:
-      SOURCE: winget
+      _SOURCE: '{{ default "winget" .SOURCE }}'
     cmds:
       - for: {var: APPS, as: APP}
         task: install
         vars:
           APP: '{{.APP}}'
-          SOURCE: '{{.SOURCE}}'
+          SOURCE: '{{._SOURCE}}'
 
   install:
     platforms: [windows]

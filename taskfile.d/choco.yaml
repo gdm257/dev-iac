@@ -30,6 +30,7 @@ tasks:
         vars:
           APPS:
             - veracrypt
+            - ext2fsd
             - winbtrfs
             # - omnimidi
             # - softether-vpn-client

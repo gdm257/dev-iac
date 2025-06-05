@@ -73,6 +73,7 @@ tasks:
             - asciinema
             # - bgmi
             # - flexget
+            # - coredumpy
             # - visidata
             # - csvtotable
             - pipdeptree
