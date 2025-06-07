@@ -1,2 +1,2 @@
-disable:
+disable+:
   - local-storage

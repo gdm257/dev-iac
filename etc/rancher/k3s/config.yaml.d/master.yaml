@@ -16,8 +16,8 @@ etcd-snapshot-schedule-cron: '45 */8 * * *'
 etcd-snapshot-retention: 20
 
 # FIXME
-etcd-s3: true
-etcd-s3-endpoint: s3.example.com
-etcd-s3-access-key: foo
-etcd-s3-secret-key: bar
-etcd-s3-bucket: baz
+# etcd-s3: true
+# etcd-s3-endpoint: s3.example.com
+# etcd-s3-access-key: foo
+# etcd-s3-secret-key: bar
+# etcd-s3-bucket: baz
