@@ -10,7 +10,6 @@ tls-san:
   - 'localhost'
   - '1.2.3.4'
   - 'k8s.domain.com'
-  - '*.k8s.domain.com'
 
 etcd-snapshot-schedule-cron: '45 */8 * * *'
 etcd-snapshot-retention: 20
