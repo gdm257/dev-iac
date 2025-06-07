@@ -1,0 +1,4 @@
+log: /var/log/k3s.log
+# v: 0
+# debug: false
+# alsologtostderr: false
