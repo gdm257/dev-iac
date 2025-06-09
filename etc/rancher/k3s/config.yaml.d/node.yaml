@@ -1,7 +1,7 @@
 # FIXME
 # node-name:
 # node-label+: []
-# node-ip:
+# node-ip: # can not be public IP because etcd db should bind to it
 # node-external-ip:
 # node-internal-dns:
 # node-external-dns:

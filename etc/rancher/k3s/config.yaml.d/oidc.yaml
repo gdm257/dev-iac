@@ -1,5 +1,7 @@
 kube-apiserver-arg:
   - "oidc-issuer-url=<issuer>"
   - "oidc-client-id=<app id>"
-  - "oidc-username-claim=<unique claim>"
-  - "oidc-username-prefix=oidc:"
+  - "oidc-username-claim=<claim to user>" # E.g. `email`, `sub`
+  - "oidc-username-prefix=oidc:" # Map to k8s User "oidc:<username>"
+  - "oidc-groups-claim=<claim to groups>" # The claim should be a list of string used to role biding
+  - "oidc-groups-prefix=oidc:" # Map to k8s Group "oidc:<group>"

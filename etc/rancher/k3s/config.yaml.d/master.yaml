@@ -20,3 +20,8 @@ etcd-snapshot-retention: 20
 # etcd-s3-access-key: foo
 # etcd-s3-secret-key: bar
 # etcd-s3-bucket: baz
+
+# FIXME
+# write-kubeconfig: /etc/rancher/k3s/k3s.yaml
+write-kubeconfig-mode: 660
+write-kubeconfig-group: root
