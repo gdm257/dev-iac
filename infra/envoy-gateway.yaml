@@ -9,11 +9,13 @@ spec:
     server: https://kubernetes.default.svc
     namespace: envoy-gateway-system
   source:
-    repoURL: oci://docker.io/envoyproxy
+    # oci://docker.io/envoyproxy/gateway-helm
+    repoURL: docker.io/envoyproxy
+    path: gateway-helm
     chart: gateway-helm
     targetRevision: v1.1.2
     helm:
-      type: oci
+      valuesObject: {}
   syncPolicy:
     syncOptions:
       - CreateNamespace=true
