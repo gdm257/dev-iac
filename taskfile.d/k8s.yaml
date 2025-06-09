@@ -1366,6 +1366,7 @@ tasks:
       - task: krew:install:plugins
         vars:
           PLUGINS:
+            - oidc-login
             - access-matrix
             - cert-manager
             - cilium
