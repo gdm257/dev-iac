@@ -1036,6 +1036,8 @@ tasks:
             - mosh-client
             - powershell
             # - PSWinUtil
+            - chafa
+            - resvg
             # - sudo
             - gsudo
             # - navi
