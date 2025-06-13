@@ -43,8 +43,8 @@ spec:
     controller:
       resources:
         limits:
-          cpu: 500m
-          memory: 500Mi
+          cpu: 1000m
+          memory: 900Mi
         requests:
           cpu: 50m
           memory: 100Mi
