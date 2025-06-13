@@ -646,6 +646,7 @@ tasks:
             - digikam
             - gdm257/bili-sync
             - tinymediamanager
+            - tsukimi
             - jellyfin
             - jellyfin-mpv-shim
             - gdm257/EmbyToLocalPlayer
@@ -657,10 +658,10 @@ tasks:
             # - mpv-Portable
             # - mpv.net implay mpv.net-cm mpv.net-dw
             - potplayer
-            - tsukimi
             - wiliwili
             # - kikoplay
             # - dandanplay
+            - DanmakuFactory
             # - AssFontSubset
             - videosubfinder
             - ChineseSubFinder
