@@ -1,0 +1,54 @@
+---
+apiVersion: helm.cattle.io/v1
+kind: HelmChart
+metadata:
+  name: argocd-projects
+  namespace: argocd
+spec:
+  repo: https://d4nnyx.github.io/helm-raw/
+  chart: helm-raw
+  version: 0.1.0
+  targetNamespace: argocd
+  createNamespace: true
+---
+apiVersion: helm.cattle.io/v1
+kind: HelmChartConfig
+metadata:
+  name: argocd-projects
+  namespace: argocd
+spec:
+  valuesContent: |-
+    manifests:
+      - apiVersion: argoproj.io/v1alpha1
+        kind: AppProject
+        metadata:
+          name: infra
+          namespace: argocd
+        spec:
+          clusterResourceWhitelist:
+            - group: '*'
+              kind: '*'
+          description: infrastructure depended by apps
+          destinations:
+            - name: '*'
+              namespace: '*'
+              server: '*'
+          sourceRepos:
+            - '*'
+
+      - apiVersion: argoproj.io/v1alpha1
+        kind: AppProject
+        metadata:
+          name: self-hosted
+          namespace: argocd
+        spec:
+          clusterResourceWhitelist:
+            - group: '*'
+              kind: '*'
+          description: self-hosted apps
+          destinations:
+            - name: '*'
+              namespace: self-hosted
+              server: '*'
+          sourceRepos:
+            - '*'
