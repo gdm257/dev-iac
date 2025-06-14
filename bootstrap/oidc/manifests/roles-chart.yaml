@@ -1,0 +1,58 @@
+---
+apiVersion: helm.cattle.io/v1
+kind: HelmChart
+metadata:
+  name: oidc-roles
+  namespace: default
+spec:
+  repo: https://d4nnyx.github.io/helm-raw/
+  chart: helm-raw
+  version: 0.1.0
+  targetNamespace: argocd
+  createNamespace: true
+---
+apiVersion: helm.cattle.io/v1
+kind: HelmChartConfig
+metadata:
+  name: oidc-roles
+  namespace: default
+spec:
+  valuesContent: |-
+    manifests:
+      - apiVersion: rbac.authorization.k8s.io/v1
+        kind: ClusterRoleBinding
+        metadata:
+          name: oidc-admin-binding
+        roleRef:
+          apiGroup: rbac.authorization.k8s.io
+          kind: ClusterRole
+          name: cluster-admin
+        subjects:
+          - apiGroup: rbac.authorization.k8s.io
+            kind: User
+            name: "oidc:foo@gmail.com" # FIXME <prefix><username claim value>
+
+      # WARNING Make sure IdP does NOT allow login with 3rd public services
+      # such as GitHub, GitLab, Google, Microsoft.
+      # Because 3rd services could customize groups.
+      # - apiVersion: rbac.authorization.k8s.io/v1
+      #   kind: ClusterRoleBinding
+      #   metadata:
+      #     name: oidc-kube-operator-binding
+      #   roleRef:
+      #     apiGroup: rbac.authorization.k8s.io
+      #     kind: ClusterRole
+      #     name: oidc-kube-operator
+      #   subjects:
+      #     - apiGroup: rbac.authorization.k8s.io
+      #       kind: Group
+      #       name: "oidc:kube-admin" # FIXME <prefix><group name from oidc provider>
+
+      - kind: ClusterRole
+        apiVersion: rbac.authorization.k8s.io/v1
+        metadata:
+          name: oidc-kube-operator
+        rules:
+        - apiGroups: [""]
+          resources: ["pods", "services", "configmaps", "secrets"]
+          verbs: ["get", "list", "watch", "create", "update", "delete"]
