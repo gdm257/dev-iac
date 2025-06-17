@@ -8,6 +8,9 @@ spec:
   destination:
     server: https://kubernetes.default.svc
     namespace: csi-s3
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
   source:
     repoURL: https://yandex-cloud.github.io/k8s-csi-s3/charts
     chart: csi-s3
@@ -15,13 +18,14 @@ spec:
     helm:
       valuesObject:
         secret:
+          create: false
           endpoint: https://s3.example.com
           region: ""
           accessKey: foo
           secretKey: bar
 
         storageClass:
-          create: true
+          create: false
           singleBucket: mybucket
           reclaimPolicy: Retain
           mountOptions: >-
@@ -31,6 +35,3 @@ spec:
             --no-systemd
           # --enable-mtime
           # --enable-perms
-  syncPolicy:
-    syncOptions:
-      - CreateNamespace=true

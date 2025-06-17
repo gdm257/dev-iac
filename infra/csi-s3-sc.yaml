@@ -1,0 +1,54 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: csi-s3-sc
+  namespace: argocd
+spec:
+  project: infra
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: csi-s3
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+  source:
+    repoURL: https://d4nnyx.github.io/helm-raw/
+    chart: helm-raw
+    targetRevision: 0.1.0
+    helm:
+      valuesObject:
+        manifests: # FIXME
+          - apiVersion: v1
+            kind: Secret
+            metadata:
+              namespace: csi-s3
+              name: csi-s3-secret
+            stringData:
+              endpoint: FIXME
+              accessKeyID: FIXME
+              secretAccessKey: FIXME
+              region: 'us-east-1'
+          - apiVersion: storage.k8s.io/v1
+            kind: StorageClass
+            metadata:
+              name: csi-s3
+            provisoiner: ru.yandx.s3.csi
+            reclaimPolicy: Retain # Delete | Retain
+            parameters:
+              mounter: geesefs
+              options: >-
+                --memory-limit 1000
+                --dir-mode 0777
+                --file-mode 0666
+                --no-systemd
+                # --enable-mtime
+                # --enable-perms
+              bucket: FIXME # (Optional) specify if you want to store all PV in a single bucket
+              csi-storage.k8s.io/provisioner-secret-namespace: csi-s3
+              csi-storage.k8s.io/provisioner-secret-name: csi-s3-secret
+              csi-storage.k8s.io/controller-publish-secret-namespace: csi-s3
+              csi-storage.k8s.io/controller-publish-secret-name: csi-s3-secret
+              csi-storage.k8s.io/node-stage-secret-namespace: csi-s3
+              csi-storage.k8s.io/node-stage-secret-name: csi-s3-secret
+              csi-storage.k8s.io/node-publish-secret-namespace: csi-s3
+              csi-storage.k8s.io/node-publish-secret-name: csi-s3-secret
