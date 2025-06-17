@@ -1,10 +1,16 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: local-path-provisioner
+  name: local-path-provisioner-main
   namespace: argocd
 spec:
   project: infra
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: local-path-storage
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
   source:
     repoURL: https://github.com/rancher/local-path-provisioner.git
     targetRevision: v0.0.30
@@ -20,9 +26,3 @@ spec:
           defaultVolumeType: local
           name: local-path
           reclaimPolicy: Delete
-  destination:
-    server: https://kubernetes.default.svc
-    namespace: local-path-storage
-  syncPolicy:
-    syncOptions:
-      - CreateNamespace=true

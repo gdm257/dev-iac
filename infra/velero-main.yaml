@@ -1,0 +1,59 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: velero-main
+  namespace: argocd
+spec:
+  project: infra
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: velero
+  source:
+    repoURL: https://vmware-tanzu.github.io/helm-charts
+    chart: velero
+    targetRevision: 7.2.1
+    helm:
+      valuesObject:
+
+        # Providers
+        initContainers:
+          - name: velero-plugin-for-aws
+            image: velero/velero-plugin-for-aws:v1.10.1
+            imagePullPolicy: IfNotPresent
+            volumeMounts:
+              - mountPath: /target
+                name: plugins
+
+        # FSB
+        deployNodeAgent: true
+        configuration:
+          defaultVolumesToFsBackup: true
+          uploaderType: kopia
+
+          # Locations
+          volumeSnapshotLocation: []
+          backupStorageLocation: []
+
+          # Repo maitain jobs
+          defaultRepoMaintainFrequency: 24h
+        backupsEnabled: true
+
+        # Resources
+        resources:
+          requests:
+            cpu: 50m
+            memory: 50Mi
+          limits:
+            cpu: 300m
+            memory: 300Mi
+        nodeAgent:
+          resources:
+            requests:
+              cpu: 50m
+              memory: 50Mi
+            limits:
+              cpu: 400m
+              memory: 400Mi
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true

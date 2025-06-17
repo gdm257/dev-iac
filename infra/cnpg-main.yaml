@@ -1,17 +1,19 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: cnpg
+  name: cnpg-main
   namespace: argocd
 spec:
   project: infra
   destination:
     server: https://kubernetes.default.svc
     namespace: cnpg-system
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
   source:
     repoURL: https://cloudnative-pg.github.io/charts
     chart: cloudnative-pg
     targetRevision: 0.22.1
-  syncPolicy:
-    syncOptions:
-      - CreateNamespace=true
+    helm:
+      valuesObject: {}

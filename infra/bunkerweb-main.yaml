@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: bunkerweb
+  name: bunkerweb-main
   namespace: argocd
 spec:
   project: infra
@@ -17,6 +17,7 @@ spec:
     targetRevision: 0.0.6
     helm:
       valuesObject:
+
         service:
           enabled: true
           type: ClusterIP

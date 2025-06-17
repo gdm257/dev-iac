@@ -1,66 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: velero
-  namespace: argocd
-spec:
-  project: infra
-  destination:
-    server: https://kubernetes.default.svc
-    namespace: velero
-  source:
-    repoURL: https://vmware-tanzu.github.io/helm-charts
-    chart: velero
-    targetRevision: 7.2.1
-    helm:
-      valuesObject:
-        # Providers
-        initContainers:
-          - name: velero-plugin-for-aws
-            image: velero/velero-plugin-for-aws:v1.10.1
-            imagePullPolicy: IfNotPresent
-            volumeMounts:
-              - mountPath: /target
-                name: plugins
-
-        # FSB
-        deployNodeAgent: true
-        configuration:
-          defaultVolumesToFsBackup: true
-          uploaderType: kopia
-
-          # Locations
-          volumeSnapshotLocation: []
-          backupStorageLocation: []
-
-          # Repo maitain jobs
-          defaultRepoMaintainFrequency: 24h
-        backupsEnabled: true
-
-        # Resources
-        resources:
-          requests:
-            cpu: 50m
-            memory: 50Mi
-          limits:
-            cpu: 300m
-            memory: 300Mi
-        nodeAgent:
-          resources:
-            requests:
-              cpu: 50m
-              memory: 50Mi
-            limits:
-              cpu: 400m
-              memory: 400Mi
-  syncPolicy:
-    syncOptions:
-      - CreateNamespace=true
----
-apiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
-  name: velero-storages
+  name: velero-bsl
   namespace: argocd
 spec:
   project: infra
@@ -76,7 +17,8 @@ spec:
     targetRevision: 0.1.0
     helm:
       valuesObject:
-        manifests:
+        manifests: # FIXME
+
           - apiVersion: velero.io/v1
             kind: BackupStorageLocation
             metadata:
@@ -86,15 +28,15 @@ spec:
               default: true
               provider: aws
               config:
-                s3Url: https://xxxxxxxxxx.r2.cloudflarestorage.com
+                s3Url: https://FIXME.r2.cloudflarestorage.com
                 s3ForcePathStyle: "true"
                 region: us-east-1
-                checksumAlgorithm: "" # Cloudflare R2
+                checksumAlgorithm: "" # To support Cloudflare R2
               credential:
                 key: r2
                 name: velero-location-credentials
               objectStorage:
-                bucket: velero
+                bucket: FIXME
 
           - apiVersion: velero.io/v1
             kind: BackupStorageLocation
@@ -104,7 +46,7 @@ spec:
             spec:
               provider: aws
               config:
-                s3Url: https://xxxx.s3.synologyc2.net
+                s3Url: https://FIXME.s3.synologyc2.net
                 s3ForcePathStyle: "true"
                 region: us-east-1
                 checksumAlgorithm: ""
@@ -112,7 +54,7 @@ spec:
                 key: c2
                 name: velero-location-credentials
               objectStorage:
-                bucket: xxxxxx
+                bucket: FIXME
 
           - apiVersion: velero.io/v1
             kind: BackupStorageLocation
@@ -122,7 +64,7 @@ spec:
             spec:
               provider: aws
               config:
-                s3Url: https://xxxx.xxxx.com
+                s3Url: https://FIXME.com
                 s3ForcePathStyle: "true"
                 region: us-east-1
                 checksumAlgorithm: ""
@@ -130,7 +72,7 @@ spec:
                 key: e2
                 name: velero-location-credentials
               objectStorage:
-                bucket: velero
+                bucket: FIXME
 
           - apiVersion: velero.io/v1
             kind: BackupStorageLocation
@@ -140,7 +82,7 @@ spec:
             spec:
               provider: aws
               config:
-                s3Url: http://s3.xxxxxx.backblazeb2.com
+                s3Url: http://s3.FIXME.backblazeb2.com
                 s3ForcePathStyle: "true"
                 region: us-east-1
                 checksumAlgorithm: ""
@@ -148,34 +90,19 @@ spec:
                 key: b2
                 name: velero-location-credentials
               objectStorage:
-                bucket: xxxxx
+                bucket: FIXME
 
           - apiVersion: v1
             kind: Secret
             metadata:
               name: velero-location-credentials
               namespace: velero
-            type: Opaque
-            data:
+            stringData:
               b2: >-
-                xxxxxxxx
+                FIXME
               c2: >-
-                xxxxxxxx
+                FIXME
               e2: >-
-                xxxxxxxx
+                FIXME
               r2: >-
-                xxxxxxxx
-
-          - apiVersion: velero.io/v1
-            kind: Schedule
-            metadata:
-              name: daily-all-to-r2
-              namespace: velero
-            spec:
-              template:
-                includedNamespaces:
-                  - "*"
-                defaultVolumesToFsBackup: true
-                storageLocation: r2
-                ttl: 720h0m0s
-              schedule: "0 5 * * *"
+                FIXME

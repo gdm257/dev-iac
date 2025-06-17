@@ -1,0 +1,40 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cert-manager-certs
+  namespace: argocd
+spec:
+  project: infra
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: cert-manager
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+  source:
+    repoURL: https://d4nnyx.github.io/helm-raw/
+    chart: helm-raw
+    targetRevision: 0.1.0
+    helm:
+      valuesObject:
+        manifests: # FIXME
+
+          - apiVersion: cert-manager.io/v1
+            kind: Certificate
+            metadata:
+              name: cluster-wildcard-cert
+              namespace: infra
+            spec:
+              issuerRef:
+                kind: Issuer
+                name: letsencrypt-issuer
+              dnsNames:
+                - foo.example.com
+                - example.com
+                - "*.example.com"
+              renewBefore: 1440h
+              secretName: wildcard-cert
+              privateKey:
+                algorithm: ECDSA
+                encoding: PKCS1
+                size: 256

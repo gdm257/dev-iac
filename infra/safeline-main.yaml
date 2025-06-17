@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: safeline
+  name: safeline-main
   namespace: argocd
 spec:
   project: infra
@@ -20,6 +20,7 @@ spec:
     targetRevision: 10.0.4
     helm:
       valuesObject:
+
         global:
           ingress:
             enabled: false

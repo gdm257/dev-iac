@@ -1,19 +1,23 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: rook
+  name: rook-main
   namespace: argocd
 spec:
   project: infra
   destination:
     server: https://kubernetes.default.svc
     namespace: rook-ceph
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
   source:
     repoURL: https://charts.rook.io/release
     chart: rook-ceph
     targetRevision: v1.15.4
     helm:
       valuesObject:
+
         csi:
           provisionerReplicas: 1
 
@@ -23,6 +27,3 @@ spec:
           requests:
             cpu: 100m
             memory: 100Mi
-  syncPolicy:
-    syncOptions:
-      - CreateNamespace=true

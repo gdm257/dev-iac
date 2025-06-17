@@ -18,6 +18,7 @@ spec:
     helm:
       valuesObject:
         manifests: # FIXME
+
           - apiVersion: v1
             kind: Secret
             metadata:

@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: csi-s3
+  name: csi-s3-main
   namespace: argocd
 spec:
   project: infra
@@ -17,16 +17,17 @@ spec:
     targetRevision: 0.41.1
     helm:
       valuesObject:
+
         secret:
           create: false
-          endpoint: https://s3.example.com
-          region: ""
-          accessKey: foo
-          secretKey: bar
+          # endpoint: https://FIXME.com
+          # region: ""
+          # accessKey: FIXME
+          # secretKey: FIXME
 
         storageClass:
           create: false
-          singleBucket: mybucket
+          # singleBucket: FIXME
           reclaimPolicy: Retain
           mountOptions: >-
             --memory-limit 1000
