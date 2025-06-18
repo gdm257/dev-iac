@@ -16,89 +16,86 @@ spec:
       chart: application
       targetRevision: 6.0.2
       helm:
-        valuesObject:
-          manifests: # FIXME
+        valuesObject: # FIXME
 
-            - applicationName: pgautoupgrade
+          applicationName: pgautoupgrade
 
-              service:
-                enabled: true
-                type: ClusterIP
-                ports:
-                  - name: postgres
-                    port: 5432
-                    targetPort: 5432
+          service:
+            enabled: true
+            type: ClusterIP
+            ports:
+              - name: postgres
+                port: 5432
+                targetPort: 5432
 
-              initContainers:
-                oneshot-upgrade:
-                  replicas: 1
-                  resources:
-                    limits:
-                      cpu: 1000m
-                      memory: 1500Mi
-                    requests:
-                      cpu: 50m
-                      memory: 50Mi
-                  image:
-                    repository: pgautoupgrade/pgautoupgrade
-                    tag: 15-alpine
-                  envFrom:
-                    pg-config:
-                      type: configmap
-                      name: pgautoupgrade-config-dotenv
-                    pg-secret:
-                      type: secret
-                      name: pgautoupgrade-secret-dotenv
-                  env:
-                    PGAUTO_ONESHOT:
-                      value: 'yes'
+          initContainers:
+            oneshot-upgrade:
+              replicas: 1
+              resources:
+                limits:
+                  cpu: 1000m
+                  memory: 1500Mi
+                requests:
+                  cpu: 50m
+                  memory: 50Mi
+              image: pgautoupgrade/pgautoupgrade:15-alpine
+              envFrom:
+                pg-config:
+                  type: configmap
+                  name: pgautoupgrade-config-dotenv
+                pg-secret:
+                  type: secret
+                  name: pgautoupgrade-secret-dotenv
+              env:
+                PGAUTO_ONESHOT:
+                  value: 'yes'
 
-              deployment:
-                enabled: true
-                name: pgautoupgrade
-                replicas: 1
-                resources:
-                  limits:
-                    cpu: 1000m
-                    memory: 1500Mi
-                  requests:
-                    cpu: 50m
-                    memory: 50Mi
-                image:
-                  repository: pgautoupgrade/pgautoupgrade
-                  tag: 15-alpine
-                ports:
-                  - containerPort: 5432
-                envFrom:
-                  pg-config:
-                    type: configmap
-                    name: pgautoupgrade-config-dotenv
-                  pg-secret:
-                    type: secret
-                    name: pgautoupgrade-secret-dotenv
-                env:
-                  PGAUTO_ONESHOT:
-                    value: 'no' # "yes" to oneshot migrate job; "no" to pg daemon
+          deployment:
+            enabled: true
+            name: pgautoupgrade
+            replicas: 1
+            resources:
+              limits:
+                cpu: 1000m
+                memory: 1500Mi
+              requests:
+                cpu: 50m
+                memory: 50Mi
+            image:
+              repository: pgautoupgrade/pgautoupgrade
+              tag: 15-alpine
+            ports:
+              - containerPort: 5432
+            envFrom:
+              pg-config:
+                type: configmap
+                name: pgautoupgrade-config-dotenv
+              pg-secret:
+                type: secret
+                name: pgautoupgrade-secret-dotenv
+            env:
+              PGAUTO_ONESHOT:
+                value: 'no' # "yes" to oneshot migrate job; "no" to pg daemon
 
-              configMap:
-                enabled: true
-                files:
-                  pgautoupgrade-config-dotenv:
-                    POSTGRES_PORT: '5432'
+          configMap:
+            enabled: true
+            files:
+              pgautoupgrade-config-dotenv:
+                POSTGRES_PORT: '5432'
 
-              secret:
-                enabled: true
-                files:
-                  pgautoupgrade-secret-dotenv:
-                    stringData:
-                      POSTGRES_USER: FIXME
-                      POSTGRES_PASSWORD: FIXME
+          secret:
+            enabled: true
+            files:
+              pgautoupgrade-secret-dotenv:
+                stringData:
+                  POSTGRES_USER: FIXME
+                  POSTGRES_PASSWORD: FIXME
 
-              psersistence:
-                enabled: true
-                mountPVC: true
-                mountPath: /var/lib/postgresql/data
-                # name: pgautoupgrade-data
-                accessMode: ReadWriteOnce
-                storageClass:
-                storageSize: 16Gi
+          psersistence:
+            enabled: true
+            mountPVC: true
+            mountPath: /var/lib/postgresql/data
+            # name: pgautoupgrade-data
+            accessMode: ReadWriteOnce
+            storageClass:
+            storageSize: 16Gi
