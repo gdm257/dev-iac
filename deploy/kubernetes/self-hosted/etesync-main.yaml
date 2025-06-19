@@ -47,8 +47,11 @@ spec:
               - containerPort: 3735
             envFrom:
               etesync:
-                - type: configmap
-                  name: etesync-dotenv
+                type: configmap
+                name: etesync-dotenv
+            containerSecurityContext:
+                readOnlyRootFilesystem: false
+                runAsNonRoot: false
             initContainers:
               init-permissions:
                 image: busybox

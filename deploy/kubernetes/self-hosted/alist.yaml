@@ -70,7 +70,7 @@ spec:
               config:
                 type: configmap
                 name: alist-dotenv
-              db:
+              secret:
                 type: secret
                 name: alist-dotenv
             volumes:
@@ -78,6 +78,9 @@ spec:
                 emptyDir: {}
               temp:
                 emptyDir: {}
+            containerSecurityContext:
+              readOnlyRootFilesystem: false
+              runAsNonRoot: false
 
           configMap:
             enabled: true
@@ -129,7 +132,7 @@ spec:
           secret:
             enabled: true
             files:
-              alist-dotenv:
+              dotenv:
                 stringData:
                   # # SQLite
                   # DB_TYPE: sqlite3

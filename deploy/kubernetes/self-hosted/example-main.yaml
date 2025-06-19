@@ -1,0 +1,108 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: example-main
+  namespace: argocd
+spec:
+  project: infra
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: infra
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+  sources:
+
+    - repoURL: https://stakater.github.io/stakater-charts
+      chart: application
+      targetRevision: 6.0.2
+      helm:
+        valuesObject:
+
+          applicationName: example
+
+          service:
+            enabled: true
+            type: ClusterIP
+            ports:
+              - name: postgres
+                port: 5432
+                targetPort: 5432
+
+          deployment:
+            enabled: true
+            name: pgautoupgrade
+            replicas: 1
+            resources:
+              limits:
+                cpu: 1000m
+                memory: 1500Mi
+              requests:
+                cpu: 50m
+                memory: 50Mi
+            image:
+              repository: pgautoupgrade/pgautoupgrade
+              tag: 16-alpine
+            ports:
+              - containerPort: 5432
+            envFrom:
+              pg-config:
+                type: configmap
+                name: pgautoupgrade-config-dotenv
+              pg-secret:
+                type: secret
+                name: pgautoupgrade-secret-dotenv
+            env:
+              PGAUTO_ONESHOT:
+                value: 'no'
+            containerSecurityContext:
+              readOnlyRootFilesystem: false
+              runAsNonRoot: false
+
+            # initContainers:
+            #   oneshot-upgrade:
+            #     env:
+            #       - name: PGAUTO_ONESHOT
+            #         value: 'yes' # "yes" to oneshot migrate job; "no" to pg daemon
+            #     image: pgautoupgrade/pgautoupgrade:15-alpine
+            #     resources:
+            #       limits:
+            #         cpu: 1000m
+            #         memory: 1500Mi
+            #       requests:
+            #         cpu: 50m
+            #         memory: 50Mi
+            #     envFrom:
+            #       - configMapRef:
+            #           name: pgautoupgrade-config-dotenv
+            #       - secretRef:
+            #           name: pgautoupgrade-secret-dotenv
+            #     securityContext:
+            #       readOnlyRootFilesystem: false
+            #       runAsNonRoot: false
+            #     volumeMounts:
+            #       - name: pgautoupgrade-data
+            #         mountPath: /var/lib/postgresql/data
+
+          configMap:
+            enabled: true
+            files:
+              config-dotenv:
+                POSTGRES_PORT: '5432'
+
+          secret:
+            enabled: true
+            files:
+              secret-dotenv:
+                stringData:
+                  POSTGRES_USER: FIXME
+                  POSTGRES_PASSWORD: FIXME
+
+          persistence:
+            enabled: true
+            mountPVC: true
+            mountPath: /var/lib/postgresql/data
+            # name: pgautoupgrade-data
+            accessMode: ReadWriteOnce
+            storageClass:
+            storageSize: 16Gi

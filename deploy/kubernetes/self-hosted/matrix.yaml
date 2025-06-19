@@ -49,8 +49,11 @@ spec:
               config:
                 type: configmap
                 name: matrix-dotenv
+            containerSecurityContext:
+              readOnlyRootFilesystem: false
+              runAsNonRoot: false
 
-          persistent:
+          persistence:
             enabled: true
             # storageClass: local-path
             storageSize: 8Gi
