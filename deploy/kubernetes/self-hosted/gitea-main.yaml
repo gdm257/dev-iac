@@ -1,0 +1,55 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: gitea-main
+  namespace: argocd
+spec:
+  project: self-hosted
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: self-hosted
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+  sources:
+
+    - repoURL: https://stakater.github.io/stakater-charts
+      chart: application
+      targetRevision: 6.0.2
+      helm:
+        valuesObject:
+
+          applicationName: gitea
+
+          service:
+            enabled: true
+            type: ClusterIP
+            ports:
+              - name: http
+                port: 80
+                targetPort: 3000
+
+          deployment:
+            enabled: true
+            name: gitea
+            replicas: 1
+            resources:
+              limits:
+                cpu: 300m
+                memory: 200Mi
+              requests:
+                cpu: 50m
+                memory: 50Mi
+            image:
+              repository: gitea/gitea
+              tag: 1.23
+            ports:
+              - containerPort: 3000
+
+          persistence:
+            enabled: true
+            mountPVC: true
+            mountPath: /data
+            # storageClass: local-path
+            accessMode: ReadWriteOnce
+            size: 20Gi

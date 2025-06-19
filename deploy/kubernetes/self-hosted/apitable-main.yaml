@@ -1,0 +1,54 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: apitable-main
+  namespace: argocd
+spec:
+  project: self-hosted
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: self-hosted
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+  sources:
+    -
+      repoURL: https://stakater.github.io/stakater-charts
+      chart: application
+      targetRevision: 6.0.2
+      helm:
+        valuesObject:
+
+          applicationName: apitable
+
+          service:
+            enabled: true
+            type: ClusterIP
+            ports:
+              -
+                name: http
+                port: 80
+                targetPort: 80
+
+          deployment:
+            enabled: true
+            name: apitable
+            replicas: 1
+            resources:
+              limits:
+                cpu: 500m
+                memory: 500Mi
+              requests:
+                cpu: 50m
+                memory: 50Mi
+            image:
+              repository: apitable/all-in-one
+              tag: v1.13.0-beta.1_2016
+            ports:
+              - containerPort: 80
+
+          persistence:
+            enabled: true
+            mountPVC: true
+            storageSize: 5Gi
+            accessMode: ReadWriteOnce

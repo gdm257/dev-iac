@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: bitwarden
+  name: etesync-routes
   namespace: argocd
 spec:
   project: self-hosted
@@ -13,57 +13,17 @@ spec:
       - CreateNamespace=true
   sources:
 
-    - repoURL: https://stakater.github.io/stakater-charts
-      chart: application
-      targetRevision: 6.0.2
-      helm:
-        valuesObject:
-
-          applicationName: bitwarden
-
-          service:
-            enabled: true
-            type: ClusterIP
-            ports:
-              - name: http
-                port: 80
-                targetPort: 80
-
-          deployment:
-            enabled: true
-            name: bitwarden
-            replicas: 1
-            resources:
-              limits:
-                cpu: 200m
-                memory: 200Mi
-              requests:
-                cpu: 50m
-                memory: 50Mi
-            image:
-              repository: vaultwarden/server
-              tag: 1.33.2-alpine
-            ports:
-              - containerPort: 80
-
-          persistence:
-            enabled: true
-            mountPVC: true
-            mountPath: /data
-            storageSize: 1Gi
-            accessMode: ReadWriteMany
-            # storageClass: csi-s3
-
     - repoURL: https://d4nnyx.github.io/helm-raw/
       chart: helm-raw
       targetRevision: 0.1.0
       helm:
         valuesObject:
-          manifests:
+          manifests: # FIXME
+
             - apiVersion: gateway.networking.k8s.io/v1
               kind: HTTPRoute
               metadata:
-                name: bitwarden-web
+                name: etesync
                 namespace: self-hosted
               spec:
                 parentRefs:
@@ -76,14 +36,14 @@ spec:
                     namespace: traefik
                     sectionName: websecure
                 hostnames:
-                  - FIXME.bitwarden.127.0.0.1.sslip.io
+                  - FIXME.etesync.127.0.0.1.sslip.io
                 rules:
                   - matches:
                       - path:
                           type: PathPrefix
                           value: /
                     backendRefs:
-                      - kind: Service
+                      - name: etesync
                         namespace: self-hosted
-                        name: bitwarden
+                        kind: Service
                         port: 80

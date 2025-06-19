@@ -98,11 +98,19 @@ spec:
               name: velero-location-credentials
               namespace: velero
             stringData:
-              b2: >-
-                FIXME
-              c2: >-
-                FIXME
-              e2: >-
-                FIXME
-              r2: >-
-                FIXME
+              b2: |
+                [default]
+                aws_access_key_id=FIXME
+                aws_secret_access_key=FIXME
+              c2: |
+                [default]
+                aws_access_key_id=FIXME
+                aws_secret_access_key=FIXME
+              e2: |
+                [default]
+                aws_access_key_id=FIXME
+                aws_secret_access_key=FIXME
+              r2: |
+                [default]
+                aws_access_key_id=FIXME
+                aws_secret_access_key=FIXME

@@ -11,138 +11,144 @@ spec:
   syncPolicy:
     syncOptions:
       - CreateNamespace=true
-  sources:
+  sources: # FIXME
+
     - repoURL: https://stakater.github.io/stakater-charts
       chart: application
       targetRevision: 6.0.2
       helm:
         valuesObject:
-          manifests:
-            - applicationName: alist
 
-              service:
-                enabled: true
-                type: ClusterIP
-                ports:
-                  - name: web
-                    port: 80
-                    targetPort: 5244
-                  - name: s3
-                    port: 9000
-                    targetPort: 5246
-                  - name: ftp
-                    port: 21
-                    targetPort: 5221
-                  - name: sftp
-                    port: 22
-                    targetPort: 5222
+          applicationName: alist
 
-              deployment:
-                enabled: true
-                name: alist
-                replicas: 1
-                resources:
-                  limits:
-                    cpu: 300m
-                    memory: 300Mi
-                  requests:
-                    cpu: 50m
-                    memory: 50Mi
-                image:
-                  repository: xhofe/alist
-                  tag: v3.44.0-aio
-                ports:
-                  - containerPort: 5244
-                  - containerPort: 5246
-                  - containerPort: 5221
-                  - containerPort: 5222
-                volumeMounts:
-                  log:
-                    mountPath: /opt/alist/data/log
-                  temp:
-                    mountPath: /opt/alist/data/temp
-                envFrom:
-                  config:
-                    type: configmap
-                    name: alist-config-dotenv
-                  db:
-                    type: secret
-                    name: alist-db-dotenv
-                volumes:
-                  log:
-                    emptyDir: {}
-                  temp:
-                    emptyDir: {}
+          service:
+            enabled: true
+            type: ClusterIP
+            ports:
+              - name: http
+                port: 80
+                targetPort: 5244
+              - name: https
+                port: 443
+                targetPort: 5245
+              - name: s3
+                port: 9000
+                targetPort: 5246
+              - name: ftp
+                port: 21
+                targetPort: 5221
+              - name: sftp
+                port: 22
+                targetPort: 5222
 
-              configMap:
-                enabled: true
-                files:
-                  alist-config-dotenv:
-                    BLEVE_DIR: data/bleve
-                    CDN: ''
-                    COMPRESS: 'false'
-                    CORS_ALLOW_HEADERS_0: '*'
-                    CORS_ALLOW_METHODS_0: '*'
-                    CORS_ALLOW_ORIGINS_0: '*'
-                    DELAYED_START: '0'
-                    DIST_DIR: ''
-                    FORCE: 'false'
-                    FTP_ENABLE: 'true'
-                    FTP_LISTEN: ':5221'
-                    LOG_ENABLE: 'true'
-                    LOG_NAME: data/log/log.log
-                    MAX_AGE: '28800'
-                    MAX_BACKUPS: '30'
-                    MAX_CONNECTIONS: '0'
-                    MAX_SIZE: '10'
-                    MEILISEARCH_API_KEY: ''
-                    MEILISEARCH_HOST: http://localhost:7700
-                    MEILISEARCH_INDEX_PREFIX: ''
-                    S3_ENABLE: 'true'
-                    S3_PORT: '5246'
-                    S3_SSL: 'false'
-                    SFTP_ENABLE: 'true'
-                    SFTP_LISTEN: ':5222'
-                    SCHEME_ADDRESS: 0.0.0.0
-                    SCHEME_CERT_FILE: ''
-                    SCHEME_FORCE_HTTPS: 'false'
-                    SCHEME_HTTPS_PORT: '-1'
-                    SCHEME_HTTP_PORT: '5244'
-                    SCHEME_KEY_FILE: ''
-                    SCHEME_UNIX_FILE: ''
-                    SCHEME_UNIX_FILE_PERM: ''
-                    SITE_URL: ''
-                    TASKS_COPY_MAX_RETRY: '2'
-                    TASKS_COPY_WORKERS: '5'
-                    TASKS_DOWNLOAD_MAX_RETRY: '1'
-                    TASKS_DOWNLOAD_WORKERS: '5'
-                    TASKS_TRANSFER_MAX_RETRY: '2'
-                    TASKS_TRANSFER_WORKERS: '5'
-                    TASKS_UPLOAD_MAX_RETRY: '0'
-                    TASKS_UPLOAD_WORKERS: '5'
-                    TEMP_DIR: data/temp
-                    TLS_INSECURE_SKIP_VERIFY: 'true'
-                    TOKEN_EXPIRES_IN: '48'
+          deployment:
+            enabled: true
+            name: alist
+            replicas: 1
+            resources:
+              limits:
+                cpu: 300m
+                memory: 300Mi
+              requests:
+                cpu: 50m
+                memory: 50Mi
+            image:
+              repository: xhofe/alist
+              tag: v3.45.0-aio
+            ports:
+              - containerPort: 5244
+              - containerPort: 5245
+              - containerPort: 5246
+              - containerPort: 5221
+              - containerPort: 5222
+            volumeMounts:
+              log:
+                mountPath: /opt/alist/data/log
+              temp:
+                mountPath: /opt/alist/data/temp
+            envFrom:
+              config:
+                type: configmap
+                name: alist-dotenv
+              db:
+                type: secret
+                name: alist-dotenv
+            volumes:
+              log:
+                emptyDir: {}
+              temp:
+                emptyDir: {}
 
-              secret:
-                enabled: true
-                files:
-                  alist-db-dotenv:
-                    stringData:
-                      # SQLite
-                      DB_TYPE: sqlite3
-                      DB_FILE: data/data.db
+          configMap:
+            enabled: true
+            files:
+              dotenv:
+                BLEVE_DIR: data/bleve
+                CDN: ''
+                COMPRESS: 'false'
+                CORS_ALLOW_HEADERS_0: '*'
+                CORS_ALLOW_METHODS_0: '*'
+                CORS_ALLOW_ORIGINS_0: '*'
+                DELAYED_START: '0'
+                DIST_DIR: ''
+                FORCE: 'false'
+                FTP_ENABLE: 'true'
+                FTP_LISTEN: ':5221'
+                LOG_ENABLE: 'true'
+                LOG_NAME: data/log/log.log
+                MAX_AGE: '28800'
+                MAX_BACKUPS: '30'
+                MAX_CONNECTIONS: '0'
+                MAX_SIZE: '10'
+                S3_ENABLE: 'true'
+                S3_PORT: '5246'
+                S3_SSL: 'false'
+                SFTP_ENABLE: 'true'
+                SFTP_LISTEN: ':5222'
+                SCHEME_ADDRESS: 0.0.0.0
+                SCHEME_CERT_FILE: ''
+                SCHEME_FORCE_HTTPS: 'false'
+                SCHEME_HTTPS_PORT: '-1'
+                SCHEME_HTTP_PORT: '5244'
+                SCHEME_KEY_FILE: ''
+                SCHEME_UNIX_FILE: ''
+                SCHEME_UNIX_FILE_PERM: ''
+                SITE_URL: ''
+                TASKS_COPY_MAX_RETRY: '2'
+                TASKS_COPY_WORKERS: '5'
+                TASKS_DOWNLOAD_MAX_RETRY: '1'
+                TASKS_DOWNLOAD_WORKERS: '5'
+                TASKS_TRANSFER_MAX_RETRY: '2'
+                TASKS_TRANSFER_WORKERS: '5'
+                TASKS_UPLOAD_MAX_RETRY: '0'
+                TASKS_UPLOAD_WORKERS: '5'
+                TEMP_DIR: data/temp
+                TLS_INSECURE_SKIP_VERIFY: 'true'
+                TOKEN_EXPIRES_IN: '48'
 
-                      # # PostgreSQL
-                      # DB_TYPE: postgres
-                      # DB_DSN: ''
-                      # DB_HOST: postgres.infra.svc.cluster.local
-                      # DB_PORT: '5432'
-                      # DB_SSL_MODE: disable
-                      # DB_USER: alist
-                      # DB_PASS: '123456'
-                      # DB_NAME: alist
-                      # DB_TABLE_PREFIX: x_
+          secret:
+            enabled: true
+            files:
+              alist-dotenv:
+                stringData:
+                  # # SQLite
+                  # DB_TYPE: sqlite3
+                  # DB_FILE: data/data.db
+
+                  # PostgreSQL
+                  DB_TYPE: postgres
+                  DB_DSN: ''
+                  DB_HOST: FIXME-postgres.infra.svc.cluster.local
+                  DB_PORT: '5432'
+                  DB_SSL_MODE: disable
+                  DB_USER: FIXME
+                  DB_PASS: FIXME
+                  DB_NAME: FIXME
+                  DB_TABLE_PREFIX: x_
+
+                  MEILISEARCH_API_KEY: ''
+                  MEILISEARCH_HOST: http://localhost:7700
+                  MEILISEARCH_INDEX_PREFIX: ''
 
     - repoURL: https://d4nnyx.github.io/helm-raw/
       chart: helm-raw
@@ -153,11 +159,11 @@ spec:
             - apiVersion: gateway.networking.k8s.io/v1
               kind: HTTPRoute
               metadata:
-                name: alist-web
+                name: alist-https
                 namespace: self-hosted
                 labels:
                   app.kubernetes.io/name: alist
-                  app.kubernetes.io/component: web
+                  app.kubernetes.io/component: https
               spec:
                 parentRefs:
                   - group: gateway.networking.k8s.io
@@ -166,7 +172,7 @@ spec:
                     name: traefik-gateway
                     sectionName: websecure
                 hostnames:
-                  - alist.127.0.0.1.sslip.io
+                  - FIXME.alist.127.0.0.1.sslip.io
                 rules:
                   - matches:
                       - path:
@@ -194,16 +200,16 @@ spec:
                     name: traefik-gateway
                     sectionName: websecure
                 hostnames:
-                  - alist.127.0.0.1.sslip.io
+                  - FIXME.alist-s3.127.0.0.1.sslip.io
                 rules:
                   - matches:
                       - path:
                           type: PathPrefix
                           value: /
                     backendRefs:
-                      - name: alist
+                      - kind: Service
                         namespace: self-hosted
-                        kind: Service
+                        name: alist
                         port: 9000
 
             - apiVersion: gateway.networking.k8s.io/v1
@@ -213,6 +219,7 @@ spec:
                 namespace: self-hosted
                 labels:
                   app.kubernetes.io/name: alist
+                  app.kubernetes.io/component: http
               spec:
                 parentRefs:
                   - group: gateway.networking.k8s.io
@@ -221,7 +228,7 @@ spec:
                     name: traefik-gateway
                     sectionName: web
                 hostnames:
-                  - alist.127.0.0.1.sslip.io
+                  - FIXME.alist.127.0.0.1.sslip.io
                 rules:
                   - matches:
                       - path:

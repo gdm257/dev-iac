@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: baikal
+  name: baikal-main
   namespace: argocd
 spec:
   project: self-hosted
@@ -16,7 +16,6 @@ spec:
     chart: baikal
     targetRevision: 1.2.5
     helm:
-      # TODO: FIXME
       values: |
         common:
           image:
@@ -32,19 +31,19 @@ spec:
                 containerMount: /var/www/baikal/Specific
                 # pvcClaim: 
                 size: 4Gi
-                storageClassName: local-path
+                # storageClassName: local-path
               - name: config
                 containerMount: /var/www/baikal/config
                 # pvcClaim: 
                 size: 1Gi
-                storageClassName: local-path
+                # storageClassName: local-path
           ingress:
-            enabled: true
-            isIngressRoute: false
-            ingressClassName: traefik
-            entrypoint: websecure
-            hostName: baikal.127.0.0.1.sslip.io
-            tls:
-              enabled: true
-              certResolver: letsencrypt-issuer
-              secretName: wildcard-cert
+            enabled: false
+            # isIngressRoute: false
+            # ingressClassName: traefik
+            # entrypoint: websecure
+            # hostName: baikal.127.0.0.1.sslip.io
+            # tls:
+            #   enabled: true
+            #   certResolver: letsencrypt-issuer
+            #   secretName: wildcard-cert
