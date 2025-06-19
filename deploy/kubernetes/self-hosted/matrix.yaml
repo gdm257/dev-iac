@@ -28,6 +28,9 @@ spec:
               - name: http
                 port: 80
                 targetPort: 8008
+              - name: matrix
+                port: 8448
+                targetPort: 8448
 
           deployment:
             enabled: true
@@ -45,6 +48,7 @@ spec:
               tag: v1.128.0
             ports:
               - containerPort: 8008
+              - containerPort: 8448
             envFrom:
               config:
                 type: configmap
@@ -75,6 +79,7 @@ spec:
       helm:
         valuesObject:
           manifests:
+
             - apiVersion: gateway.networking.k8s.io/v1
               kind: HTTPRoute
               metadata:
@@ -107,3 +112,31 @@ spec:
                         namespace: self-hosted
                         name: matrix
                         port: 80
+
+            - apiVersion: gateway.networking.k8s.io/v1
+              kind: HTTPRoute
+              metadata:
+                name: matrix-federation
+                namespace: self-hosted
+                labels:
+                  app.kubernetes.io/name: matrix
+                  app.kubernetes.io/component: federation
+              spec:
+                parentRefs:
+                  - group: gateway.networking.k8s.io
+                    kind: Gateway
+                    namespace: traefik
+                    name: traefik-gateway
+                    sectionName: websecure
+                hostnames:
+                  - FIXME.matrix.127.0.0.1.sslip.io
+                rules:
+                  - matches:
+                      - path:
+                          type: PathPrefix
+                          value: /_matrix/federation
+                    backendRefs:
+                      - kind: Service
+                        namespace: self-hosted
+                        name: matrix
+                        port: 8448

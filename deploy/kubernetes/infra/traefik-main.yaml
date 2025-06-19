@@ -72,6 +72,10 @@ spec:
             port: 8853
             protocol: TCP
 
+          matrix:
+            port: 8448
+            protocol: TCP
+
           ftp-data:
             port: 8020
             protocol: TCP
