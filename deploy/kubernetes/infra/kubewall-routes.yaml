@@ -12,6 +12,7 @@ spec:
     syncOptions:
       - CreateNamespace=true
   sources:
+
     - repoURL: https://d4nnyx.github.io/helm-raw/
       chart: helm-raw
       targetRevision: 0.1.0
@@ -23,7 +24,7 @@ spec:
               kind: HTTPRoute
               metadata:
                 name: kubewall-web
-                namespace: kube-system
+                namespace: kubewall-system
                 labels:
                   app.kubernetes.io/name: kubewall
                   app.kubernetes.io/component: web
@@ -48,25 +49,6 @@ spec:
                           value: /
                     backendRefs:
                       - kind: Service
-                        namespace: kube-system
-                        name: kubewall
-                        port: 80
-
-            - apiVersion: v1
-              kind: ServiceAccount
-              metadata:
-                name: kubewall-user
-                namespace: kube-system
-
-            - apiVersion: rbac.authorization.k8s.io/v1
-              kind: ClusterRoleBinding
-              metadata:
-                name: kubewall-user
-              roleRef:
-                apiGroup: rbac.authorization.k8s.io
-                kind: ClusterRole
-                name: cluster-admin
-              subjects:
-                - kind: ServiceAccount
-                  name: kubewall-user
-                  namespace: kube-system
+                        namespace: kubewall-system
+                        name: kubewall-main
+                        port: 443

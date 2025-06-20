@@ -13,34 +13,12 @@ spec:
       - CreateNamespace=true
   sources:
 
-    - repoURL: https://github.com/kubewall/kubewall
-      path: charts/kubewall
-      targetRevision: HEAD
-      helm:
-        valuesObject: {}
-
-    - repoURL: https://d4nnyx.github.io/helm-raw/
-      chart: helm-raw
-      targetRevision: 0.1.0
+    - repoURL: ghcr.io/kubewall/charts
+      chart: kubewall
+      # helm show chart oci://ghcr.io/kubewall/charts/kubewall
+      targetRevision: 0.0.11
       helm:
         valuesObject:
-          manifests:
 
-            - apiVersion: v1
-              kind: ServiceAccount
-              metadata:
-                name: kubewall-user
-                namespace: kube-system
-
-            - apiVersion: rbac.authorization.k8s.io/v1
-              kind: ClusterRoleBinding
-              metadata:
-                name: kubewall-user
-              roleRef:
-                apiGroup: rbac.authorization.k8s.io
-                kind: ClusterRole
-                name: cluster-admin
-              subjects:
-                - kind: ServiceAccount
-                  name: kubewall-user
-                  namespace: kube-system
+          service:
+            port: 443
