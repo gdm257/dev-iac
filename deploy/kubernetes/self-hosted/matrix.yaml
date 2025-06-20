@@ -38,14 +38,14 @@ spec:
             replicas: 1
             resources:
               limits:
-                cpu: 300m
-                memory: 400Mi
+                cpu: 600m
+                memory: 800Mi
               requests:
                 cpu: 50m
                 memory: 50Mi
             image:
               repository: ghcr.io/element-hq/synapse
-              tag: v1.128.0
+              tag: v1.130.0
             ports:
               - containerPort: 8008
               - containerPort: 8448
@@ -69,9 +69,7 @@ spec:
             enabled: true
             files:
               dotenv:
-                SYNAPSE_HTTP_PORT: "8008"
                 SYNAPSE_REPORT_STATS: "yes"
-                SYNAPSE_SERVER_NAME: "FIXME.matrix.127.0.0.1.sslip.io"
 
     - repoURL: https://d4nnyx.github.io/helm-raw/
       chart: helm-raw
