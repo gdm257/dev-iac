@@ -47,6 +47,12 @@ spec:
                 - name: kubepi
                   serviceName: kubepi
                   hostnames: [FIXME-kubepi.127.0.0.1.sslip.io]
+                - name: meshery
+                  project: infra
+                  namespace: meshery
+                  serviceNamespace: meshery
+                  serviceName: meshery
+                  hostnames: [FIXME-meshery.127.0.0.1.sslip.io]
                 - name: stalwart
                   serviceName: stalwart
                   hostnames: [FIXME-stalwart.127.0.0.1.sslip.io]
@@ -84,7 +90,8 @@ spec:
                       namespace: '{{ .gatewayNamespace }}'
                       name:  '{{ .gatewayName }}'
                       sectionName: '{{ .gatewayHttpsSectionName }}'
-                  hostnames: {{ toYaml .hostnames | indent 20 }}
+                  hostnames:
+                    {{ toYaml .hostnames | indent 20 }}
                   rules:
                     - matches:
                         - path:
@@ -111,7 +118,8 @@ spec:
                       namespace: '{{ .gatewayNamespace }}'
                       name:  '{{ .gatewayName }}'
                       sectionName: '{{ .gatewayHttpSectionName }}'
-                  hostnames: {{ toYaml .hostnames | indent 20 }}
+                  hostnames:
+                    {{ toYaml .hostnames | indent 20 }}
                   rules:
                     - matches:
                         - path:
