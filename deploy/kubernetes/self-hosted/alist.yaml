@@ -53,8 +53,8 @@ spec:
                 cpu: 50m
                 memory: 50Mi
             image:
-              repository: xhofe/alist
-              tag: v3.45.0-aio
+              repository: openlistteam/openlist
+              tag: v4.0.3-aio
             ports:
               - containerPort: 5244
               - containerPort: 5245
