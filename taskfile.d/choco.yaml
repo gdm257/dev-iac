@@ -32,6 +32,7 @@ tasks:
             - veracrypt
             - ext2fsd
             - winbtrfs
+            - vcredist-all
             # - omnimidi
             # - softether-vpn-client
             # - sqlserver-odbcdriver

@@ -150,6 +150,7 @@ tasks:
             - goreleaser
             - gf
             - gdm257/protoc-gen-go
+            # - rustup-gnu
             - rustup-msvc
             # - unityhub
             # - autohotkey
@@ -165,6 +166,7 @@ tasks:
             - neovim
             - neovide
             # - helix
+            # - ox
             # - emacs
             - hexyl
             # - lapce
@@ -217,11 +219,13 @@ tasks:
             # - studio-3t
             # - robo3t
             # - NoSQLBooster-for-MongoDB
+            # - jujutsu
             - git
             - bit
             - gitui
             - gitu
             - lazygit
+            # - froggit
             # - legit
             # - git-branchless
             # - gitbutler
@@ -980,6 +984,7 @@ tasks:
           APPS:
             - openark
             - bottom
+            - btop
             # - ntop
             # - procs
             # - gotop
