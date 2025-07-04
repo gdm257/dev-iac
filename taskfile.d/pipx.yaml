@@ -152,6 +152,7 @@ tasks:
             - rexi
             - dotbot
             - p115qrcode
+            # - vdirsyncer
 
   install:curated-list:unix:
     platforms: [linux, darwin]

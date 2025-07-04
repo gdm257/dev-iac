@@ -1238,6 +1238,7 @@ tasks:
             # - kubectl-ai
             - kubeconform
             - k8sgpt
+            - kubevpn
             - cilium-cli
             # - istioctl
             # - kwok
@@ -1283,6 +1284,7 @@ tasks:
             # - Hen3
             - thprac
             - steam
+            - steam-deck-tools
             # - EpicGamesLauncher-Portable
             # - GOGGalaxy-Portable
             - itch
