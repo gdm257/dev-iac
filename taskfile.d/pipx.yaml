@@ -153,6 +153,7 @@ tasks:
             - dotbot
             - p115qrcode
             # - vdirsyncer
+            # - ratarmount
 
   install:curated-list:unix:
     platforms: [linux, darwin]
