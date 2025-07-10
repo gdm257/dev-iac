@@ -97,7 +97,7 @@ tasks:
             # - *MacType.MacType*
             - SSHFS-Win.SSHFS-Win
             - WinFsp.WinFsp
-            - dokan-dev.Dokany
+            # - dokan-dev.Dokany
             # - DaiyuuNobori.Win10Pcap
             - Insecure.Npcap
             - WiresharkFoundation.Wireshark
