@@ -9,7 +9,12 @@ spec:
     server: https://kubernetes.default.svc
     namespace: argocd
   syncPolicy:
+    automated:
+      allowEmpty: true
+      prune: true
+      selfHeal: true
     syncOptions:
+      - allowEmpty=true
       - CreateNamespace=true
   source:
     repoURL: https://argoproj.github.io/argo-helm
