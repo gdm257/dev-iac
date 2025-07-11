@@ -42,7 +42,7 @@ spec:
                 memory: 50Mi
             image:
               repository: gitea/gitea
-              tag: 1.23
+              tag: '1.23'
             ports:
               - containerPort: 3000
 

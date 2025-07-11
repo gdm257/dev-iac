@@ -15,7 +15,7 @@ spec:
 
     - repoURL: https://cdwv.github.io/bitwarden-k8s/
       chart: bitwarden-k8s
-      targetRevision: 0.1.7
+      targetRevision: 0.1.5
       helm:
         valuesObject:
 

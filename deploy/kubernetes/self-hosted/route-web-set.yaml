@@ -26,9 +26,6 @@ spec:
           # Per route variables (support override common variables)
           - list:
               elements:
-                - name: affine
-                  serviceName: affine
-                  hostnames: [FIXME-affine.127.0.0.1.sslip.io]
                 - name: apitable
                   serviceName: apitable
                   hostnames: [FIXME-apitable.127.0.0.1.sslip.io]
