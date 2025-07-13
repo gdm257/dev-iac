@@ -23,23 +23,23 @@ spec:
             context: prod-cluster
 
           controlPlane:
-            etcd:
-              deploy:
-                enabled: true
-                statefulSet:
-                  persistence:
-                    volumeClaim:
-                      enabled: true
-                      retentionPolicy: Retain
-                      size: 5Gi
-                      # storageClass: ''
-                      accessModes: ['ReadWriteOnce']
+            backingStore:
+              etcd:
+                deploy:
+                  enabled: true
+                  statefulSet:
+                    persistence:
+                      volumeClaim:
+                        enabled: true
+                        retentionPolicy: Retain
+                        size: 5Gi
+                        # storageClass: ''
+                        accessModes: ['ReadWriteOnce']
 
           sync:
             fromHost:
               customResources:
-                FIXME.crdname.example.com: {enabled: true}
-                  enabled: true
+                FIXME.crdname.example.com: {enabled: true, scope: FIXME-namespace}
             toHost:
               customResources:
-                FIXME.crdname.example.com: {enabled: true}
+                FIXME.crdname.example.com: {enabled: true, scope: FIXME-namespace}
