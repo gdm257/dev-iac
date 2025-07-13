@@ -1055,6 +1055,7 @@ tasks:
             - gdm257/mykeymap-beta
             # - komokana
             - gdm257/dotenvx
+            - psfzf
             - starship
             # - oh-my-posh
             # - genact
