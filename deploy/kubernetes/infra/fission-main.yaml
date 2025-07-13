@@ -1,0 +1,30 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: fission-main
+  namespace: argocd
+spec:
+  project: infra
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: fission
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true # fix large annotations errors (over 262144 bytes)
+  sources:
+
+    - repoURL: https://github.com/fission/fission.git
+      targetRevision: v1.21.0
+      path: crds/v1
+
+    - repoURL: https://fission.github.io/fission-charts/
+      chart: fission-all
+      targetRevision: v1.21.0
+      helm:
+        valuesObject:
+
+          serviceType: ClusterIP
+          routerServiceType: ClusterIP
+          authentication:
+            enabled: true

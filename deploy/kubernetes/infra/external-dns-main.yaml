@@ -1,0 +1,36 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: external-dns
+  namespace: argocd
+spec:
+  project: infra
+  destination:
+    server: https://kubernetes.default.svc
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+  sources: # FIXME
+
+  - repoURL: https://kubernetes-sigs.github.io/external-dns/
+    chart: external-dns
+    targetRevision: 1.17.0
+    helm:
+      valuesObject:
+
+        # resources: {}
+        service:
+          port: 7979
+        sources: # Kubernetes resources to monitor for DNS entries
+          - service
+          - ingress
+        interval: 1m
+        provider:
+          name: cloudflare
+        env:
+          - name: CF_API_TOKEN
+            valueFrom:
+              secretKeyRef:
+                namespace: infra
+                name: cloudflare-secret
+                key: api-token

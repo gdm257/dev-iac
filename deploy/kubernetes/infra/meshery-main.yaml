@@ -1,0 +1,30 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: meshery-main
+  namespace: argocd
+spec:
+  project: infra
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: meshery
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+  source:
+    repoURL: https://meshery.io/charts/
+    chart: meshery
+    targetRevision: v0.8.111
+    helm:
+      valuesObject:
+
+        image:
+          repository: meshery/meshery
+          # tag: stable-latest
+        service:
+          type: ClusterIP
+          port: 80
+        ingress:
+          enabled: false
+        meshery-app-mesh:
+          enabled: false

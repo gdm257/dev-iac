@@ -1,0 +1,48 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: adminer-main
+  namespace: argocd
+spec:
+  project: self-hosted
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: self-hosted
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+  source:
+    repoURL: https://paradeum-team.github.io/helm-charts
+    chart: adminer
+    targetRevision: 0.1.9
+    helm:
+      valuesObject:
+        image:
+          repository: dockette/adminer
+          tag: full
+          # repository: adminer
+          # tag: 5.3.0-standalone
+        config:
+          design: lucas-sandery
+          plugins: >-
+            clickhouse
+            elastic
+            firebird
+            imap
+            mongo
+            simpledb
+            dump-bz2
+            dump-zip
+            dump-json
+            editor-views
+            pretty-json-column
+            sql-gemini
+            tables-filter
+            tinymce
+        resources:
+          limits:
+            cpu: 200m
+            memory: 256Mi
+          requests:
+            cpu: 50m
+            memory: 50Mi
