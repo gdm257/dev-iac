@@ -101,7 +101,8 @@ tasks:
             - gdm257/micromamba
             - ruff
             # - hatch
-            - volta
+            # - volta
+            - nodejs-lts
             - bun
             # - tailwindcss
             # - fnm

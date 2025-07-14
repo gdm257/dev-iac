@@ -34,8 +34,10 @@ tasks:
             # - kapitainsky.RcloneBrowser
             # - FastCopy.FastCopy
             # - Falcosoft.SoundfontMidiPlayer
+            # - Python.PythonInstallManager
             # - Anaconda.Miniconda3
             # - Mamba.Micromamba
+            - Python.Python.3.10
             # - Canonical.Ubuntu.2204
             # - jtroo.kanata_gui
             - Xmarmalade.AlistHelper
