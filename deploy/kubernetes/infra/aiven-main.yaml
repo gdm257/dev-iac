@@ -1,0 +1,24 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: aiven-main
+  namespace: argocd
+spec:
+  project: infra
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: anteon
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+  sources:
+    - repoURL: https://aiven.github.io/aiven-charts
+      chart: aiven-operator-crds
+      targetRevision: v0.30.0
+      helm:
+        valuesObject: {}
+    - repoURL: https://aiven.github.io/aiven-charts
+      chart: aiven-operator
+      targetRevision: v0.30.0
+      helm:
+        valuesObject: {}
