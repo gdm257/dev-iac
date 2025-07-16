@@ -28,7 +28,7 @@ spec:
                   juicefs.com/validate-secret: "true" # enbale auth info validation
               type: Opaque
               stringData:
-                metaurl: rediss://FIXME/1
+                metaurl: rediss://FIXME/0
 
                 storage: s3 # s3, gcs, oss, cos
                 bucket: https://FIXME:port/bucket/path
@@ -59,3 +59,21 @@ spec:
                 csi.storage.k8s.io/provisioner-secret-name: juicefs-secret
                 # csi.storage.k8s.io/controller-expand-secret-namespace: infra
                 # csi.storage.k8s.io/controller-expand-secret-name: juicefs-secret
+
+    - repoURL: https://juicedata.github.io/charts/
+      chart: juicefs-s3-gateway # Web UI to explore JuiceFS
+      targetRevision: 0.11.3
+      helm:
+        valuesObject:
+          secret:
+            enabled: true
+
+            metaurl: rediss://FIXME/0
+
+            storage: s3 # s3, gcs, oss, cos
+            bucket: https://FIXME:port/bucket/path
+            # token: FIXME-JUICEFS_TOKEN # if you use JuiceFS cloud service
+            accessKey: FIXME
+            secretKey: FIXME
+
+            name: FIXME-JUICEFS_NAME
