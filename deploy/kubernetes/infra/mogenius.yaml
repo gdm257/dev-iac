@@ -1,0 +1,23 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: mogenius
+  namespace: argocd
+spec:
+  project: infra
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: mogenius
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+  source:
+    repoURL: https://helm.mogenius.com/public
+    chart: mogenius-k8s-manager
+    targetRevision: v2.11.3
+    helm:
+      valuesObject: # FIXME
+
+      global:
+        cluster_name: FIXME
+        api_key: FIXME
