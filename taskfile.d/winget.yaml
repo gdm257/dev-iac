@@ -163,7 +163,7 @@ tasks:
             # - dechamps.FlexASIO
             - BandLab.Cakewalk
             # - GnuPG.Gpg4win
-            # - AOMEI.PartitionAssistant
+            - AOMEI.PartitionAssistant
             # - *KeppySoftware.OmniMIDI*
             # - Nlitesoft.NTLite
             - Huawei.HiSuite
