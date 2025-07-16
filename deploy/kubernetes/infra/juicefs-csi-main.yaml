@@ -29,6 +29,6 @@ spec:
               cpu: 100m
               memory: 200Mi
 
-        kubeletDir: /var/lib/rancher/k3s/agent/kubelet
+        kubeletDir: /var/lib/kubelet
         # jfsMountDir: /var/lib/juicefs/volume
         # jfsConfigDir: /var/lib/juicefs/config
