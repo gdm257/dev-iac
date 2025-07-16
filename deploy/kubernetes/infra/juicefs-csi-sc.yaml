@@ -28,12 +28,14 @@ spec:
                   juicefs.com/validate-secret: "true" # enbale auth info validation
               type: Opaque
               stringData:
+                metaurl: rediss://FIXME/1
+
                 storage: s3 # s3, gcs, oss, cos
-                metaurl: https://FIXME
+                bucket: https://FIXME:port/bucket/path
                 # token: FIXME-JUICEFS_TOKEN # if you use JuiceFS cloud service
                 access-key: FIXME
                 secret-key: FIXME
-                bucket: FIXME
+
                 name: FIXME-JUICEFS_NAME
                 # env: "{TZ: Asia/Tokyo}" # default is UTC
                 # format-options: "trash-days=1,block-size=4096" # `juicefs format` options
