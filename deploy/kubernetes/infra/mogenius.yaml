@@ -18,6 +18,6 @@ spec:
     helm:
       valuesObject: # FIXME
 
-      global:
-        cluster_name: FIXME
-        api_key: FIXME
+        global:
+          cluster_name: FIXME
+          api_key: FIXME
