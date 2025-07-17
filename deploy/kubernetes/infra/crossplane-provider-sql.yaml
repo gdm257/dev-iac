@@ -18,7 +18,7 @@ spec:
       targetRevision: 0.1.0
       helm:
         valuesObject:
-          manifests: # FIXME
+          manifests:
 
             - apiVersion: pkg.crossplane.io/v1
               kind: Provider
@@ -26,72 +26,3 @@ spec:
                 name: provider-sql
               spec:
                 package: xpkg.upbound.io/crossplane-contrib/provider-sql:v0.9.0
-
-            - apiVersion: v1
-              kind: Secret
-              metadata:
-                name: pg-provider-conn
-              type: Opaque
-              stringData:
-                endpoint: FIXME.com
-                port: FIXME
-                username: FIXME
-                password: FIXME
-
-            - apiVersion: postgresql.sql.crossplane.io/v1alpha1
-              kind: ProviderConfig
-              metadata:
-                name: default
-              spec:
-                credentials:
-                  source: PostgreSQLConnectionSecret
-                  connectionSecretRef:
-                    namespace: crossplane-system
-                    name: pg-provider-conn
-                sslMode: enable
-                # defaultDatabase: postgres
-
-            - apiVersion: v1
-              kind: Secret
-              metadata:
-                name: mysql-provider-conn
-              type: Opaque
-              stringData:
-                endpoint: FIXME.com
-                port: FIXME
-                username: FIXME
-                password: FIXME
-
-            - apiVersion: mysql.sql.crossplane.io/v1alpha1
-              kind: ProviderConfig
-              metadata:
-                name: default
-              spec:
-                credentials:
-                  source: MySQLConnectionSecret
-                  connectionSecretRef:
-                    namespace: crossplane-system
-                    name: mysql-provider-conn
-                tls: perferred # preferred | skip-verify | true | custom
-
-            - apiVersion: v1
-              kind: Secret
-              metadata:
-                name: mssql-provider-conn
-              type: Opaque
-              stringData:
-                endpoint: FIXME.com
-                port: FIXME
-                username: FIXME
-                password: FIXME
-
-            - apiVersion: mssql.sql.crossplane.io/v1alpha1
-              kind: ProviderConfig
-              metadata:
-                name: default
-              spec:
-                credentials:
-                  source: MSSQLConnectionSecret
-                  connectionSecretRef:
-                    namespace: crossplane-system
-                    name: mssql-provider-conn
