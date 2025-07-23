@@ -312,7 +312,7 @@ tasks:
             # - megasync
             # - 115
             - BaiduNetdisk
-            - alist
+            - openlist
             # - alist-helper
             # - hfs
             # - sftpgo
