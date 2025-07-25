@@ -54,7 +54,7 @@ spec:
                 memory: 50Mi
             image:
               repository: openlistteam/openlist
-              tag: v4.0.3-aio
+              tag: v4.0.9-aio
             ports:
               - containerPort: 5244
               - containerPort: 5245
