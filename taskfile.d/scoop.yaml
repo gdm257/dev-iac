@@ -313,6 +313,7 @@ tasks:
             # - 115
             - BaiduNetdisk
             - openlist
+            - openlist-desktop
             # - alist-helper
             # - hfs
             # - sftpgo
@@ -751,8 +752,8 @@ tasks:
             - cuetools
             # - picard
             # - balabolka
-            # - lilypond
             - musescore
+            - lilypond
             # - everyone-piano
             # - freepiano
             # - eac

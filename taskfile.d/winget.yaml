@@ -40,7 +40,7 @@ tasks:
             - Python.Python.3.10
             # - Canonical.Ubuntu.2204
             # - jtroo.kanata_gui
-            - Xmarmalade.AlistHelper
+            # - Xmarmalade.AlistHelper
             - Codeium.Windsurf
             - WEIFENG2333.VideoCaptioner
 

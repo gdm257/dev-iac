@@ -39,3 +39,4 @@ tasks:
             - github.com/go-kratos/kratos/cmd/kratos/v2@latest
             # - github.com/allyring/pvw@latest
             # - github.com/chip/pathos@latest
+            - entgo.io/ent/cmd/ent@latest

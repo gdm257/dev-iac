@@ -154,6 +154,7 @@ tasks:
             - p115qrcode
             # - vdirsyncer
             # - ratarmount
+            # - kubediagrams
 
   install:curated-list:unix:
     platforms: [linux, darwin]
