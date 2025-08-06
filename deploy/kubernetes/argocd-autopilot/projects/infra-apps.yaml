@@ -21,10 +21,10 @@ spec:
     repoURL: https://github.com/gdm257/dev-iac.git
     path: deploy/kubernetes/infra
   syncPolicy:
-    automated:
-      allowEmpty: true
-      prune: true
-      selfHeal: false
+    # automated:
+    #   allowEmpty: true
+    #   prune: true
+    #   selfHeal: false
     syncOptions:
     - allowEmpty=true
 status:
