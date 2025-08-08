@@ -155,6 +155,7 @@ tasks:
             # - vdirsyncer
             # - ratarmount
             # - kubediagrams
+            - git-filter-repo
 
   install:curated-list:unix:
     platforms: [linux, darwin]

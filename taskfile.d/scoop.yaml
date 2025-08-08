@@ -220,7 +220,10 @@ tasks:
             # - studio-3t
             # - robo3t
             # - NoSQLBooster-for-MongoDB
-            # - jujutsu
+            - jujutsu
+            - vizjj
+            # - jjui
+            # - lazyjj
             - git
             - bit
             - gitui
