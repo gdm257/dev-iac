@@ -106,8 +106,10 @@ tasks:
             - Rime.Weasel
             # - Brave.Brave
             # - AnyDeskSoftwareGmbH.AnyDesk
+            # - Youqu.ToDesk
             - RustDesk.RustDesk
-            - Tencent.TencentMeeting
+            - NetEase.UURemote
+            # - Tencent.TencentMeeting
             # - AlekseyHoffman.Sigma-File-Manager
             # - AOMEI.Backupper
             # - Dell.DisplayManager
@@ -168,7 +170,6 @@ tasks:
             # - Nlitesoft.NTLite
             - Huawei.HiSuite
             # - LiTang.QianJi
-            - Youqu.ToDesk
             # - Tencent.Yuanbao
             - Eusoft.Eudic
             - Bandisoft.Honeyview
