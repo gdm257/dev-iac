@@ -1292,6 +1292,7 @@ tasks:
             - thprac
             - steam
             - steam-deck-tools
+            - HeroicGameLauncher-Portable
             # - EpicGamesLauncher-Portable
             # - GOGGalaxy-Portable
             - itch
