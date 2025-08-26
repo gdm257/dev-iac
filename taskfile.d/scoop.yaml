@@ -1287,6 +1287,7 @@ tasks:
             - officebox
             - ludusavi
             - playnite
+            - gdm257/vnite
             - gdm257/WinDeckHelper
             # - Hen3
             - thprac
