@@ -86,6 +86,7 @@ tasks:
             # - httpx[cli]
             # - archivebox
             - code2flow
+            - git+https://github.com/gdm257/magnetizer.git
             # - torrent-parser
             # - tox
             # - pre-commit

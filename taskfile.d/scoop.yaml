@@ -741,6 +741,7 @@ tasks:
             - taisei
             - osulazer
             - collection-manager
+            - gdm257/oszsave
             - osuplayer
             - danser-go
             - rewind
