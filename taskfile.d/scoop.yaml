@@ -884,6 +884,7 @@ tasks:
             # - stairspeedtest-reborn
             # - CloudflareSpeedTest
             - tcptunnel
+            - portforwarder
             # - webhook
             - trafficmonitor
             - winnfsd
@@ -920,7 +921,6 @@ tasks:
             # - mariadb103
             # - wakemeonlan
             - ddns-go
-            - portforwarder
             # - rustdesk
             # - parsec
             - moonlight
@@ -973,8 +973,8 @@ tasks:
             # - ali
             # - packetsender
             # - quasara
-            # - npcap sniffnet
             - bandwhich
+            # - npcap sniffnet
             # - dug
             # - zpscan
             # - hiddify-next
@@ -1034,8 +1034,8 @@ tasks:
             # - cmder-full
             # - waveterm
             # - xpipe
-            - electerm
             # - mobaxterm
+            # - electerm
             # - alacritty
             # - rio
             # - hyper-beta
@@ -1284,7 +1284,7 @@ tasks:
             - sysinternals
             # - sysinternals_ScoopInstaller
             # - gaojitools
-            - fufu-tools
+            # - fufu-tools
             - officebox
             - ludusavi
             - playnite
@@ -1303,9 +1303,14 @@ tasks:
             # - collapse
             - starward
             - game-cheats-manager
-            - katrain
             - lizzieyzy
-            - sabaki
-            - pachi
+            - katrain
+            # - ogatak
+            # - q5go
+            # - sabaki
+            # - pachi
             - leela-zero
+            - leela-zero-network
+            - katago
+            - katago-tensorrt
             - ikatago
