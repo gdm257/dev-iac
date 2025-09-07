@@ -487,8 +487,9 @@ tasks:
             # - ecopaste
             # - copyq
             # - clipboard
-            - anytype
+            # - anytype
             - obsidian
+            - siyuan
             # - focalboard
             # - appflowy
             # - bookxnote
