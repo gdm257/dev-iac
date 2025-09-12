@@ -49,6 +49,7 @@ tasks:
             # - pex
             # - ipython
             - ptpython
+            - marimo[recommended]
             - pdm
             # - poetry
             # - hatch
