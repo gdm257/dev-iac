@@ -10,6 +10,7 @@ tasks:
           SOURCE: msstore
           APPS:
             - XPDNH1FMW7NB40 # huorong internet security
+            - 9nb0h051m4v4 # 小幻影视 Rodel Player
 
   install:curated-list:user:
     platforms: [windows]
