@@ -108,8 +108,11 @@ tasks:
             # - fnm
             # - nvm
             # - yarn pnpm
-            # - php74 php74-xdebug composer
+            - php74 composer
+            # - php74-xdebug
+            - composer
             - jbang
+            - zulu21-jdk
             # - openjdk9 openjdk8-redhat openjdk11 openjdk17
             - maven
             - gradle
@@ -1091,7 +1094,7 @@ tasks:
             # - nircmd-both
             # - hyperfine
             # - SilentCMD-Portable
-            # - direnv
+            - direnv
             # - flow-launcher
             - rubick
             # - spc/capslock-plus
@@ -1274,6 +1277,7 @@ tasks:
             - argocd-autopilot
             # - tsuru
             - velero
+            - cmctl
             - korb
             # - wsl2-distro-manager
             # - WsaToolbox
