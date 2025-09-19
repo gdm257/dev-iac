@@ -1,0 +1,11 @@
+[workspace]
+authors = ["gdm257 <gdm@disroot.org>"]
+channels = ["conda-forge"]
+name = "dev-iac"
+platforms = ["win-64"]
+version = "0.1.0"
+
+[tasks]
+
+[dependencies]
+go-task = ">=3.45.4,<4"

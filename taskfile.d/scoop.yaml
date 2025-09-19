@@ -93,8 +93,8 @@ tasks:
             - chsrc
             - wixtoolset
             # - dark
-            - vfox
-            # - version-manager
+            # - vfox
+            - main/pixi
             # - python27 python37 python38 python39 python310 python311 micromamba_ShuguangSun micromamba
             # - rye
             - uv
