@@ -25,11 +25,12 @@ tasks:
       - task: install:bulk
         vars:
           PACKAGES:
-            - opencommit
             - '@openapitools/openapi-generator-cli'
+            - '@devcontainers/cli'
             - whistle
             - neoss
             - eslint
+            # - opencommit
             # - pxder
             # - npkill
             # - fkill-cli
