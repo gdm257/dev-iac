@@ -163,10 +163,15 @@ tasks:
             - openmodelica
             - scilab
             # - idea-portable
-            # - gdm257/cursor
             # - imhex
             - vscode
-            - vscodium
+            # - vscodium
+            - trae-cn
+            # - trae
+            - cursor
+            # - void
+            # - kiro
+            - opencode
             - vim
             # - vimtutor
             - neovim
@@ -204,7 +209,7 @@ tasks:
             - mongodb-compass
             - edgedb
             - gdm257/dbgate
-            - chat2db
+            # - chat2db
             - jailer
             # - dbeaver
             # - dblab
@@ -259,7 +264,7 @@ tasks:
             - scc
             # - tokei
             # - cloc
-            - gitea
+            # - gitea
             - act
             # - hub
             # - gh
@@ -331,6 +336,7 @@ tasks:
             # - lky-officetools
             # - qbittorrent-portable
             - qbittorrent-enhanced
+            - gdm257/qbbanhelper
             # - annie
             - fake115uploader
             - fake115-go
@@ -372,7 +378,7 @@ tasks:
             # - tre-command
             - zoxide
             - yazi
-            - superfile
+            # - superfile
             # - broot
             # - lf
             # - file
@@ -381,6 +387,7 @@ tasks:
             # - nanazip_DoveBoy
             # - bandizip6
             - winrar
+            # - code2prompt
             - everything
             - gdm257/listary5
             # - listary
@@ -391,10 +398,9 @@ tasks:
             - restic
             - resticprofile
             - restic-browser
-            # - redu
-            - duplicati
-            # - duplicacy
             # - backrest
+            # - redu
+            # - duplicati
             - diskgenius
             - testdisk
             - smartmontools
@@ -403,7 +409,7 @@ tasks:
             - VeraCryptPortable
             - Snap2HTML
             # - HashTools
-            - winmerge
+            # - winmerge
             - meld
             # - AntRenamer
             # - ReNamerLite
@@ -495,7 +501,7 @@ tasks:
             # - clipboard
             # - anytype
             - obsidian
-            - siyuan
+            # - siyuan
             # - focalboard
             # - appflowy
             # - bookxnote
@@ -579,9 +585,11 @@ tasks:
             - gdm257/imbatch
             - piclist
             - imagemagick-lean
+            - upscayl
             - caesium-image-compressor
             - Krita-Portable
             - inkscape
+            - pixieditor
             - qgis
             - geogebra
             - umbrello
@@ -703,9 +711,10 @@ tasks:
             # - megui-fixed@2896
             # - megui
             - megui_fixed
-            - gdm257/okegui
+            # - gdm257/okegui
             - mkvtoolnix
             - quickcut
+            - gdm257/ffmpegfreeui
             - ffmpeg
             # - shanaencoder
             # - qwinff
@@ -836,6 +845,7 @@ tasks:
             - bind
             - networkmanager
             - whosip
+            - tldx
             # - kscan_batkiz
             - masscan
             - naabu
@@ -856,22 +866,23 @@ tasks:
             - caddy
             # - xcaddy
             # - clash
-            - mihomo
+            # - mihomo
             # - clashtui
             # - clash-for-windows
             # - clash-for-windows-portable
             # - clashweb
             # - clashy
-            - mihomo-party
-            - clash-verge-rev_chawyehsu
+            - clash-party
+            # - mihomo-party
+            # - clash-verge-rev_chawyehsu
             # - clash-nyanpasu
             # - clash-verge
             # - geoip-country-mmdb
-            - v2ray
+            # - v2ray
             # - v2ray-domain-list-community
             # - v2ray-geoip
-            - v2ray-rules-dat
-            - qv2ray
+            # - v2ray-rules-dat
+            # - qv2ray
             # - qv2ray-plugin-command
             # - qv2ray-plugin-naiveproxy
             # - qv2ray-plugin-ss
@@ -888,15 +899,8 @@ tasks:
             - curlie
             - atac
             # - keploy
-            - bruno
-            # - postman
-            # - insomnia
-            - hoppscotch
-            # - pororoca
-            # - restfox
-            # - firecamp
-            # - httpie-desktop
-            # - apidash
+            - postman
+            # - hoppscotch
             - wireshark
             # - termshark
             # - fiddler
@@ -956,12 +960,12 @@ tasks:
             # - tailscale
             - naiveproxy
             - traefik
-            - nekoray
-            - sing-box
-            - hysteria
-            - trojan
+            # - nekoray
+            # - sing-box
+            # - hysteria
+            # - trojan
             # - trojan-go
-            - leaf
+            # - leaf
             - element
             # - gomuks
             # - mailspring
@@ -976,7 +980,7 @@ tasks:
             # - chatbox
             # - ChatALL-Portable
             - aichat
-            - plandex
+            - rivet
             # - tutanota
             # - dns-jumper
             - gns3
@@ -1331,7 +1335,7 @@ tasks:
             # - ogatak
             # - q5go
             # - sabaki
-            # - pachi
+            - pachi
             - leela-zero
             - leela-zero-network
             - katago

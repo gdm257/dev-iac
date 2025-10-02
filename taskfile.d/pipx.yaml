@@ -134,12 +134,12 @@ tasks:
             # - toolong
             # - ciphey
             # - pyscaffold[all]
-            - stego-lsb
+            # - stego-lsb
             # - copier
             # - open-interpreter
             # - scapy
             # - ansible-playbook-grapher
-            - aider-chat
+            # - aider-chat
             # - kupo
             # - eml-analyzer
             # - eml-to-html
@@ -158,6 +158,8 @@ tasks:
             # - ratarmount
             # - kubediagrams
             - git-filter-repo
+            - git+https://github.com/karpathy/rendergit
+            - git+https://github.com/github/spec-kit
 
   install:curated-list:unix:
     platforms: [linux, darwin]
