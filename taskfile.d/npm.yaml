@@ -34,7 +34,7 @@ tasks:
             - opencode-ai
             - '@openai/codex'
             - '@anthropic-ai/claude-code'
-            - '@google/gemini-cli'
+            # - '@google/gemini-cli'
             - '@qwen-code/qwen-code'
             # - opencommit
             # - pxder

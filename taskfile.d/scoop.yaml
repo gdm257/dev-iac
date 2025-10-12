@@ -166,11 +166,10 @@ tasks:
             # - imhex
             - vscode
             # - vscodium
+            # - void
             - trae-cn
             # - trae
-            - cursor
-            # - void
-            # - kiro
+            # - cursor
             - opencode
             - vim
             # - vimtutor
@@ -446,6 +445,7 @@ tasks:
             - DejaVuSansMono-NF-Mono
             - Hack-NF-Mono
             - JetBrainsMono-NF
+            - CascadiaCode-NF-Mono
             # - SourceCodePro-NF-Mono
             # - MPlus-NF-Mono
 
@@ -980,6 +980,7 @@ tasks:
             # - chatbox
             # - ChatALL-Portable
             - aichat
+            # - mcp-linker
             - rivet
             # - tutanota
             # - dns-jumper
