@@ -171,6 +171,8 @@ tasks:
             # - trae
             # - cursor
             - opencode
+            # - crush
+            - codex
             - vim
             # - vimtutor
             - neovim
@@ -510,6 +512,8 @@ tasks:
             # - rendevoz
             # - imewlconverter
             - zeal
+            # - zed
+            - zed-opengl
             - notepad4
             # - notepad--
             # - notepadnext
@@ -784,7 +788,7 @@ tasks:
             # - picard
             # - balabolka
             - musescore
-            - lilypond
+            # - lilypond
             # - everyone-piano
             # - freepiano
             # - eac

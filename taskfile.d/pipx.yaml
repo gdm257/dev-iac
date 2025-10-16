@@ -159,7 +159,7 @@ tasks:
             # - kubediagrams
             - git-filter-repo
             - git+https://github.com/karpathy/rendergit
-            - git+https://github.com/github/spec-kit
+            # - git+https://github.com/github/spec-kit
 
   install:curated-list:unix:
     platforms: [linux, darwin]

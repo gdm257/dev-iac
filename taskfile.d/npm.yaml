@@ -31,8 +31,8 @@ tasks:
             - neoss
             - eslint
             - repomix
-            - opencode-ai
-            - '@openai/codex'
+            # - opencode-ai
+            # - '@openai/codex'
             - '@anthropic-ai/claude-code'
             # - '@google/gemini-cli'
             - '@qwen-code/qwen-code'
