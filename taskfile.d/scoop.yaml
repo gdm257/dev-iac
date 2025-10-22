@@ -156,6 +156,7 @@ tasks:
             - gdm257/protoc-gen-go
             # - rustup-gnu
             - rustup-msvc
+            - rust-analyzer
             # - unityhub
             # - autohotkey
             - AutoHotkey-Portable_ACooper81
@@ -167,12 +168,12 @@ tasks:
             - vscode
             # - vscodium
             # - void
-            - trae-cn
+            # - trae-cn
             # - trae
             # - cursor
             - opencode
             # - crush
-            - codex
+            # - codex
             - vim
             # - vimtutor
             - neovim
@@ -238,8 +239,8 @@ tasks:
             - git
             - bit
             - gitui
-            - gitu
-            - lazygit
+            # - gitu
+            # - lazygit
             # - froggit
             # - legit
             # - git-branchless
@@ -249,7 +250,7 @@ tasks:
             - git-lfs
             - lfs-dal
             - git-credential-manager
-            - git-credential-oauth
+            # - git-credential-oauth
             - gitleaks
             # - gptcommit
             # - gitql
@@ -260,7 +261,7 @@ tasks:
             # - git-chglog
             - git-cliff
             # - git-sizer
-            - git-quick-stats
+            # - git-quick-stats
             - onefetch
             - scc
             # - tokei
@@ -325,8 +326,8 @@ tasks:
             # - landrop
             # - megasync
             # - 115
-            - BaiduNetdisk
-            - openlist
+            # - BaiduNetdisk
+            # - openlist
             - openlist-desktop
             # - alist-helper
             # - hfs
@@ -491,6 +492,7 @@ tasks:
             - poppler
             # - gpg
             - mkcert
+            - step
             # - echo/beyondcompare
             - zotero
             - vosviewer
@@ -592,7 +594,7 @@ tasks:
             - upscayl
             - caesium-image-compressor
             - Krita-Portable
-            - inkscape
+            # - inkscape
             - pixieditor
             - qgis
             - geogebra
@@ -702,13 +704,13 @@ tasks:
             - fontloadersub
             # - lavfilters
             # - madvr
-            - anime4kcpp-cli
-            - anime4kcpp-gui
-            - anime4k-glsl
-            - anime4kcpp-avisynthplus-plugin
-            - anime4kcpp-vapoursynth-plugin
-            - anime4kcpp-dsfilter
-            - acnet-glsl
+            # - anime4kcpp-cli
+            # - anime4kcpp-gui
+            # - anime4k-glsl
+            # - anime4kcpp-avisynthplus-plugin
+            # - anime4kcpp-vapoursynth-plugin
+            # - anime4kcpp-dsfilter
+            # - acnet-glsl
             - video2x
             - magpie
             # - vidbatch
@@ -916,6 +918,8 @@ tasks:
             # - webhook
             - trafficmonitor
             - winnfsd
+            - gdm257/oauth2l
+            - main/oauth2c
             - telegram
             - wechat
             - wecom
@@ -933,6 +937,7 @@ tasks:
             - gdm257/frpmgr
             - catsxp
             - centbrowser
+            # - gdm257/chrome-plus
             # - chromium
             # - brave
             # - Brave-Portable
@@ -1146,6 +1151,7 @@ tasks:
             # - privatezilla
             # - Malware-Patch_Paxxs
             # - itunes-portable
+            - i4
             # - i4tool
             # - windows-application-driver
             # - edgeless-hub

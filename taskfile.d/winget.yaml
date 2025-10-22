@@ -25,8 +25,8 @@ tasks:
             - commercialhaskell.stack
             - JRSoftware.InnoSetup
             # - Espanso.Espanso
-            - SublimeHQ.SublimeText.3
-            - ByteDance.Trae
+            # - SublimeHQ.SublimeText.3
+            # - ByteDance.Trae
             - 115.115Chrome
             # - Ollama.Ollama
             # - ElementLabs.LMStudio
@@ -42,7 +42,7 @@ tasks:
             # - Canonical.Ubuntu.2204
             # - jtroo.kanata_gui
             # - Xmarmalade.AlistHelper
-            - Codeium.Windsurf
+            # - Codeium.Windsurf
             - WEIFENG2333.VideoCaptioner
 
   install:curated-list:global:
@@ -175,6 +175,7 @@ tasks:
             - Eusoft.Eudic
             - Bandisoft.Honeyview
             - GOG.Galaxy
+            - Canva.Affinity
 
   install:bulk:
     platforms: [windows]
