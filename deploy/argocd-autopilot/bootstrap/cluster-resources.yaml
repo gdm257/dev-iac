@@ -10,7 +10,7 @@ spec:
   generators:
   - git:
       files:
-      - path: deploy/kubernetes/argocd-autopilot/bootstrap/cluster-resources/*.json
+      - path: deploy/argocd-autopilot/bootstrap/cluster-resources/*.json
       repoURL: https://github.com/gdm257/dev-iac.git
       requeueAfterSeconds: 20
       revision: ""
@@ -38,7 +38,7 @@ spec:
         kind: Application
       project: default
       source:
-        path: deploy/kubernetes/argocd-autopilot/bootstrap/cluster-resources/{{name}}
+        path: deploy/argocd-autopilot/bootstrap/cluster-resources/{{name}}
         repoURL: https://github.com/gdm257/dev-iac.git
       syncPolicy:
         automated:

@@ -21,7 +21,7 @@ spec:
   project: default
   source:
     repoURL: https://github.com/gdm257/dev-iac.git
-    path: deploy/kubernetes/argocd-autopilot/projects
+    path: deploy/argocd-autopilot/projects
   syncPolicy:
     automated:
       allowEmpty: true
