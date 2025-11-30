@@ -96,7 +96,7 @@ services:
     logging:
       driver: "json-file"
       options:
-        max-size: "100m"
+        max-size: "10m"
         max-file: "3"
         compress: "true"
     deploy:
