@@ -1,0 +1,18 @@
+---
+name: doco-cd
+working_dir: deploy/docker/doco-cd
+external_secrets:
+  # https://github.com/kimdre/doco-cd/wiki/App-Settings
+  WEBHOOK_SECRET: "xxxxxxxxxxxxx:prod:/doco-cd/doco-cd/WEBHOOK_SECRET"
+  API_SECRET: "xxxxxxxxxxxxx:prod:/doco-cd/doco-cd/API_SECRET"
+  GIT_ACCESS_TOKEN: "xxxxxxxxxxxxx:prod:/doco-cd/doco-cd/GIT_ACCESS_TOKEN"
+  POLL_CONFIG: "xxxxxxxxxxxxx:prod:/doco-cd/doco-cd/POLL_CONFIG"
+  # https://github.com/kimdre/doco-cd/wiki/External-Secrets
+  SECRET_PROVIDER: "xxxxxxxxxxxxx:prod:/doco-cd/doco-cd/SECRET_PROVIDER"
+  SECRET_PROVIDER_SITE_URL: "xxxxxxxxxxxxx:prod:/doco-cd/doco-cd/SECRET_PROVIDER_SITE_URL"
+  SECRET_PROVIDER_CLIENT_ID: "xxxxxxxxxxxxx:prod:/doco-cd/doco-cd/SECRET_PROVIDER_CLIENT_ID"
+  SECRET_PROVIDER_CLIENT_SECRET: "xxxxxxxxxxxxx:prod:/doco-cd/doco-cd/SECRET_PROVIDER_CLIENT_SECRET"
+  # Common
+  REPLICAS: "xxxxxxxxxxxxx:prod:/doco-cd/doco-cd/REPLICAS"
+  BASE_DOMAIN: "xxxxxxxxxxxxx:prod:/doco-cd/common/BASE_DOMAIN"
+  TZ: "xxxxxxxxxxxxx:prod:/doco-cd/common/TZ"

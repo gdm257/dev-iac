@@ -1,0 +1,21 @@
+# ======== Examples ========
+
+# Example: External secrets
+# external_secrets: # inject var to compose template
+#   AWS: "arn:aws:secretsmanager:<region>:<account-id>:secret:<secret-name>"
+#   AWS_JSON_SECRET: "arn:aws:secretsmanager:<region>:<account-id>:secret:<secret-name/item>"
+#   BITWARDENT: "<secret-id>"
+#   ONEPASSWORD: "op://<vault>/<item>/[section/]<field>"
+#   INFISICAL: "<projectId>:<env>:<[/some/path/]key>"
+#   OPENBAO_KV_SECRET: "kv:<secretEngine>:<secretName>:<key>"
+#   OPENBAO_PKI_CERT: "pki:<secretEngine>:<commonName>"
+
+# https://github.com/kimdre/doco-cd/wiki/Deploy-Settings
+
+---
+name: swarm-cronjob
+working_dir: deploy/docker/swarm-cronjob
+
+---
+name: dpanel
+working_dir: deploy/docker/dpanel
