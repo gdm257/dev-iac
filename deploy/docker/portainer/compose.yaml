@@ -1,0 +1,60 @@
+volumes:
+  data:
+    external: ${VOLUME_EXTERNAL:-false}
+    name: ${VOLUME_NAME:-portainer_data}
+
+networks:
+  public:
+    external: ${PUBLIC_NETWORK_EXTERNAL:-true}
+    name: ${PUBLIC_NETWORK_NAME:-traefik-public}
+
+services:
+  portainer:
+    image: ${IMAGE_NAME:-portainer/portainer-ce}:${IMAGE_VERSION:-alpine}
+    networks:
+      - public
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - data:/data
+    deploy:
+      labels:
+        # Enable Traefik for this service
+        - "traefik.enable=${TRAEFIK_ENABLE:-true}"
+
+        # HTTP to HTTPS redirect
+        - "traefik.http.routers.portainer-http.rule=Host(`${APP_NAME:-portainer}.${BASE_DOMAIN:-localhost}`)"
+        - "traefik.http.routers.portainer-http.entrypoints=${TRAEFIK_HTTP_ENTRYPOINT:-http}"
+        - "traefik.http.routers.portainer-http.middlewares=${TRAEFIK_HTTP_MIDDLEWARES:-https-redirect}"
+        - "traefik.http.routers.portainer-http.service=portainer"
+
+        # HTTPS router with SSL
+        - "traefik.http.routers.portainer-https.rule=Host(`${APP_NAME:-portainer}.${BASE_DOMAIN:-localhost}`)"
+        - "traefik.http.routers.portainer-https.entrypoints=${TRAEFIK_HTTPS_ENTRYPOINT:-https}"
+        - "traefik.http.routers.portainer-https.tls=${TRAEFIK_TLS:-true}"
+        - "traefik.http.routers.portainer-https.tls.certresolver=${TRAEFIK_TLS_RESOLVER:-myresolver}"
+        - "traefik.http.routers.portainer-https.middlewares=${TRAEFIK_HTTPS_MIDDLEWARES:-}"
+        - "traefik.http.routers.portainer-https.service=portainer"
+
+        # Service definition - using HTTP port 9000, Traefik handles HTTPS termination
+        - "traefik.http.services.portainer.loadbalancer.server.port=9000"
+
+        # Edge agent HTTP (for edge agent communication)
+        - "traefik.http.routers.portainer-edge-http.rule=Host(`${APP_NAME:-portainer-edge}.${BASE_DOMAIN:-localhost}`)"
+        - "traefik.http.routers.portainer-edge-http.entrypoints=${TRAEFIK_HTTP_ENTRYPOINT:-http}"
+        - "traefik.http.routers.portainer-edge-http.middlewares=${TRAEFIK_HTTP_MIDDLEWARES:-https-redirect}"
+        - "traefik.http.routers.portainer-edge-http.service=portainer-edge"
+
+        # Edge agent HTTPS
+        - "traefik.http.routers.portainer-edge-https.rule=Host(`${APP_NAME:-portainer-edge}.${BASE_DOMAIN:-localhost}`)"
+        - "traefik.http.routers.portainer-edge-https.entrypoints=${TRAEFIK_HTTPS_ENTRYPOINT:-https}"
+        - "traefik.http.routers.portainer-edge-https.tls=${TRAEFIK_TLS:-true}"
+        - "traefik.http.routers.portainer-edge-https.tls.certresolver=${TRAEFIK_TLS_RESOLVER:-myresolver}"
+        - "traefik.http.routers.portainer-edge-https.middlewares=${TRAEFIK_HTTPS_MIDDLEWARES:-}"
+        - "traefik.http.routers.portainer-edge-https.service=portainer-edge"
+
+        # Edge agent service
+        - "traefik.http.services.portainer-edge.loadbalancer.server.port=8000"
+      replicas: ${REPLICAS:-1}
+      placement:
+        constraints:
+          - node.role == manager

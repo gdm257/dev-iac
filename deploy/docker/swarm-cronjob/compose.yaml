@@ -1,0 +1,14 @@
+services:
+  swarm-cronjob:
+    image: ${IMAGE_NAME:-crazymax/swarm-cronjob}:${IMAGE_VERSION:-latest}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - TZ=${TZ:-Asia/Tokyo}
+      - LOG_LEVEL=${LOG_LEVEL:-info}
+      - LOG_JSON=${LOG_JSON:-false}
+    deploy:
+      replicas: ${REPLICAS:-1}
+      placement:
+        constraints:
+          - node.role == manager

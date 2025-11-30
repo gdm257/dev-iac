@@ -1,0 +1,52 @@
+volumes:
+  data:
+    external: ${VOLUME_EXTERNAL:-false}
+    name: ${VOLUME_NAME:-doco-cd_data}
+
+networks:
+  public:
+    external: ${PUBLIC_NETWORK_EXTERNAL:-true}
+    name: ${PUBLIC_NETWORK_NAME:-traefik-public}
+
+services:
+  doco-cd:
+    image: ${IMAGE_NAME:-ghcr.io/kimdre/doco-cd}:${IMAGE_VERSION:-latest}
+    networks:
+      - public
+    environment:
+      TZ: ${TZ:-Asia/Tokyo}
+      WEBHOOK_SECRET: ${WEBHOOK_SECRET}
+      API_SECRET: ${API_SECRET}
+      GIT_ACCESS_TOKEN: ${GIT_ACCESS_TOKEN}
+      POLL_CONFIG: ${POLL_CONFIG}
+      SECRET_PROVIDER: ${SECRET_PROVIDER:-infisical}
+      SECRET_PROVIDER_SITE_URL: ${SECRET_PROVIDER_SITE_URL:-https://app.infisical.com}
+      SECRET_PROVIDER_CLIENT_ID: ${SECRET_PROVIDER_CLIENT_ID}
+      SECRET_PROVIDER_CLIENT_SECRET: ${SECRET_PROVIDER_CLIENT_SECRET}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - data:/data
+    healthcheck:
+      test: [ "CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:80/v1/health" ]
+      start_period: 15s
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    deploy:
+      labels:
+        - traefik.enable=${TRAEFIK_ENABLE:-true}
+        - traefik.http.services.doco-cd.loadbalancer.server.port=80
+        - traefik.http.routers.doco-cd-http.rule=Host(`${APP_NAME:-doco-cd}.${BASE_DOMAIN:-localhost}`)
+        - traefik.http.routers.doco-cd-http.entrypoints=${TRAEFIK_HTTP_ENTRYPOINT:-http}
+        - traefik.http.routers.doco-cd-http.middlewares=${TRAEFIK_HTTP_MIDDLEWARES:-https-redirect}
+        - traefik.http.routers.doco-cd-http.service=doco-cd
+        - traefik.http.routers.doco-cd-https.rule=Host(`${APP_NAME:-doco-cd}.${BASE_DOMAIN:-localhost}`)
+        - traefik.http.routers.doco-cd-https.entrypoints=${TRAEFIK_HTTPS_ENTRYPOINT:-https}
+        - traefik.http.routers.doco-cd-https.tls=${TRAEFIK_TLS:-true}
+        - traefik.http.routers.doco-cd-https.tls.certresolver=${TRAEFIK_TLS_RESOLVER:-myresolver}
+        - traefik.http.routers.doco-cd-https.middlewares=${TRAEFIK_HTTPS_MIDDLEWARES:-}
+        - traefik.http.routers.doco-cd-https.service=doco-cd
+      replicas: ${REPLICAS:-1}
+      placement:
+        constraints:
+          - node.role == manager

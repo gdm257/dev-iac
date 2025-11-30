@@ -1,0 +1,25 @@
+networks:
+  public:
+    external: true
+    name: ${PUBLIC_NETWORK_NAME:-traefik-public}
+
+services:
+  whoami:
+    image: ${IMAGE_NAME:-traefik/whoami}:${IMAGE_VERSION:-latest}
+    networks:
+      - public
+    deploy:
+      labels:
+        - "traefik.enable=${TRAEFIK_ENABLE:-true}"
+        - "traefik.http.services.whoami.loadbalancer.server.port=80"
+        - "traefik.http.routers.whoami-http.rule=Host(`${APP_NAME:-whoami}.${BASE_DOMAIN:-localhost}`)"
+        - "traefik.http.routers.whoami-http.entrypoints=${TRAEFIK_HTTP_ENTRYPOINT:-http}"
+        - "traefik.http.routers.whoami-http.middlewares=${TRAEFIK_HTTP_MIDDLEWARES:-https-redirect}"
+        - "traefik.http.routers.whoami-http.service=whoami"
+        - "traefik.http.routers.whoami-https.rule=Host(`${APP_NAME:-whoami}.${BASE_DOMAIN:-localhost}`)"
+        - "traefik.http.routers.whoami-https.entrypoints=${TRAEFIK_HTTPS_ENTRYPOINT:-https}"
+        - "traefik.http.routers.whoami-https.tls=${TRAEFIK_TLS:-true}"
+        - "traefik.http.routers.whoami-https.tls.certresolver=${TRAEFIK_TLS_RESOLVER:-myresolver}"
+        - "traefik.http.routers.whoami-https.middlewares=${TRAEFIK_HTTPS_MIDDLEWARES:-oidc-auth}"
+        - "traefik.http.routers.whoami-https.service=whoami"
+      replicas: ${REPLICAS:-1}

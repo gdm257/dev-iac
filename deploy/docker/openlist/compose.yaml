@@ -1,0 +1,120 @@
+volumes:
+  data:
+    external: ${VOLUME_EXTERNAL:-false}
+    name: ${VOLUME_NAME:-openlist_data}
+  meili_data:
+    external: ${VOLUME_EXTERNAL:-false}
+    name: ${VOLUME_NAME_2:-openlist_meili_data}
+
+networks:
+  internal:
+  public:
+    external: ${PUBLIC_NETWORK_EXTERNAL:-true}
+    name: ${PUBLIC_NETWORK_NAME:-traefik-public}
+
+services:
+  openlist:
+    image: ${IMAGE_NAME:-openlistteam/openlist}:${IMAGE_VERSION:-v4.1.8-aio}
+    networks:
+      - public
+      - internal
+    user: "0:0"
+    volumes:
+      - data:/opt/openlist/data
+    environment:
+      DATABASE_TYPE: ${DATABASE_TYPE:-sqlite3} # sqlite3, postgres, mysql
+      DATABASE_DSN: ${DATABASE_DSN} # https://github.com/alist-org/alist/pull/6031
+      DATABASE_DB_FILE: ${DATABASE_DB_FILE:-data/data.db}
+      DATABASE_HOST: ${DATABASE_HOST}
+      DATABASE_PORT: ${DATABASE_PORT:-0}
+      DATABASE_USER: ${DATABASE_USER}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+      DATABASE_SSL_MODE: ${DATABASE_SSL_MODE}
+      DATABASE_NAME: ${DATABASE_NAME}
+      DATABASE_TABLE_PREFIX: ${DATABASE_TABLE_PREFIX:-x_}
+      MEILISEARCH_HOST: ${MEILISEARCH_HOST:-http://meilisearch:7700}
+      MEILISEARCH_API_KEY: ${MEILISEARCH_API_KEY:-apikey}
+
+      BLEVE_DIR: ${BLEVE_DIR:-data/bleve}
+      CDN: ${CDN}
+      COMPRESS: ${COMPRESS:-false}
+      CORS_ALLOW_HEADERS_0: ${CORS_ALLOW_HEADERS_0:-*}
+      CORS_ALLOW_METHODS_0: ${CORS_ALLOW_METHODS_0:-*}
+      CORS_ALLOW_ORIGINS_0: ${CORS_ALLOW_ORIGINS_0:-*}
+      DELAYED_START: ${DELAYED_START:-0}
+      DIST_DIR: ${DIST_DIR}
+      FORCE: ${FORCE:-false}
+      FTP_ENABLE: ${FTP_ENABLE:-true}
+      FTP_LISTEN: ${FTP_LISTEN:-:5221}
+      JWT_SECRET: ${JWT_SECRET}
+      LOG_ENABLE: ${LOG_ENABLE:-true}
+      LOG_NAME: ${LOG_NAME:-data/log/log.log}
+      MAX_AGE: ${MAX_AGE:-28800}
+      MAX_BACKUPS: ${MAX_BACKUPS:-30}
+      MAX_CONNECTIONS: ${MAX_CONNECTIONS:-0}
+      MAX_SIZE: ${MAX_SIZE:-10}
+      S3_ENABLE: ${S3_ENABLE:-true}
+      S3_PORT: ${S3_PORT:-5246}
+      S3_SSL: ${S3_SSL:-false}
+      SFTP_ENABLE: ${SFTP_ENABLE:-true}
+      SFTP_LISTEN: ${SFTP_LISTEN:-:5222}
+      SCHEME_ADDRESS: ${SCHEME_ADDRESS:-0.0.0.0}
+      SCHEME_CERT_FILE: ${SCHEME_CERT_FILE}
+      SCHEME_FORCE_HTTPS: ${SCHEME_FORCE_HTTPS:-false}
+      SCHEME_HTTPS_PORT: ${SCHEME_HTTPS_PORT:--1}
+      SCHEME_HTTP_PORT: ${SCHEME_HTTP_PORT:-5244}
+      SCHEME_KEY_FILE: ${SCHEME_KEY_FILE}
+      SCHEME_UNIX_FILE: ${SCHEME_UNIX_FILE}
+      SCHEME_UNIX_FILE_PERM: ${SCHEME_UNIX_FILE_PERM}
+      SITE_URL: ${SITE_URL}
+      TASKS_COPY_MAX_RETRY: ${TASKS_COPY_MAX_RETRY:-2}
+      TASKS_COPY_WORKERS: ${TASKS_COPY_WORKERS:-5}
+      TASKS_DOWNLOAD_MAX_RETRY: ${TASKS_DOWNLOAD_MAX_RETRY:-1}
+      TASKS_DOWNLOAD_WORKERS: ${TASKS_DOWNLOAD_WORKERS:-5}
+      TASKS_TRANSFER_MAX_RETRY: ${TASKS_TRANSFER_MAX_RETRY:-2}
+      TASKS_TRANSFER_WORKERS: ${TASKS_TRANSFER_WORKERS:-5}
+      TASKS_UPLOAD_MAX_RETRY: ${TASKS_UPLOAD_MAX_RETRY:-0}
+      TASKS_UPLOAD_WORKERS: ${TASKS_UPLOAD_WORKERS:-5}
+      TEMP_DIR: ${TEMP_DIR:-data/temp}
+      TLS_INSECURE_SKIP_VERIFY: ${TLS_INSECURE_SKIP_VERIFY:-true}
+      TOKEN_EXPIRES_IN: ${TOKEN_EXPIRES_IN:-48}
+    deploy:
+      labels:
+        - "traefik.enable=${TRAEFIK_ENABLE:-true}"
+
+        - "traefik.http.services.openlist.loadbalancer.server.port=${SCHEME_HTTP_PORT:-5244}"
+        - "traefik.http.routers.openlist-http.rule=Host(`${APP_NAME:-openlist}.${BASE_DOMAIN:-localhost}`)"
+        - "traefik.http.routers.openlist-http.entrypoints=${TRAEFIK_HTTP_ENTRYPOINT:-http}"
+        - "traefik.http.routers.openlist-http.middlewares=${TRAEFIK_HTTP_MIDDLEWARES:-https-redirect}"
+        - "traefik.http.routers.openlist-http.service=openlist"
+        - "traefik.http.routers.openlist-https.rule=Host(`${APP_NAME:-openlist}.${BASE_DOMAIN:-localhost}`)"
+        - "traefik.http.routers.openlist-https.entrypoints=${TRAEFIK_HTTPS_ENTRYPOINT:-https}"
+        - "traefik.http.routers.openlist-https.tls=${TRAEFIK_TLS:-true}"
+        - "traefik.http.routers.openlist-https.tls.certresolver=${TRAEFIK_TLS_RESOLVER:-myresolver}"
+        - "traefik.http.routers.openlist-https.middlewares=${TRAEFIK_HTTPS_MIDDLEWARES:-}"
+        - "traefik.http.routers.openlist-https.service=openlist"
+
+        - "traefik.http.services.openlist-s3.loadbalancer.server.port=${S3_PORT:-5246}"
+        - "traefik.http.routers.openlist-s3-http.rule=Host(`${APP_NAME:-openlist}-s3.${BASE_DOMAIN:-localhost}`)"
+        - "traefik.http.routers.openlist-s3-http.entrypoints=${TRAEFIK_HTTP_ENTRYPOINT:-http}"
+        - "traefik.http.routers.openlist-s3-http.middlewares=${TRAEFIK_HTTP_MIDDLEWARES:-https-redirect}"
+        - "traefik.http.routers.openlist-s3-http.service=openlist-s3"
+        - "traefik.http.routers.openlist-s3-https.rule=Host(`${APP_NAME:-openlist}-s3.${BASE_DOMAIN:-localhost}`)"
+        - "traefik.http.routers.openlist-s3-https.entrypoints=${TRAEFIK_HTTPS_ENTRYPOINT:-https}"
+        - "traefik.http.routers.openlist-s3-https.tls=${TRAEFIK_TLS:-true}"
+        - "traefik.http.routers.openlist-s3-https.tls.certresolver=${TRAEFIK_TLS_RESOLVER:-myresolver}"
+        - "traefik.http.routers.openlist-s3-https.middlewares=${TRAEFIK_HTTPS_MIDDLEWARES:-}"
+        - "traefik.http.routers.openlist-s3-https.service=openlist-s3"
+      replicas: ${REPLICAS:-1}
+
+  meilisearch:
+    image: getmeili/meilisearch:v1.27.0
+    networks:
+      - internal
+    environment:
+      - MEILI_MASTER_KEY=${MEILISEARCH_API_KEY:-apikey}
+      - MEILI_NO_ANALYTICS=true
+    volumes:
+      - meili_data:/meili_data
+    deploy:
+      replicas: ${REPLICAS:-1}

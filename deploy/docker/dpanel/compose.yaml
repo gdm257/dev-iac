@@ -1,0 +1,44 @@
+volumes:
+  data:
+    external: ${VOLUME_EXTERNAL:-false}
+    name: ${VOLUME_NAME:-dpanel_data}
+
+networks:
+  public:
+    external: ${PUBLIC_NETWORK_EXTERNAL:-true}
+    name: ${PUBLIC_NETWORK_NAME:-traefik-public}
+
+services:
+  dpanel:
+    image: ${IMAGE_NAME:-dpanel/dpanel}:${IMAGE_VERSION:-lite}
+    networks:
+      - public
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - data:/dpanel
+    deploy:
+      labels:
+        # Enable Traefik for this service
+        - "traefik.enable=${TRAEFIK_ENABLE:-true}"
+
+        # HTTP to HTTPS redirect
+        - "traefik.http.routers.dpanel-http.rule=Host(`${APP_NAME:-dpanel}.${BASE_DOMAIN:-localhost}`)"
+        - "traefik.http.routers.dpanel-http.entrypoints=${TRAEFIK_HTTP_ENTRYPOINT:-http}"
+        - "traefik.http.routers.dpanel-http.middlewares=${TRAEFIK_HTTP_MIDDLEWARES:-https-redirect}"
+        - "traefik.http.routers.dpanel-http.service=dpanel"
+
+        # HTTPS router with SSL
+        - "traefik.http.routers.dpanel-https.rule=Host(`${APP_NAME:-dpanel}.${BASE_DOMAIN:-localhost}`)"
+        - "traefik.http.routers.dpanel-https.entrypoints=${TRAEFIK_HTTPS_ENTRYPOINT:-https}"
+        - "traefik.http.routers.dpanel-https.tls=${TRAEFIK_TLS:-true}"
+        - "traefik.http.routers.dpanel-https.tls.certresolver=${TRAEFIK_TLS_RESOLVER:-myresolver}"
+        - "traefik.http.routers.dpanel-https.middlewares=${TRAEFIK_HTTPS_MIDDLEWARES:-}"
+        - "traefik.http.routers.dpanel-https.service=dpanel"
+
+        # Service definition - using HTTP port 8080, Traefik handles HTTPS termination
+        - "traefik.http.services.dpanel.loadbalancer.server.port=8080"
+
+      replicas: ${REPLICAS:-1}
+      placement:
+        constraints:
+          - node.role == manager

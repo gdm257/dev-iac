@@ -1,0 +1,48 @@
+volumes:
+  data:
+    external: ${VOLUME_EXTERNAL:-false}
+    name: ${VOLUME_NAME:-dokku_data}
+
+networks:
+  public:
+    external: ${PUBLIC_NETWORK_EXTERNAL:-true}
+    name: ${PUBLIC_NETWORK_NAME:-traefik-public}
+
+services:
+  dokku:
+    image: ${IMAGE_NAME:-dokku/dokku}:${IMAGE_VERSION:-latest}
+    networks:
+      - public
+    environment:
+      - DOKKU_HOSTNAME=${DOKKU_HOSTNAME:-dokku.local}
+      - DOKKU_HOST_ROOT=${DOKKU_HOST_ROOT:-/var/lib/dokku}
+      - DOKKU_LIB_HOST_ROOT=${DOKKU_LIB_HOST_ROOT:-/var/lib/dokku}
+      - DOKKU_DATA_ROOT=${DOKKU_DATA_ROOT:-/var/lib/dokku}
+      - DOKKU_LOGS_DIR=${DOKKU_LOGS_DIR:-/var/log/dokku}
+      - DOKKU_SKIP_KEY_FILE=${DOKKU_SKIP_KEY_FILE:-false}
+      - DOKKU_VHOST_ENABLE=${DOKKU_VHOST_ENABLE:-true}
+      - DOKKU_VHOST_PORT=${DOKKU_VHOST_PORT:-80}
+      - DOKKU_VHOST_SSL_PORT=${DOKKU_VHOST_SSL_PORT:-443}
+      - TZ=${TZ:-Asia/Tokyo}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - data:/var/lib/dokku
+      - ./config/plugin-list:/var/lib/dokku/plugin-list:ro
+    deploy:
+      labels:
+        - "traefik.enable=${TRAEFIK_ENABLE:-true}"
+        - "traefik.http.routers.dokku-http.rule=Host(`${APP_NAME:-dokku}.${BASE_DOMAIN:-localhost}`)"
+        - "traefik.http.routers.dokku-http.entrypoints=${TRAEFIK_HTTP_ENTRYPOINT:-http}"
+        - "traefik.http.routers.dokku-http.middlewares=${TRAEFIK_HTTP_MIDDLEWARES:-https-redirect}"
+        - "traefik.http.routers.dokku-http.service=dokku"
+        - "traefik.http.routers.dokku-https.rule=Host(`${APP_NAME:-dokku}.${BASE_DOMAIN:-localhost}`)"
+        - "traefik.http.routers.dokku-https.entrypoints=${TRAEFIK_HTTPS_ENTRYPOINT:-https}"
+        - "traefik.http.routers.dokku-https.tls=${TRAEFIK_TLS:-true}"
+        - "traefik.http.routers.dokku-https.tls.certresolver=${TRAEFIK_TLS_RESOLVER:-myresolver}"
+        - "traefik.http.routers.dokku-https.middlewares=${TRAEFIK_HTTPS_MIDDLEWARES:-}"
+        - "traefik.http.routers.dokku-https.service=dokku"
+        - "traefik.http.services.dokku.loadbalancer.server.port=80"
+      replicas: ${REPLICAS:-1}
+      placement:
+        constraints:
+          - node.role == manager

@@ -1,0 +1,33 @@
+networks:
+  public:
+    external: ${PUBLIC_NETWORK_EXTERNAL:-true}
+    name: ${PUBLIC_NETWORK_NAME:-traefik-public}
+
+services:
+  swarm-cd:
+    image: ${IMAGE_NAME:-ghcr.io/m-adawi/swarm-cd}:${IMAGE_VERSION:-latest}
+    networks:
+      - public
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./config/config.yaml:/app/config.yaml:ro
+      - ./config/repos.yaml:/app/repos.yaml:ro
+      - ./config/stacks.yaml:/app/stacks.yaml:ro
+    deploy:
+      labels:
+        - "traefik.enable=${TRAEFIK_ENABLE:-true}"
+        - "traefik.http.routers.swarm-cd-http.rule=Host(`${APP_NAME:-swarm-cd}.${BASE_DOMAIN:-localhost}`)"
+        - "traefik.http.routers.swarm-cd-http.entrypoints=${TRAEFIK_HTTP_ENTRYPOINT:-http}"
+        - "traefik.http.routers.swarm-cd-http.middlewares=${TRAEFIK_HTTP_MIDDLEWARES:-https-redirect}"
+        - "traefik.http.routers.swarm-cd-http.service=swarm-cd"
+        - "traefik.http.routers.swarm-cd-https.rule=Host(`${APP_NAME:-swarm-cd}.${BASE_DOMAIN:-localhost}`)"
+        - "traefik.http.routers.swarm-cd-https.entrypoints=${TRAEFIK_HTTPS_ENTRYPOINT:-https}"
+        - "traefik.http.routers.swarm-cd-https.tls=${TRAEFIK_TLS:-true}"
+        - "traefik.http.routers.swarm-cd-https.tls.certresolver=${TRAEFIK_TLS_RESOLVER:-myresolver}"
+        - "traefik.http.routers.swarm-cd-https.middlewares=${TRAEFIK_HTTPS_MIDDLEWARES:-}"
+        - "traefik.http.routers.swarm-cd-https.service=swarm-cd"
+        - "traefik.http.services.swarm-cd.loadbalancer.server.port=80"
+      replicas: ${REPLICAS:-1}
+      placement:
+        constraints:
+          - node.role == manager

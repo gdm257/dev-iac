@@ -1,0 +1,187 @@
+volumes:
+  data:
+    external: ${VOLUME_EXTERNAL:-false}
+    name: ${VOLUME_NAME:-traefik_data}
+
+networks:
+  public:
+    external: ${PUBLIC_NETWORK_EXTERNAL:-true}
+    name: ${PUBLIC_NETWORK_NAME:-traefik-public}
+
+services:
+  traefik:
+    image: ${IMAGE_NAME:-traefik}:${IMAGE_VERSION:-v3.6}
+    networks:
+      - public
+    ports:
+      - "21:21"
+      - "25:25"
+      - "80:80"
+      - "80:80/udp"
+      - "110:110"
+      - "143:143"
+      - "389:389"
+      - "443:443"
+      - "443:443/udp"
+      - "587:587"
+      - "636:636"
+      - "993:993"
+      - "995:995"
+      - "115:115"
+      - "1433:1433"
+      - "2049:2049"
+      - "3306:3306"
+      - "5432:5432"
+      - "6379:6379"
+      - "9418:9418"
+      - "27017:27017"
+    environment:
+      - CF_DNS_API_TOKEN=${CF_DNS_API_TOKEN}
+    command:
+      - "--log.level=${TRAEFIK_LOG_LEVEL:-WARN}"
+      - "--log.format=${TRAEFIK_LOG_FORMAT:-json}"
+      - "--accesslog=${TRAEFIK_ACCESSLOG:-true}"
+      - "--accesslog.format=${TRAEFIK_ACCESSLOG_FORMAT:-common}"
+      - "--accesslog.filepath=${TRAEFIK_ACCESSLOG_FILEPATH:-}"
+      - "--api=${TRAEFIK_API:-false}"
+      - "--api.debug=${TRAEFIK_API_DEBUG:-false}"
+      - "--ping=${TRAEFIK_PING:-true}"
+      - "--ping.entrypoint=traefik-ping"
+      - "--ping.manualRouting=true"
+      - "--metrics.prometheus=true"
+      - "--metrics.prometheus.addentrypointslabels=true"
+      - "--metrics.prometheus.addserviceslabels=true"
+      - "--metrics.prometheus.entrypoint=traefik-metrics"
+      - "--providers.docker.watch=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--providers.swarm.watch=true"
+      - "--providers.swarm.exposedbydefault=false"
+      - "--providers.swarm.network=${PUBLIC_NETWORK_NAME:-traefik-public}"
+      - "--entrypoints.traefik-metrics.address=:4582"
+      - "--entrypoints.traefik-ping.address=:4583"
+      - "--entrypoints.${TRAEFIK_HTTP_ENTRYPOINT:-http}.address=:80"
+      - "--entrypoints.${TRAEFIK_HTTPS_ENTRYPOINT:-https}.address=:443"
+      - "--entrypoints.ftp.address=:21"
+      - "--entrypoints.ssh.address=:22"
+      - "--entrypoints.telnet.address=:23"
+      - "--entrypoints.sftp.address=:115"
+      - "--entrypoints.nfs.address=:2049"
+      - "--entrypoints.git.address=:9418"
+      - "--entrypoints.smtp.address=:25"
+      - "--entrypoints.pop3.address=:110"
+      - "--entrypoints.imap.address=:143"
+      - "--entrypoints.mail.address=:587"
+      - "--entrypoints.imaps.address=:993"
+      - "--entrypoints.pop3s.address=:995"
+      - "--entrypoints.ldap.address=:389"
+      - "--entrypoints.ldaps.address=:636"
+      - "--entrypoints.mysql.address=:3306"
+      - "--entrypoints.postgresql.address=:5432"
+      - "--entrypoints.redis.address=:6379"
+      - "--entrypoints.mssql.address=:1433"
+      - "--entrypoints.mongodb.address=:27017"
+      - "--entrypoints.dns.address=:53"
+      - "--entrypoints.ntp.address=:123"
+      - "--certificatesresolvers.${TRAEFIK_TLS_RESOLVER:-myresolver}.acme.dnschallenge=true"
+      - "--certificatesresolvers.${TRAEFIK_TLS_RESOLVER:-myresolver}.acme.dnschallenge.provider=cloudflare"
+      - "--certificatesresolvers.${TRAEFIK_TLS_RESOLVER:-myresolver}.acme.email=${ACME_EMAIL}"
+      - "--certificatesresolvers.${TRAEFIK_TLS_RESOLVER:-myresolver}.acme.storage=/data/acme.json"
+      - "--experimental.plugins.traefik-oidc-auth.modulename=github.com/sevensolutions/traefik-oidc-auth"
+      - "--experimental.plugins.traefik-oidc-auth.version=v0.17.0"
+      - "--experimental.plugins.traefikoidc.modulename=github.com/lukaszraczylo/traefikoidc"
+      - "--experimental.plugins.traefikoidc.version=v0.8.0-rc.2"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - data:/data:rw
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "100m"
+        max-file: "3"
+        compress: "true"
+    deploy:
+      labels:
+        - "traefik.enable=${TRAEFIK_ENABLE:-true}"
+
+        # Traefik services
+        - "traefik.http.services.dummy-svc.loadbalancer.server.port=9999" # required by swarm mode
+        # Ping routers
+        - "traefik.http.routers.traefik-ping-http.rule=Host(`${APP_NAME:-traefik}.${BASE_DOMAIN:-localhost}`) && PathPrefix(`/ping`)"
+        - "traefik.http.routers.traefik-ping-http.entrypoints=${TRAEFIK_HTTP_ENTRYPOINT:-http}"
+        - "traefik.http.routers.traefik-ping-http.middlewares=${TRAEFIK_HTTP_MIDDLEWARES:-https-redirect}"
+        - "traefik.http.routers.traefik-ping-http.service=ping@internal"
+        - "traefik.http.routers.traefik-ping-https.rule=Host(`${APP_NAME:-traefik}.${BASE_DOMAIN:-localhost}`) && PathPrefix(`/ping`)"
+        - "traefik.http.routers.traefik-ping-https.entrypoints=${TRAEFIK_HTTPS_ENTRYPOINT:-https}"
+        - "traefik.http.routers.traefik-ping-https.tls.certresolver=${TRAEFIK_TLS_RESOLVER:-myresolver}"
+        - "traefik.http.routers.traefik-ping-https.service=ping@internal"
+        # API routers
+        - "traefik.http.routers.traefik-dashboard-http.rule=Host(`${APP_NAME:-traefik}.${BASE_DOMAIN:-localhost}`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`) || PathPrefix(`${OIDC_CALLBACK_URI:-/oidc/callback}`))"
+        - "traefik.http.routers.traefik-dashboard-http.entrypoints=${TRAEFIK_HTTP_ENTRYPOINT:-http}"
+        - "traefik.http.routers.traefik-dashboard-http.middlewares=${TRAEFIK_HTTP_MIDDLEWARES:-https-redirect}"
+        - "traefik.http.routers.traefik-dashboard-http.service=api@internal"
+        - "traefik.http.routers.traefik-dashboard-https.rule=Host(`${APP_NAME:-traefik}.${BASE_DOMAIN:-localhost}`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`) || PathPrefix(`${OIDC_CALLBACK_URI:-/oidc/callback}`))"
+        - "traefik.http.routers.traefik-dashboard-https.entrypoints=${TRAEFIK_HTTPS_ENTRYPOINT:-https}"
+        - "traefik.http.routers.traefik-dashboard-https.tls.certresolver=${TRAEFIK_TLS_RESOLVER:-myresolver}"
+        - "traefik.http.routers.traefik-dashboard-https.middlewares=${TRAEFIK_HTTPS_MIDDLEWARES:-}"
+        - "traefik.http.routers.traefik-dashboard-https.service=api@internal"
+        # Root routers
+        - "traefik.http.routers.traefik-dashboard-root-http.rule=Host(`${APP_NAME:-traefik}.${BASE_DOMAIN:-localhost}`) && Path(`/`)"
+        - "traefik.http.routers.traefik-dashboard-root-http.entrypoints=${TRAEFIK_HTTP_ENTRYPOINT:-http}"
+        - "traefik.http.routers.traefik-dashboard-root-http.middlewares=traefik-dashboard-redirect"
+        - "traefik.http.routers.traefik-dashboard-root-http.service=api@internal"
+        - "traefik.http.routers.traefik-dashboard-root-https.rule=Host(`${APP_NAME:-traefik}.${BASE_DOMAIN:-localhost}`) && Path(`/`)"
+        - "traefik.http.routers.traefik-dashboard-root-https.entrypoints=${TRAEFIK_HTTPS_ENTRYPOINT:-https}"
+        - "traefik.http.routers.traefik-dashboard-root-https.tls.certresolver=${TRAEFIK_TLS_RESOLVER:-myresolver}"
+        - "traefik.http.routers.traefik-dashboard-root-https.middlewares=traefik-dashboard-redirect"
+        - "traefik.http.routers.traefik-dashboard-root-https.service=api@internal"
+        # Dashboard redirect middleware
+        - "traefik.http.middlewares.traefik-dashboard-redirect.redirectregex.regex=^(https?)://([^/]+)/"
+        - "traefik.http.middlewares.traefik-dashboard-redirect.redirectregex.replacement=$$1://$${2}/dashboard/"
+        - "traefik.http.middlewares.traefik-dashboard-redirect.redirectregex.permanent=false"
+
+        # Common middlewares
+        - "traefik.http.middlewares.https-redirect.redirectscheme.scheme=https"
+        - "traefik.http.middlewares.https-redirect.redirectscheme.permanent=true"
+        - "traefik.http.middlewares.compress.compress=true"
+        - "traefik.http.middlewares.compress.compress.excludedcontenttypes=text/event-stream"
+        - "traefik.http.middlewares.compress.compress.minresponsebodybytes=1024"
+        - "traefik.http.middlewares.rate-limit.ratelimit.average=10"
+        - "traefik.http.middlewares.rate-limit.ratelimit.burst=20"
+        - "traefik.http.middlewares.security-headers.headers.frameDeny=true"
+        - "traefik.http.middlewares.security-headers.headers.contentTypeNosniff=true"
+        - "traefik.http.middlewares.security-headers.headers.browserXssFilter=true"
+        - "traefik.http.middlewares.sts-headers.headers.stsSeconds=864000"
+        - "traefik.http.middlewares.sts-headers.headers.stsIncludeSubdomains=true"
+        - "traefik.http.middlewares.sts-headers.headers.stsPreload=true"
+        - "traefik.http.middlewares.sts-headers.headers.forceSTSHeader=true"
+        - "traefik.http.middlewares.privacy-headers.headers.referrerPolicy=strict-origin-when-cross-origin"
+        - "traefik.http.middlewares.privacy-headers.headers.permissionsPolicy=geolocation=(), microphone=(), camera=()"
+        - "traefik.http.middlewares.oidc-auth.plugin.traefik-oidc-auth.provider.url=${OIDC_PROVIDER_URL:-https://issuer.hello.coop}"
+        - "traefik.http.middlewares.oidc-auth.plugin.traefik-oidc-auth.provider.clientId=${OIDC_CLIENT_ID}"
+        - "traefik.http.middlewares.oidc-auth.plugin.traefik-oidc-auth.provider.clientSecret=${OIDC_CLIENT_SECRET}"
+        - "traefik.http.middlewares.oidc-auth.plugin.traefik-oidc-auth.callbackUri=${OIDC_CALLBACK_URI:-/oidc/callback}"
+        - "traefik.http.middlewares.oidc-auth.plugin.traefik-oidc-auth.authorization.checkOnEveryRequest=false"
+        - "traefik.http.middlewares.oidc-auth.plugin.traefik-oidc-auth.authorization.assertClaims[0].name=${OIDC_ASSERT_CLAIM_EMAIL:-email}" # JSON Path
+        - "traefik.http.middlewares.oidc-auth.plugin.traefik-oidc-auth.authorization.assertClaims[0].anyOf[0]=${OIDC_EMAIL_1:-one@email.domain}"
+        - "traefik.http.middlewares.oidc-auth.plugin.traefik-oidc-auth.authorization.assertClaims[0].anyOf[1]=${OIDC_EMAIL_2:-two@email.domain}"
+        - "traefik.http.middlewares.oidc-auth.plugin.traefik-oidc-auth.authorization.assertClaims[0].anyOf[2]=${OIDC_EMAIL_3:-three@email.domain}"
+        - "traefik.http.middlewares.oidc-auth.plugin.traefik-oidc-auth.cookieNamePrefix=${OIDC_COOKIE_NAME_PREFIX:-TraefikOidcAuth}"
+        - "traefik.http.middlewares.oidc-auth.plugin.traefik-oidc-auth.sessionCookie.maxAge=${OIDC_SESSION_COOKIE_MAX_AGE:-86400}"
+        - "traefik.http.middlewares.oidc-auth.plugin.traefik-oidc-auth.secret=${OIDC_SECRET}" # random 32 characters
+        - "traefik.http.middlewares.oidc-auth.plugin.traefik-oidc-auth.logLevel=${OIDC_LOG_LEVEL:-INFO}" # DEBUG INFO WARN ERROR
+        - "traefik.http.middlewares.oidc.plugin.traefikoidc.providerurl=${OIDC_PROVIDER_URL:-https://issuer.hello.coop}"
+        - "traefik.http.middlewares.oidc.plugin.traefikoidc.clientid=${OIDC_CLIENT_ID}"
+        - "traefik.http.middlewares.oidc.plugin.traefikoidc.clientsecret=${OIDC_CLIENT_SECRET}"
+        - "traefik.http.middlewares.oidc.plugin.traefikoidc.callbackurl=${OIDC_CALLBACK_URI:-/oidc/callback}"
+        - "traefik.http.middlewares.oidc.plugin.traefikoidc.logouturl=${OIDC_LOUGOUT_URI:-/oidc/logout}"
+        - "traefik.http.middlewares.oidc.plugin.traefikoidc.strictAudienceValidation=false"
+        - "traefik.http.middlewares.oidc.plugin.traefikoidc.allowedUsers[0]=${OIDC_EMAIL_1:-one@email.domain}"
+        - "traefik.http.middlewares.oidc.plugin.traefikoidc.allowedUsers[1]=${OIDC_EMAIL_2:-two@email.domain}"
+        - "traefik.http.middlewares.oidc.plugin.traefikoidc.allowedUsers[2]=${OIDC_EMAIL_3:-three@email.domain}"
+        - "traefik.http.middlewares.oidc.plugin.traefikoidc.sessionMaxAge=${OIDC_SESSION_COOKIE_MAX_AGE:-86400}"
+        - "traefik.http.middlewares.oidc.plugin.traefikoidc.sessionEncryptionKey=${OIDC_SECRET}"
+        - "traefik.http.middlewares.oidc.plugin.traefikoidc.logLevel=${OIDC_LOGLEVEL:-info}"
+      replicas: ${REPLICAS:-1}
+      placement:
+        constraints:
+          - node.role == manager

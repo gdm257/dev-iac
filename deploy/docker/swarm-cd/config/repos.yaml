@@ -1,0 +1,2 @@
+dev-iac: {url: "https://github.com/gdm257/dev-iac.git"}
+deploy: {url: "https://github.com/gdm257/deploy.git", username: gdm257, password: ""}

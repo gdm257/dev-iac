@@ -1,0 +1,19 @@
+services:
+  coredock:
+    image: ${IMAGE_NAME:-ghcr.io/ad-on-is/coredock}:${IMAGE_VERSION:-latest}
+    ports:
+      - 53:53
+      - 53:53/udp
+    environment:
+      - COREDOCK_DOMAINS=${COREDOCK_DOMAINS:-docker.lan}
+      - COREDOCK_IP_PREFIXES=${COREDOCK_IP_PREFIXES:-10,192} # [either] (recommended) only expose A records for these IP prefixes
+      # - COREDOCK_IGNORE_IP_PREFIXES=${COREDOCK_IGNORE_IP_PREFIXES:-172} # [or] (recommended) ignore these IP prefixes
+      # - COREDOCK_NETWORKS=${COREDOCK_NETWORKS:-vlan40,vlan10} # (optional) auto-connect containers to these networks
+      # - COREDOCK_NAMESERVERS=${COREDOCK_NAMESERVERS:-10.0.0.2:53} # (optional) other coredock hosts
+    volumes:
+      - /var/run/docker.sock:/run/docker.sock
+    deploy:
+      replicas: ${REPLICAS:-1}
+      placement:
+        constraints:
+          - node.role == manager
