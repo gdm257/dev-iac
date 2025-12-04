@@ -1,0 +1,7 @@
+[tools]
+docker-cli = "latest"
+helm = "latest"
+k3sup = "latest"
+kubectl = "latest"
+kustomize = "latest"
+task = "latest"
