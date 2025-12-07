@@ -2,11 +2,14 @@ volumes:
   data:
     external: ${VOLUME_EXTERNAL:-false}
     name: ${VOLUME_NAME:-warpgate_data}
+    driver: ${VOLUME_DRIVER:-local}
 
 networks:
   public:
     external: ${PUBLIC_NETWORK_EXTERNAL:-true}
     name: ${PUBLIC_NETWORK_NAME:-traefik-public}
+    driver: ${PUBLIC_NETWORK_DRIVER:-overlay}
+    attachable: ${PUBLIC_NETWORK_ATTACHABLE:-true}
 
 services:
   warpgate:

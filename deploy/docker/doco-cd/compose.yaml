@@ -2,11 +2,14 @@ volumes:
   data:
     external: ${VOLUME_EXTERNAL:-false}
     name: ${VOLUME_NAME:-doco-cd_data}
+    driver: ${VOLUME_DRIVER:-local}
 
 networks:
   public:
     external: ${PUBLIC_NETWORK_EXTERNAL:-true}
     name: ${PUBLIC_NETWORK_NAME:-traefik-public}
+    driver: ${PUBLIC_NETWORK_DRIVER:-overlay}
+    attachable: ${PUBLIC_NETWORK_ATTACHABLE:-true}
 
 services:
   doco-cd:
@@ -27,7 +30,7 @@ services:
       SECRET_PROVIDER_CLIENT_ID: ${SECRET_PROVIDER_CLIENT_ID}
       SECRET_PROVIDER_CLIENT_SECRET: ${SECRET_PROVIDER_CLIENT_SECRET}
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
+      - ${DOCKER_SOCKET:-/var/run/docker.sock}:/var/run/docker.sock
       - data:/data
     healthcheck:
       test: [ "CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:80/v1/health" ]

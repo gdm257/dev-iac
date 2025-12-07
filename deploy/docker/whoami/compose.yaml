@@ -2,6 +2,8 @@ networks:
   public:
     external: true
     name: ${PUBLIC_NETWORK_NAME:-traefik-public}
+    driver: ${PUBLIC_NETWORK_DRIVER:-overlay}
+    attachable: ${PUBLIC_NETWORK_ATTACHABLE:-true}
 
 services:
   whoami:

@@ -2,11 +2,14 @@ volumes:
   data:
     external: ${VOLUME_EXTERNAL:-false}
     name: ${VOLUME_NAME:-dokku_data}
+    driver: ${VOLUME_DRIVER:-local}
 
 networks:
   public:
     external: ${PUBLIC_NETWORK_EXTERNAL:-true}
     name: ${PUBLIC_NETWORK_NAME:-traefik-public}
+    driver: ${PUBLIC_NETWORK_DRIVER:-overlay}
+    attachable: ${PUBLIC_NETWORK_ATTACHABLE:-true}
 
 services:
   dokku:
@@ -25,7 +28,7 @@ services:
       - DOKKU_VHOST_SSL_PORT=${DOKKU_VHOST_SSL_PORT:-443}
       - TZ=${TZ:-Asia/Tokyo}
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
+      - ${DOCKER_SOCKET:-/var/run/docker.sock}:/var/run/docker.sock
       - data:/var/lib/dokku
       - ./config/plugin-list:/var/lib/dokku/plugin-list:ro
     deploy:

@@ -2,6 +2,8 @@ networks:
   public:
     external: ${PUBLIC_NETWORK_EXTERNAL:-true}
     name: ${PUBLIC_NETWORK_NAME:-traefik-public}
+    driver: ${PUBLIC_NETWORK_DRIVER:-overlay}
+    attachable: ${PUBLIC_NETWORK_ATTACHABLE:-true}
 
 services:
   swarm-cd:
@@ -9,7 +11,7 @@ services:
     networks:
       - public
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ${DOCKER_SOCKET:-/var/run/docker.sock}:/var/run/docker.sock:ro
       - ./config/config.yaml:/app/config.yaml:ro
       - ./config/repos.yaml:/app/repos.yaml:ro
       - ./config/stacks.yaml:/app/stacks.yaml:ro

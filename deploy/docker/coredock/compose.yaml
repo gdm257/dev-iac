@@ -11,7 +11,7 @@ services:
       # - COREDOCK_NETWORKS=${COREDOCK_NETWORKS:-vlan40,vlan10} # (optional) auto-connect containers to these networks
       # - COREDOCK_NAMESERVERS=${COREDOCK_NAMESERVERS:-10.0.0.2:53} # (optional) other coredock hosts
     volumes:
-      - /var/run/docker.sock:/run/docker.sock
+      - ${DOCKER_SOCKET:-/var/run/docker.sock}:/run/docker.sock
     deploy:
       replicas: ${REPLICAS:-1}
       placement:

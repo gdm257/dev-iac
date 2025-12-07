@@ -2,7 +2,7 @@ services:
   swarm-cronjob:
     image: ${IMAGE_NAME:-crazymax/swarm-cronjob}:${IMAGE_VERSION:-latest}
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
+      - ${DOCKER_SOCKET:-/var/run/docker.sock}:/var/run/docker.sock
     environment:
       - TZ=${TZ:-Asia/Tokyo}
       - LOG_LEVEL=${LOG_LEVEL:-info}
