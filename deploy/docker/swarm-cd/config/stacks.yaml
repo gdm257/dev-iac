@@ -1,7 +1,3 @@
-# swarm-cd:
-#   repo: deploy
-#   compose_file: docker-compose/swarm-cd/compose.yaml
-
-# doco-cd:
-#   repo: deploy
-#   compose_file: docker-compose/doco-cd/compose.yaml
+whoami:
+  repo: dev-iac
+  compose_file: deploy/docker/whoami/compose.yaml

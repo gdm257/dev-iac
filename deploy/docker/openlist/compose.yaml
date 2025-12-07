@@ -22,7 +22,7 @@ services:
     networks:
       - public
       - internal
-    user: "0:0"
+    user: "0:0" # Fix permission issue
     volumes:
       - data:/opt/openlist/data
     environment:
@@ -40,17 +40,17 @@ services:
       MEILISEARCH_API_KEY: ${MEILISEARCH_API_KEY:-apikey}
 
       BLEVE_DIR: ${BLEVE_DIR:-data/bleve}
-      CDN: ${CDN}
+      CDN: ${CDN:-}
       COMPRESS: ${COMPRESS:-false}
       CORS_ALLOW_HEADERS_0: ${CORS_ALLOW_HEADERS_0:-*}
       CORS_ALLOW_METHODS_0: ${CORS_ALLOW_METHODS_0:-*}
       CORS_ALLOW_ORIGINS_0: ${CORS_ALLOW_ORIGINS_0:-*}
       DELAYED_START: ${DELAYED_START:-0}
-      DIST_DIR: ${DIST_DIR}
+      DIST_DIR: ${DIST_DIR:-}
       FORCE: ${FORCE:-false}
       FTP_ENABLE: ${FTP_ENABLE:-true}
       FTP_LISTEN: ${FTP_LISTEN:-:5221}
-      JWT_SECRET: ${JWT_SECRET}
+      JWT_SECRET: ${JWT_SECRET:-}
       LOG_ENABLE: ${LOG_ENABLE:-true}
       LOG_NAME: ${LOG_NAME:-data/log/log.log}
       MAX_AGE: ${MAX_AGE:-28800}
@@ -63,14 +63,14 @@ services:
       SFTP_ENABLE: ${SFTP_ENABLE:-true}
       SFTP_LISTEN: ${SFTP_LISTEN:-:5222}
       SCHEME_ADDRESS: ${SCHEME_ADDRESS:-0.0.0.0}
-      SCHEME_CERT_FILE: ${SCHEME_CERT_FILE}
+      SCHEME_CERT_FILE: ${SCHEME_CERT_FILE:-}
       SCHEME_FORCE_HTTPS: ${SCHEME_FORCE_HTTPS:-false}
       SCHEME_HTTPS_PORT: ${SCHEME_HTTPS_PORT:--1}
       SCHEME_HTTP_PORT: ${SCHEME_HTTP_PORT:-5244}
-      SCHEME_KEY_FILE: ${SCHEME_KEY_FILE}
-      SCHEME_UNIX_FILE: ${SCHEME_UNIX_FILE}
-      SCHEME_UNIX_FILE_PERM: ${SCHEME_UNIX_FILE_PERM}
-      SITE_URL: ${SITE_URL}
+      SCHEME_KEY_FILE: ${SCHEME_KEY_FILE:-}
+      SCHEME_UNIX_FILE: ${SCHEME_UNIX_FILE:-}
+      SCHEME_UNIX_FILE_PERM: ${SCHEME_UNIX_FILE_PERM:-}
+      SITE_URL: ${SITE_URL:-}
       TASKS_COPY_MAX_RETRY: ${TASKS_COPY_MAX_RETRY:-2}
       TASKS_COPY_WORKERS: ${TASKS_COPY_WORKERS:-5}
       TASKS_DOWNLOAD_MAX_RETRY: ${TASKS_DOWNLOAD_MAX_RETRY:-1}

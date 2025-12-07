@@ -41,3 +41,9 @@ git add .doco-cd.yaml
 git commit -m "Update deployment configuration"
 git push
 ```
+
+> [!TIP]
+> In the `deploy/docker` directory,
+> `${VAR:-default}` is an optional variable
+> `${VAR:-}` is an optional variable
+> `${VAR}` is a required variable
