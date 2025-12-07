@@ -1,0 +1,17 @@
+---
+name: pre-create-configs-with-compose
+working_dir: deploy/docker/whoami
+ensure_docker_configs:
+  - name: compse-ensure-content
+    content: |-
+      line1
+      line2
+      line3
+---
+name: pre-create-configs
+ensure_docker_configs:
+  - name: ensure-content
+    content: |-
+      line1
+      line2
+      line3

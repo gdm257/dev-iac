@@ -1,0 +1,15 @@
+---
+name: pre-create-networks-with-compose
+working_dir: deploy/docker/whoami
+ensure_docker_networks:
+  - name: compse-ensure-bridge
+    driver: bridge
+  - name: compse-ensure-overlay
+    driver: overlay # skip in compose mode
+---
+name: pre-create-networks
+ensure_docker_networks:
+  - name: ensure-bridge
+    driver: bridge
+  - name: ensure-overlay
+    driver: overlay # skip in compose mode

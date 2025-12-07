@@ -1,0 +1,9 @@
+---
+name: pre-create-volumes-compose
+working_dir: deploy/docker/whoami
+ensure_docker_volumes:
+  - name: compse-ensure-local
+---
+name: pre-create-volumes
+ensure_docker_volumes:
+  - name: ensure-local
