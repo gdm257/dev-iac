@@ -1,0 +1,40 @@
+volumes:
+  data:
+    external: ${VOLUME_EXTERNAL:-false}
+    name: ${VOLUME_NAME:-n8n_data}
+    driver: ${VOLUME_DRIVER:-local}
+
+networks:
+  public:
+    external: ${PUBLIC_NETWORK_EXTERNAL:-true}
+    name: ${PUBLIC_NETWORK_NAME:-traefik-public}
+    driver: ${PUBLIC_NETWORK_DRIVER:-overlay}
+    attachable: ${PUBLIC_NETWORK_ATTACHABLE:-true}
+
+services:
+  n8n:
+    image: ${IMAGE_NAME:-docker.n8n.io/n8nio/n8n}:${IMAGE_VERSION:-latest}
+    networks:
+      - public
+    environment:
+      - GENERIC_TIMEZONE=${TZ:-Asia/Tokyo}
+      - TZ=${TZ:-Asia/Tokyo}
+      - N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=${N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS:-true}
+      - N8N_RUNNERS_ENABLED=${N8N_RUNNERS_ENABLED:-true}
+    volumes:
+      - data:/home/node/.n8n
+    deploy:
+      labels:
+        - "traefik.enable=${TRAEFIK_ENABLE:-true}"
+        - "traefik.http.services.n8n.loadbalancer.server.port=5678"
+        - "traefik.http.routers.n8n-http.rule=Host(`${APP_NAME:-n8n}.${BASE_DOMAIN:-localhost}`)"
+        - "traefik.http.routers.n8n-http.entrypoints=${TRAEFIK_HTTP_ENTRYPOINT:-http}"
+        - "traefik.http.routers.n8n-http.middlewares=${TRAEFIK_HTTP_MIDDLEWARES:-https-redirect}"
+        - "traefik.http.routers.n8n-http.service=n8n"
+        - "traefik.http.routers.n8n-https.rule=Host(`${APP_NAME:-n8n}.${BASE_DOMAIN:-localhost}`)"
+        - "traefik.http.routers.n8n-https.entrypoints=${TRAEFIK_HTTPS_ENTRYPOINT:-https}"
+        - "traefik.http.routers.n8n-https.tls=${TRAEFIK_TLS:-true}"
+        - "traefik.http.routers.n8n-https.tls.certresolver=${TRAEFIK_TLS_RESOLVER:-myresolver}"
+        - "traefik.http.routers.n8n-https.middlewares=${TRAEFIK_HTTPS_MIDDLEWARES:-}"
+        - "traefik.http.routers.n8n-https.service=n8n"
+      replicas: ${REPLICAS:-1}
