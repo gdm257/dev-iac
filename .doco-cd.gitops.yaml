@@ -1,4 +1,11 @@
 ---
+name: ensure-public-network
+working_dir: deploy/docker/pause
+external_secrets:
+  PUBLIC_NETWORK_NAME: "xxxxxxxxxxxxx:prod:/doco-cd/common/PUBLIC_NETWORK_NAME"
+  PUBLIC_NETWORK_DRIVER: "xxxxxxxxxxxxx:prod:/doco-cd/common/PUBLIC_NETWORK_DRIVER"
+  PUBLIC_NETWORK_ATTACHABLE: "xxxxxxxxxxxxx:prod:/doco-cd/common/PUBLIC_NETWORK_ATTACHABLE"
+---
 name: doco-cd
 working_dir: deploy/docker/doco-cd
 external_secrets:
@@ -14,5 +21,9 @@ external_secrets:
   SECRET_PROVIDER_CLIENT_SECRET: "xxxxxxxxxxxxx:prod:/doco-cd/doco-cd/SECRET_PROVIDER_CLIENT_SECRET"
   # Common
   REPLICAS: "xxxxxxxxxxxxx:prod:/doco-cd/doco-cd/REPLICAS"
+  PUBLIC_NETWORK_NAME: "xxxxxxxxxxxxx:prod:/doco-cd/common/PUBLIC_NETWORK_NAME"
+  PUBLIC_NETWORK_DRIVER: "xxxxxxxxxxxxx:prod:/doco-cd/common/PUBLIC_NETWORK_DRIVER"
+  PUBLIC_NETWORK_ATTACHABLE: "xxxxxxxxxxxxx:prod:/doco-cd/common/PUBLIC_NETWORK_ATTACHABLE"
+  PUBLIC_NETWORK_EXTERNAL: "xxxxxxxxxxxxx:prod:/doco-cd/common/PUBLIC_NETWORK_EXTERNAL"
   BASE_DOMAIN: "xxxxxxxxxxxxx:prod:/doco-cd/common/BASE_DOMAIN"
   TZ: "xxxxxxxxxxxxx:prod:/doco-cd/common/TZ"
