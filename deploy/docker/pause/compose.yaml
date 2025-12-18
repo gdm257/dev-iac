@@ -1,0 +1,18 @@
+volumes:
+  data:
+    name: ${VOLUME_NAME:-pause_data}
+    driver: ${VOLUME_DRIVER:-local}
+
+networks:
+  public:
+    name: ${PUBLIC_NETWORK_NAME:-traefik-public}
+    driver: ${PUBLIC_NETWORK_DRIVER:-overlay}
+    attachable: ${PUBLIC_NETWORK_ATTACHABLE:-true}
+
+services:
+  pause:
+    image: ${IMAGE_NAME:-k8s.gcr.io/pause}:${IMAGE_VERSION:-3.9}
+    networks:
+      - public
+    volumes:
+      - data:/data
