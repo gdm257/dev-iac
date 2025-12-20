@@ -46,7 +46,6 @@ POLL_CONFIG='
 '
 
 # Common
-TZ=Asia/Tokyo
 VOLUME_NAME=temp_data
 PUBLIC_NETWORK_NAME=temp
 PUBLIC_NETWORK_DRIVER=bridge
