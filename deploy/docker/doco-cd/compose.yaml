@@ -32,12 +32,6 @@ services:
     volumes:
       - ${DOCKER_SOCKET:-/var/run/docker.sock}:/var/run/docker.sock
       - data:/data
-    healthcheck:
-      test: [ "CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:80/v1/health" ]
-      start_period: 15s
-      interval: 30s
-      timeout: 5s
-      retries: 3
     deploy:
       labels:
         - traefik.enable=${TRAEFIK_ENABLE:-true}
