@@ -1,0 +1,21 @@
+services:
+  eval:
+    image: ${IMAGE_NAME:-alpine}:${IMAGE_VERSION:-latest}
+    environment:
+      TZ: ${TZ:-Asia/Tokyo}
+      SCRIPT_CONTENT: ${SCRIPT_CONTENT:}
+    volumes:
+      - ${DOCKER_SOCKET:-/var/run/docker.sock}:/var/run/docker.sock
+    command: >
+      sh -c '
+      apk add --no-cache docker-cli curl bash >/dev/null 2>&1;
+      if [ -n "$${SCRIPT_CONTENT}" ]; then
+        echo "$${SCRIPT_CONTENT}" > /tmp/script.sh;
+        chmod +x /tmp/script.sh;
+        echo "=== Executing script ===";
+        exec /tmp/script.sh;
+      else
+        echo "ERROR: SCRIPT_CONTENT is empty or not set";
+        exit 1;
+      fi
+      '
