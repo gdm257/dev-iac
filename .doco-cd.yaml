@@ -19,7 +19,3 @@ working_dir: deploy/docker/swarm-cronjob
 ---
 name: dpanel
 working_dir: deploy/docker/dpanel
-
----
-name: openclaw
-working_dir: deploy/docker/openclaw
