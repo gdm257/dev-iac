@@ -1,0 +1,39 @@
+volumes:
+  data:
+    external: ${VOLUME_EXTERNAL:-false}
+    name: ${VOLUME_NAME:-openclaw_data}
+    driver: ${VOLUME_DRIVER:-local}
+
+networks:
+  public:
+    external: ${PUBLIC_NETWORK_EXTERNAL:-true}
+    name: ${PUBLIC_NETWORK_NAME:-traefik-public}
+    driver: ${PUBLIC_NETWORK_DRIVER:-overlay}
+    attachable: ${PUBLIC_NETWORK_ATTACHABLE:-true}
+
+services:
+  openclaw:
+    image: ${IMAGE_NAME:-openclaw/openclaw}:${IMAGE_VERSION:-latest}
+    networks:
+      - public
+    environment:
+      - NODE_ENV=${NODE_ENV:-production}
+      - GENERIC_TIMEZONE=${TZ:-Asia/Tokyo}
+      - TZ=${TZ:-Asia/Tokyo}
+    volumes:
+      - data:/root/.openclaw
+    deploy:
+      labels:
+        - "traefik.enable=${TRAEFIK_ENABLE:-true}"
+        - "traefik.http.services.openclaw.loadbalancer.server.port=18789"
+        - "traefik.http.routers.openclaw-http.rule=Host(`${APP_NAME:-openclaw}.${BASE_DOMAIN:-localhost}`)"
+        - "traefik.http.routers.openclaw-http.entrypoints=${TRAEFIK_HTTP_ENTRYPOINT:-http}"
+        - "traefik.http.routers.openclaw-http.middlewares=${TRAEFIK_HTTP_MIDDLEWARES:-https-redirect}"
+        - "traefik.http.routers.openclaw-http.service=openclaw"
+        - "traefik.http.routers.openclaw-https.rule=Host(`${APP_NAME:-openclaw}.${BASE_DOMAIN:-localhost}`)"
+        - "traefik.http.routers.openclaw-https.entrypoints=${TRAEFIK_HTTPS_ENTRYPOINT:-https}"
+        - "traefik.http.routers.openclaw-https.tls=${TRAEFIK_TLS:-true}"
+        - "traefik.http.routers.openclaw-https.tls.certresolver=${TRAEFIK_TLS_RESOLVER:-myresolver}"
+        - "traefik.http.routers.openclaw-https.middlewares=${TRAEFIK_HTTPS_MIDDLEWARES:-}"
+        - "traefik.http.routers.openclaw-https.service=openclaw"
+      replicas: ${REPLICAS:-1}
