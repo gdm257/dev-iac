@@ -1,0 +1,21 @@
+{
+  "name": "@org/web",
+  "version": "0.0.0",
+  "description": "",
+  "keywords": [],
+  "homepage": "",
+  "license": "Apache-2.0",
+  "author": "",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/org/repo.git",
+    "directory": "packages/web"
+  },
+  "bugs": {
+    "url": "https://github.com/org/repo/issues"
+  },
+  "type": "module",
+  "scripts": {
+    "build": "vite build"
+  }
+}
