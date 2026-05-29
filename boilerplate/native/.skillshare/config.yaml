@@ -1,0 +1,112 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/runkids/skillshare/main/schemas/project-config.schema.json
+targets:
+  - claude
+skills:
+  - name: xmake-async-jobs
+    source: github.com/xmake-io/xmake-skills/skills/scripting/xmake-async-jobs
+  - name: xmake-basics
+    source: github.com/xmake-io/xmake-skills/skills/basics/xmake-basics
+  - name: xmake-build-cache
+    source: github.com/xmake-io/xmake-skills/skills/performance/xmake-build-cache
+  - name: xmake-build-optimization
+    source: github.com/xmake-io/xmake-skills/skills/performance/xmake-build-optimization
+  - name: xmake-color-output
+    source: github.com/xmake-io/xmake-skills/skills/scripting/xmake-color-output
+  - name: xmake-commands
+    source: github.com/xmake-io/xmake-skills/skills/cli/xmake-commands
+  - name: xmake-cross-compilation
+    source: github.com/xmake-io/xmake-skills/skills/toolchains/xmake-cross-compilation
+  - name: xmake-csharp
+    source: github.com/xmake-io/xmake-skills/skills/languages/xmake-csharp
+  - name: xmake-cuda
+    source: github.com/xmake-io/xmake-skills/skills/languages/xmake-cuda
+  - name: xmake-custom-plugins
+    source: github.com/xmake-io/xmake-skills/skills/scripting/xmake-custom-plugins
+  - name: xmake-cxx-modules
+    source: github.com/xmake-io/xmake-skills/skills/toolchains/xmake-cxx-modules
+  - name: xmake-debug-package-source
+    source: github.com/xmake-io/xmake-skills/skills/packages/xmake-debug-package-source
+  - name: xmake-dev
+    source: github.com/xmake-io/xmake-skills/skills/ops/xmake-dev
+  - name: xmake-distributed-compilation
+    source: github.com/xmake-io/xmake-skills/skills/performance/xmake-distributed-compilation
+  - name: xmake-dlang
+    source: github.com/xmake-io/xmake-skills/skills/languages/xmake-dlang
+  - name: xmake-env-vars
+    source: github.com/xmake-io/xmake-skills/skills/ops/xmake-env-vars
+  - name: xmake-feature-check
+    source: github.com/xmake-io/xmake-skills/skills/project-config/xmake-feature-check
+  - name: xmake-fortran
+    source: github.com/xmake-io/xmake-skills/skills/languages/xmake-fortran
+  - name: xmake-go
+    source: github.com/xmake-io/xmake-skills/skills/languages/xmake-go
+  - name: xmake-graph-module
+    source: github.com/xmake-io/xmake-skills/skills/scripting/xmake-graph-module
+  - name: xmake-kotlin
+    source: github.com/xmake-io/xmake-skills/skills/languages/xmake-kotlin
+  - name: xmake-link-order
+    source: github.com/xmake-io/xmake-skills/skills/project-config/xmake-link-order
+  - name: xmake-network
+    source: github.com/xmake-io/xmake-skills/skills/packages/xmake-network
+  - name: xmake-nim
+    source: github.com/xmake-io/xmake-skills/skills/languages/xmake-nim
+  - name: xmake-objc
+    source: github.com/xmake-io/xmake-skills/skills/languages/xmake-objc
+  - name: xmake-options
+    source: github.com/xmake-io/xmake-skills/skills/project-config/xmake-options
+  - name: xmake-packages
+    source: github.com/xmake-io/xmake-skills/skills/project-config/xmake-packages
+  - name: xmake-pascal
+    source: github.com/xmake-io/xmake-skills/skills/languages/xmake-pascal
+  - name: xmake-plugins
+    source: github.com/xmake-io/xmake-skills/skills/scripting/xmake-plugins
+  - name: xmake-policy
+    source: github.com/xmake-io/xmake-skills/skills/project-config/xmake-policy
+  - name: xmake-private-packages
+    source: github.com/xmake-io/xmake-skills/skills/packages/xmake-private-packages
+  - name: xmake-project-generator
+    source: github.com/xmake-io/xmake-skills/skills/cli/xmake-project-generator
+  - name: xmake-remote-compilation
+    source: github.com/xmake-io/xmake-skills/skills/performance/xmake-remote-compilation
+  - name: xmake-repo-testing
+    source: github.com/xmake-io/xmake-skills/skills/packages/xmake-repo-testing
+  - name: xmake-rules
+    source: github.com/xmake-io/xmake-skills/skills/project-config/xmake-rules
+  - name: xmake-rust
+    source: github.com/xmake-io/xmake-skills/skills/languages/xmake-rust
+  - name: xmake-script-modules
+    source: github.com/xmake-io/xmake-skills/skills/scripting/xmake-script-modules
+  - name: xmake-scripting
+    source: github.com/xmake-io/xmake-skills/skills/scripting/xmake-scripting
+  - name: xmake-style
+    source: github.com/xmake-io/xmake-skills/skills/basics/xmake-style
+  - name: xmake-swift
+    source: github.com/xmake-io/xmake-skills/skills/languages/xmake-swift
+  - name: xmake-targets
+    source: github.com/xmake-io/xmake-skills/skills/project-config/xmake-targets
+  - name: xmake-templates
+    source: github.com/xmake-io/xmake-skills/skills/basics/xmake-templates
+  - name: xmake-tests
+    source: github.com/xmake-io/xmake-skills/skills/testing/xmake-tests
+  - name: xmake-theme
+    source: github.com/xmake-io/xmake-skills/skills/ops/xmake-theme
+  - name: xmake-toolchains
+    source: github.com/xmake-io/xmake-skills/skills/toolchains/xmake-toolchains
+  - name: xmake-troubleshooting
+    source: github.com/xmake-io/xmake-skills/skills/ops/xmake-troubleshooting
+  - name: xmake-trybuild
+    source: github.com/xmake-io/xmake-skills/skills/cli/xmake-trybuild
+  - name: xmake-unit-tests
+    source: github.com/xmake-io/xmake-skills/skills/testing/xmake-unit-tests
+  - name: xmake-vala
+    source: github.com/xmake-io/xmake-skills/skills/languages/xmake-vala
+  - name: xmake-xpack
+    source: github.com/xmake-io/xmake-skills/skills/packaging/xmake-xpack
+  - name: xmake-zig
+    source: github.com/xmake-io/xmake-skills/skills/languages/xmake-zig
+  - name: xrepo-cli
+    source: github.com/xmake-io/xmake-skills/skills/packages/xrepo-cli
+  - name: xrepo-env
+    source: github.com/xmake-io/xmake-skills/skills/packages/xrepo-env
+audit:
+  block_threshold: CRITICAL

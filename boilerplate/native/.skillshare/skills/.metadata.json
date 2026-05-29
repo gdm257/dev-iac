@@ -1,0 +1,641 @@
+{
+  "version": 1,
+  "entries": {
+    "xmake-async-jobs": {
+      "source": "github.com/xmake-io/xmake-skills/skills/scripting/xmake-async-jobs",
+      "type": "github-subdir",
+      "installed_at": "2026-05-30T02:22:31.5479274+09:00",
+      "repo_url": "https://github.com/xmake-io/xmake-skills.git",
+      "subdir": "skills/scripting/xmake-async-jobs",
+      "version": "2b58319",
+      "tree_hash": "90883aff533325791e66a18523f94ab66d22e03a",
+      "file_hashes": {
+        "SKILL.md": "sha256:6600f1a44cdff92d29402a0a1ec73ef4df39619d64c192902550fed086f80984"
+      }
+    },
+    "xmake-basics": {
+      "source": "github.com/xmake-io/xmake-skills/skills/basics/xmake-basics",
+      "type": "github-subdir",
+      "installed_at": "2026-05-30T02:22:27.0943892+09:00",
+      "repo_url": "https://github.com/xmake-io/xmake-skills.git",
+      "subdir": "skills/basics/xmake-basics",
+      "version": "2b58319",
+      "tree_hash": "816243737be2ee551af5c17128ae50352d427d71",
+      "file_hashes": {
+        "SKILL.md": "sha256:b9e6bb17d0709c0957dc3e19c0723c20fc99071b0d5df30df1a0badfd18c8195"
+      }
+    },
+    "xmake-build-cache": {
+      "source": "github.com/xmake-io/xmake-skills/skills/performance/xmake-build-cache",
+      "type": "github-subdir",
+      "installed_at": "2026-05-30T02:22:30.333754+09:00",
+      "repo_url": "https://github.com/xmake-io/xmake-skills.git",
+      "subdir": "skills/performance/xmake-build-cache",
+      "version": "2b58319",
+      "tree_hash": "fdca2444868a4b7fd20680f13bb6ac8e4311ee40",
+      "file_hashes": {
+        "SKILL.md": "sha256:3610af814d4ec25cfaeaadf915c21c25ed3cfbbbe9e4a42e704c4c7405897d6f"
+      }
+    },
+    "xmake-build-optimization": {
+      "source": "github.com/xmake-io/xmake-skills/skills/performance/xmake-build-optimization",
+      "type": "github-subdir",
+      "installed_at": "2026-05-30T02:22:30.4443594+09:00",
+      "repo_url": "https://github.com/xmake-io/xmake-skills.git",
+      "subdir": "skills/performance/xmake-build-optimization",
+      "version": "2b58319",
+      "tree_hash": "76a870a41afda2c570ec6f000d0c88effbd70516",
+      "file_hashes": {
+        "SKILL.md": "sha256:e766899e4e4e20f9086a232045f398aeb4bafeea6bc0a261cf670173f905a2ce"
+      }
+    },
+    "xmake-color-output": {
+      "source": "github.com/xmake-io/xmake-skills/skills/scripting/xmake-color-output",
+      "type": "github-subdir",
+      "installed_at": "2026-05-30T02:22:31.6623456+09:00",
+      "repo_url": "https://github.com/xmake-io/xmake-skills.git",
+      "subdir": "skills/scripting/xmake-color-output",
+      "version": "2b58319",
+      "tree_hash": "51f9f5c22b8b31f578388428fc4146f8e4bbcf49",
+      "file_hashes": {
+        "SKILL.md": "sha256:93192dca08fd4045a79a10bdc7c1a36252b50a00db6b94db12d9618d9df84cdd"
+      }
+    },
+    "xmake-commands": {
+      "source": "github.com/xmake-io/xmake-skills/skills/cli/xmake-commands",
+      "type": "github-subdir",
+      "installed_at": "2026-05-30T02:22:27.4196581+09:00",
+      "repo_url": "https://github.com/xmake-io/xmake-skills.git",
+      "subdir": "skills/cli/xmake-commands",
+      "version": "2b58319",
+      "tree_hash": "4bcdab9cea743c840d3b928d4b59ff0143c892bc",
+      "file_hashes": {
+        "SKILL.md": "sha256:efc9939d81545743eeec68aa30bb3dd876746450798b097ceb37de08b9d7ae1f"
+      }
+    },
+    "xmake-cross-compilation": {
+      "source": "github.com/xmake-io/xmake-skills/skills/toolchains/xmake-cross-compilation",
+      "type": "github-subdir",
+      "installed_at": "2026-05-30T02:22:32.5842739+09:00",
+      "repo_url": "https://github.com/xmake-io/xmake-skills.git",
+      "subdir": "skills/toolchains/xmake-cross-compilation",
+      "version": "2b58319",
+      "tree_hash": "709b2c0d551ab0276d8d4a9cac8efdd7abf31ae6",
+      "file_hashes": {
+        "SKILL.md": "sha256:2e3cf0a9dea9d8025bc178a1920d2dc3284452e0dcb64d701715fdc8cd38c806"
+      }
+    },
+    "xmake-csharp": {
+      "source": "github.com/xmake-io/xmake-skills/skills/languages/xmake-csharp",
+      "type": "github-subdir",
+      "installed_at": "2026-05-30T02:22:27.7671772+09:00",
+      "repo_url": "https://github.com/xmake-io/xmake-skills.git",
+      "subdir": "skills/languages/xmake-csharp",
+      "version": "2b58319",
+      "tree_hash": "83ce171c020aba419ffce8bb4f7626319740f992",
+      "file_hashes": {
+        "SKILL.md": "sha256:20ee98399b17f491975666066dffdc6f7250b81a8a9ff360133f62fc3237c870"
+      }
+    },
+    "xmake-cuda": {
+      "source": "github.com/xmake-io/xmake-skills/skills/languages/xmake-cuda",
+      "type": "github-subdir",
+      "installed_at": "2026-05-30T02:22:27.8723312+09:00",
+      "repo_url": "https://github.com/xmake-io/xmake-skills.git",
+      "subdir": "skills/languages/xmake-cuda",
+      "version": "2b58319",
+      "tree_hash": "63a7beef3e236d3803c0ffe952bdaaff24b3839d",
+      "file_hashes": {
+        "SKILL.md": "sha256:6d86f01b90e2f7fb4a9fb03ec579433e2eb7495d87f1f4fb12dbf017eb3ac064"
+      }
+    },
+    "xmake-custom-plugins": {
+      "source": "github.com/xmake-io/xmake-skills/skills/scripting/xmake-custom-plugins",
+      "type": "github-subdir",
+      "installed_at": "2026-05-30T02:22:31.7806222+09:00",
+      "repo_url": "https://github.com/xmake-io/xmake-skills.git",
+      "subdir": "skills/scripting/xmake-custom-plugins",
+      "version": "2b58319",
+      "tree_hash": "12422ab04ec7e17af892a817acfb75b48c844bbc",
+      "file_hashes": {
+        "SKILL.md": "sha256:05800cc82e612f19405510669098a6f7d86406dd0b20d581f55e821accac0517"
+      }
+    },
+    "xmake-cxx-modules": {
+      "source": "github.com/xmake-io/xmake-skills/skills/toolchains/xmake-cxx-modules",
+      "type": "github-subdir",
+      "installed_at": "2026-05-30T02:22:32.7007914+09:00",
+      "repo_url": "https://github.com/xmake-io/xmake-skills.git",
+      "subdir": "skills/toolchains/xmake-cxx-modules",
+      "version": "2b58319",
+      "tree_hash": "ee35e072d3f5c6fd925e3423a37cb9413a7f1132",
+      "file_hashes": {
+        "SKILL.md": "sha256:0ce1786b6504d9ad7b15dd4039d6fcd6217dba0d856af8ed9fd6bbf2a248c7c8"
+      }
+    },
+    "xmake-debug-package-source": {
+      "source": "github.com/xmake-io/xmake-skills/skills/packages/xmake-debug-package-source",
+      "type": "github-subdir",
+      "installed_at": "2026-05-30T02:22:29.5507607+09:00",
+      "repo_url": "https://github.com/xmake-io/xmake-skills.git",
+      "subdir": "skills/packages/xmake-debug-package-source",
+      "version": "2b58319",
+      "tree_hash": "ace577ba810dba726667631b54c2e6d8d70b030d",
+      "file_hashes": {
+        "SKILL.md": "sha256:8f22ee7b265e6568eae30593aa33403c74a147e665a327ab7f2d89f177d5cfe7"
+      }
+    },
+    "xmake-dev": {
+      "source": "github.com/xmake-io/xmake-skills/skills/ops/xmake-dev",
+      "type": "github-subdir",
+      "installed_at": "2026-05-30T02:22:29.1079353+09:00",
+      "repo_url": "https://github.com/xmake-io/xmake-skills.git",
+      "subdir": "skills/ops/xmake-dev",
+      "version": "2b58319",
+      "tree_hash": "ca28cdce765fea5bf44764e519e5bf52e9130e58",
+      "file_hashes": {
+        "SKILL.md": "sha256:5e736824fadfebe9f7d39b5196b847949c89fef34186084f9da57b38f581434f"
+      }
+    },
+    "xmake-distributed-compilation": {
+      "source": "github.com/xmake-io/xmake-skills/skills/performance/xmake-distributed-compilation",
+      "type": "github-subdir",
+      "installed_at": "2026-05-30T02:22:30.5566268+09:00",
+      "repo_url": "https://github.com/xmake-io/xmake-skills.git",
+      "subdir": "skills/performance/xmake-distributed-compilation",
+      "version": "2b58319",
+      "tree_hash": "00447e7ee520f4d43b1243b758b8ab2ee11d3aff",
+      "file_hashes": {
+        "SKILL.md": "sha256:950a7608df6b49c85ff0e3a3fea89869ab32a3709de55e1c64ac4e7dc35ac31b"
+      }
+    },
+    "xmake-dlang": {
+      "source": "github.com/xmake-io/xmake-skills/skills/languages/xmake-dlang",
+      "type": "github-subdir",
+      "installed_at": "2026-05-30T02:22:27.9723774+09:00",
+      "repo_url": "https://github.com/xmake-io/xmake-skills.git",
+      "subdir": "skills/languages/xmake-dlang",
+      "version": "2b58319",
+      "tree_hash": "9fa70e71e5eb396a49a824b8453adfe8182abd84",
+      "file_hashes": {
+        "SKILL.md": "sha256:65f0a4445f8aa0727f121193ec2b9aa7fdd119a073a92cf506bed2e6fe844358"
+      }
+    },
+    "xmake-env-vars": {
+      "source": "github.com/xmake-io/xmake-skills/skills/ops/xmake-env-vars",
+      "type": "github-subdir",
+      "installed_at": "2026-05-30T02:22:29.2150318+09:00",
+      "repo_url": "https://github.com/xmake-io/xmake-skills.git",
+      "subdir": "skills/ops/xmake-env-vars",
+      "version": "2b58319",
+      "tree_hash": "8885f615fecc10a6b842965febc4d059a338e2fa",
+      "file_hashes": {
+        "SKILL.md": "sha256:f899ea9408144b1ac5bc960ad83e0efa120ace81b074456f6a0fbff24f941c6c"
+      }
+    },
+    "xmake-feature-check": {
+      "source": "github.com/xmake-io/xmake-skills/skills/project-config/xmake-feature-check",
+      "type": "github-subdir",
+      "installed_at": "2026-05-30T02:22:30.7773615+09:00",
+      "repo_url": "https://github.com/xmake-io/xmake-skills.git",
+      "subdir": "skills/project-config/xmake-feature-check",
+      "version": "2b58319",
+      "tree_hash": "8104b9d24a80c2f1171b01fc2a689262a71b7670",
+      "file_hashes": {
+        "SKILL.md": "sha256:d83aeab4c033af23c77a61271dd0970a8114e24133c5bbf4ea9b1f514372b0db"
+      }
+    },
+    "xmake-fortran": {
+      "source": "github.com/xmake-io/xmake-skills/skills/languages/xmake-fortran",
+      "type": "github-subdir",
+      "installed_at": "2026-05-30T02:22:28.0730558+09:00",
+      "repo_url": "https://github.com/xmake-io/xmake-skills.git",
+      "subdir": "skills/languages/xmake-fortran",
+      "version": "2b58319",
+      "tree_hash": "39aab29d2e3cd08dfe0df8d262f0b80b7995cfd1",
+      "file_hashes": {
+        "SKILL.md": "sha256:5ca26cfdc702fd7eb74d205dc15c06f091223fcd2048113fbffe909cd1a17a70"
+      }
+    },
+    "xmake-go": {
+      "source": "github.com/xmake-io/xmake-skills/skills/languages/xmake-go",
+      "type": "github-subdir",
+      "installed_at": "2026-05-30T02:22:28.1746538+09:00",
+      "repo_url": "https://github.com/xmake-io/xmake-skills.git",
+      "subdir": "skills/languages/xmake-go",
+      "version": "2b58319",
+      "tree_hash": "ab5f2a1311156e2d5b139ff62c59d70913adce4b",
+      "file_hashes": {
+        "SKILL.md": "sha256:da8c795380821340912ed9e698584859db2d07eb5e6c1460242ba55fbe6c2f8f"
+      }
+    },
+    "xmake-graph-module": {
+      "source": "github.com/xmake-io/xmake-skills/skills/scripting/xmake-graph-module",
+      "type": "github-subdir",
+      "installed_at": "2026-05-30T02:22:31.892775+09:00",
+      "repo_url": "https://github.com/xmake-io/xmake-skills.git",
+      "subdir": "skills/scripting/xmake-graph-module",
+      "version": "2b58319",
+      "tree_hash": "480242b2c15ba055f2a8f6315b6d38d96ff801e6",
+      "file_hashes": {
+        "SKILL.md": "sha256:423c4f6c2f8296eb4847cba98cccf34459d45127c3a44e8886e441ac2c870c41"
+      }
+    },
+    "xmake-kotlin": {
+      "source": "github.com/xmake-io/xmake-skills/skills/languages/xmake-kotlin",
+      "type": "github-subdir",
+      "installed_at": "2026-05-30T02:22:28.2756569+09:00",
+      "repo_url": "https://github.com/xmake-io/xmake-skills.git",
+      "subdir": "skills/languages/xmake-kotlin",
+      "version": "2b58319",
+      "tree_hash": "279155adbfcbdddfd4606733009b35e0228eaba4",
+      "file_hashes": {
+        "SKILL.md": "sha256:cdefc517330b63580279dbd337885c0acf47d576b62ddabb659761487831e660"
+      }
+    },
+    "xmake-link-order": {
+      "source": "github.com/xmake-io/xmake-skills/skills/project-config/xmake-link-order",
+      "type": "github-subdir",
+      "installed_at": "2026-05-30T02:22:30.8916547+09:00",
+      "repo_url": "https://github.com/xmake-io/xmake-skills.git",
+      "subdir": "skills/project-config/xmake-link-order",
+      "version": "2b58319",
+      "tree_hash": "0fd1ede7f962f23c004f89deddefe1cbcd8b229b",
+      "file_hashes": {
+        "SKILL.md": "sha256:5c95642a9df977b4ed4c9ab40949f7f5084e2c345bdeb28ab4ec982df51623ec"
+      }
+    },
+    "xmake-network": {
+      "source": "github.com/xmake-io/xmake-skills/skills/packages/xmake-network",
+      "type": "github-subdir",
+      "installed_at": "2026-05-30T02:22:29.6654374+09:00",
+      "repo_url": "https://github.com/xmake-io/xmake-skills.git",
+      "subdir": "skills/packages/xmake-network",
+      "version": "2b58319",
+      "tree_hash": "1a3f2cdb05dddd55575f7403ef90fa878884e3d8",
+      "file_hashes": {
+        "SKILL.md": "sha256:51e8895b2bc06bc49a7ca154cb4a2defabbb104a1ada763d4e1bf20029fe1ce3"
+      }
+    },
+    "xmake-nim": {
+      "source": "github.com/xmake-io/xmake-skills/skills/languages/xmake-nim",
+      "type": "github-subdir",
+      "installed_at": "2026-05-30T02:22:28.375842+09:00",
+      "repo_url": "https://github.com/xmake-io/xmake-skills.git",
+      "subdir": "skills/languages/xmake-nim",
+      "version": "2b58319",
+      "tree_hash": "6aea3c8935770b03595306e35591a36dabfac486",
+      "file_hashes": {
+        "SKILL.md": "sha256:53135b981bd396496063a322c24d6e2e5ab89ee90e2dbf4a633303ac405a7d23"
+      }
+    },
+    "xmake-objc": {
+      "source": "github.com/xmake-io/xmake-skills/skills/languages/xmake-objc",
+      "type": "github-subdir",
+      "installed_at": "2026-05-30T02:22:28.478801+09:00",
+      "repo_url": "https://github.com/xmake-io/xmake-skills.git",
+      "subdir": "skills/languages/xmake-objc",
+      "version": "2b58319",
+      "tree_hash": "b631aeb1fe4a857dae824c41a782baf1ea901d9a",
+      "file_hashes": {
+        "SKILL.md": "sha256:5e2b01115b2ca64a9af1e458b4de045b2921614d5cab37bf32866dd33d93143a"
+      }
+    },
+    "xmake-options": {
+      "source": "github.com/xmake-io/xmake-skills/skills/project-config/xmake-options",
+      "type": "github-subdir",
+      "installed_at": "2026-05-30T02:22:30.9969169+09:00",
+      "repo_url": "https://github.com/xmake-io/xmake-skills.git",
+      "subdir": "skills/project-config/xmake-options",
+      "version": "2b58319",
+      "tree_hash": "cdeb98c465fa796b3fd20cecfa2de3cb03fa7dd0",
+      "file_hashes": {
+        "SKILL.md": "sha256:04f6782aeeb9c8632829ffa5821dba47e628d3f3e5e763205996b6f7bbd65b77"
+      }
+    },
+    "xmake-packages": {
+      "source": "github.com/xmake-io/xmake-skills/skills/project-config/xmake-packages",
+      "type": "github-subdir",
+      "installed_at": "2026-05-30T02:22:31.1026695+09:00",
+      "repo_url": "https://github.com/xmake-io/xmake-skills.git",
+      "subdir": "skills/project-config/xmake-packages",
+      "version": "2b58319",
+      "tree_hash": "d2072e02c72c0f3ce48d2941ac4f157e2c065016",
+      "file_hashes": {
+        "SKILL.md": "sha256:08cf20b8f97b5c64e8cafb12364d38f79ee750acac7cb2e8baf6a401da5510a7"
+      }
+    },
+    "xmake-pascal": {
+      "source": "github.com/xmake-io/xmake-skills/skills/languages/xmake-pascal",
+      "type": "github-subdir",
+      "installed_at": "2026-05-30T02:22:28.5781476+09:00",
+      "repo_url": "https://github.com/xmake-io/xmake-skills.git",
+      "subdir": "skills/languages/xmake-pascal",
+      "version": "2b58319",
+      "tree_hash": "2cbb37c4aa5d6f80579e1dd4a857aed31098fd09",
+      "file_hashes": {
+        "SKILL.md": "sha256:451c36a5628f775ed10ddf4fa76a6c5512d00af31f43e91bdfe0087289b330c9"
+      }
+    },
+    "xmake-plugins": {
+      "source": "github.com/xmake-io/xmake-skills/skills/scripting/xmake-plugins",
+      "type": "github-subdir",
+      "installed_at": "2026-05-30T02:22:32.0014362+09:00",
+      "repo_url": "https://github.com/xmake-io/xmake-skills.git",
+      "subdir": "skills/scripting/xmake-plugins",
+      "version": "2b58319",
+      "tree_hash": "54f8e354db15a5ffbda22b47ef5703ddccc5c8f7",
+      "file_hashes": {
+        "SKILL.md": "sha256:4001e889123cd8ed289e3831a95e101c0fca120427b2fb17af2ecf1fc84380dc"
+      }
+    },
+    "xmake-policy": {
+      "source": "github.com/xmake-io/xmake-skills/skills/project-config/xmake-policy",
+      "type": "github-subdir",
+      "installed_at": "2026-05-30T02:22:31.2163815+09:00",
+      "repo_url": "https://github.com/xmake-io/xmake-skills.git",
+      "subdir": "skills/project-config/xmake-policy",
+      "version": "2b58319",
+      "tree_hash": "46f9cdae0c8843ed789e839dc177f19add4901e2",
+      "file_hashes": {
+        "SKILL.md": "sha256:8af86140e13cc61093927e267b2671c373b2f9f500621b24df614920a3cb31c2"
+      }
+    },
+    "xmake-private-packages": {
+      "source": "github.com/xmake-io/xmake-skills/skills/packages/xmake-private-packages",
+      "type": "github-subdir",
+      "installed_at": "2026-05-30T02:22:29.7773562+09:00",
+      "repo_url": "https://github.com/xmake-io/xmake-skills.git",
+      "subdir": "skills/packages/xmake-private-packages",
+      "version": "2b58319",
+      "tree_hash": "6d074fe1872fbdbeb80be3eb682cfdbbb6b5dfe8",
+      "file_hashes": {
+        "SKILL.md": "sha256:b85f0be2f67e3b92a690d48691383486a92453ca580fe005d8f6cd31a9fbdc09"
+      }
+    },
+    "xmake-project-generator": {
+      "source": "github.com/xmake-io/xmake-skills/skills/cli/xmake-project-generator",
+      "type": "github-subdir",
+      "installed_at": "2026-05-30T02:22:27.5244536+09:00",
+      "repo_url": "https://github.com/xmake-io/xmake-skills.git",
+      "subdir": "skills/cli/xmake-project-generator",
+      "version": "2b58319",
+      "tree_hash": "4e38db27e7c5248d146ea0798a6e3dd84298ba23",
+      "file_hashes": {
+        "SKILL.md": "sha256:80ba389375ec7fe9a545a167d85ed3af74428fb342dcbad3af342bf7e740d300"
+      }
+    },
+    "xmake-remote-compilation": {
+      "source": "github.com/xmake-io/xmake-skills/skills/performance/xmake-remote-compilation",
+      "type": "github-subdir",
+      "installed_at": "2026-05-30T02:22:30.6679087+09:00",
+      "repo_url": "https://github.com/xmake-io/xmake-skills.git",
+      "subdir": "skills/performance/xmake-remote-compilation",
+      "version": "2b58319",
+      "tree_hash": "dfc49814eadad51e90b3370947aa4d0bb7811c13",
+      "file_hashes": {
+        "SKILL.md": "sha256:92363f44a07ff68af9c14f861319b6b70dde3073b360caf336dc2408d2c2f92c"
+      }
+    },
+    "xmake-repo-testing": {
+      "source": "github.com/xmake-io/xmake-skills/skills/packages/xmake-repo-testing",
+      "type": "github-subdir",
+      "installed_at": "2026-05-30T02:22:29.8895353+09:00",
+      "repo_url": "https://github.com/xmake-io/xmake-skills.git",
+      "subdir": "skills/packages/xmake-repo-testing",
+      "version": "2b58319",
+      "tree_hash": "94750ad36309ae9f2cf0564b0acbaca4409bdcb7",
+      "file_hashes": {
+        "SKILL.md": "sha256:63a3f1eeea8dffdf1d01e9f180c05f0eb4cd2f07d926ddb04be8a1313dff3272"
+      }
+    },
+    "xmake-rules": {
+      "source": "github.com/xmake-io/xmake-skills/skills/project-config/xmake-rules",
+      "type": "github-subdir",
+      "installed_at": "2026-05-30T02:22:31.323359+09:00",
+      "repo_url": "https://github.com/xmake-io/xmake-skills.git",
+      "subdir": "skills/project-config/xmake-rules",
+      "version": "2b58319",
+      "tree_hash": "199234542d98f2a9b0c4cdd97a091e01986c89c2",
+      "file_hashes": {
+        "SKILL.md": "sha256:0a108119ffab5bdde3d3695a90b578e1aa671d6a9aac6d571076f2ca7b759124"
+      }
+    },
+    "xmake-rust": {
+      "source": "github.com/xmake-io/xmake-skills/skills/languages/xmake-rust",
+      "type": "github-subdir",
+      "installed_at": "2026-05-30T02:22:28.6822462+09:00",
+      "repo_url": "https://github.com/xmake-io/xmake-skills.git",
+      "subdir": "skills/languages/xmake-rust",
+      "version": "2b58319",
+      "tree_hash": "1f9125d71a3e1f782a24249bb5c2815d09741c90",
+      "file_hashes": {
+        "SKILL.md": "sha256:65fee9a0ad3d06e991776cd125a05cb6a053ff750534c4242b57aa239c7e1420"
+      }
+    },
+    "xmake-script-modules": {
+      "source": "github.com/xmake-io/xmake-skills/skills/scripting/xmake-script-modules",
+      "type": "github-subdir",
+      "installed_at": "2026-05-30T02:22:32.1131632+09:00",
+      "repo_url": "https://github.com/xmake-io/xmake-skills.git",
+      "subdir": "skills/scripting/xmake-script-modules",
+      "version": "2b58319",
+      "tree_hash": "8d7725cb088163fe40a3dec0e52e431ba34b181e",
+      "file_hashes": {
+        "SKILL.md": "sha256:933d10894c49fbb0aeecbdf05a39fddca32bd65d6dc1b57fcb3d0d3f44d8d895"
+      }
+    },
+    "xmake-scripting": {
+      "source": "github.com/xmake-io/xmake-skills/skills/scripting/xmake-scripting",
+      "type": "github-subdir",
+      "installed_at": "2026-05-30T02:22:32.2322266+09:00",
+      "repo_url": "https://github.com/xmake-io/xmake-skills.git",
+      "subdir": "skills/scripting/xmake-scripting",
+      "version": "2b58319",
+      "tree_hash": "8d707267155da97adc8bbb4dc1058510177d1948",
+      "file_hashes": {
+        "SKILL.md": "sha256:5e4bc28ac884dcf222b76cbb14accfd9288e889ecbf588f7d754cd0b194421ef"
+      }
+    },
+    "xmake-style": {
+      "source": "github.com/xmake-io/xmake-skills/skills/basics/xmake-style",
+      "type": "github-subdir",
+      "installed_at": "2026-05-30T02:22:27.2083057+09:00",
+      "repo_url": "https://github.com/xmake-io/xmake-skills.git",
+      "subdir": "skills/basics/xmake-style",
+      "version": "2b58319",
+      "tree_hash": "252c4203faa5f70b93cd2fdb5599b21bcb8cdc42",
+      "file_hashes": {
+        "SKILL.md": "sha256:00c7d75159ecf61a728d005c902bacae6995dde9ff14387e925c8de896a02e68"
+      }
+    },
+    "xmake-swift": {
+      "source": "github.com/xmake-io/xmake-skills/skills/languages/xmake-swift",
+      "type": "github-subdir",
+      "installed_at": "2026-05-30T02:22:28.789906+09:00",
+      "repo_url": "https://github.com/xmake-io/xmake-skills.git",
+      "subdir": "skills/languages/xmake-swift",
+      "version": "2b58319",
+      "tree_hash": "e7760ed3f4e3a96e9de4a78b33263ac148a820c6",
+      "file_hashes": {
+        "SKILL.md": "sha256:ab8e39c0567835606c98dec716682195bf7fe6d80747d257efea4eb4cf994caa"
+      }
+    },
+    "xmake-targets": {
+      "source": "github.com/xmake-io/xmake-skills/skills/project-config/xmake-targets",
+      "type": "github-subdir",
+      "installed_at": "2026-05-30T02:22:31.4316461+09:00",
+      "repo_url": "https://github.com/xmake-io/xmake-skills.git",
+      "subdir": "skills/project-config/xmake-targets",
+      "version": "2b58319",
+      "tree_hash": "b7407eacf7422d61911add4d221f9b6f1bf893fc",
+      "file_hashes": {
+        "SKILL.md": "sha256:0ce9f7f2d14deff4694611a7b989c337008c96c97beb4468ceff1cf2d67b6576"
+      }
+    },
+    "xmake-templates": {
+      "source": "github.com/xmake-io/xmake-skills/skills/basics/xmake-templates",
+      "type": "github-subdir",
+      "installed_at": "2026-05-30T02:22:27.3170395+09:00",
+      "repo_url": "https://github.com/xmake-io/xmake-skills.git",
+      "subdir": "skills/basics/xmake-templates",
+      "version": "2b58319",
+      "tree_hash": "124de1513f2685b564fde28b97ea0237fba6b172",
+      "file_hashes": {
+        "SKILL.md": "sha256:a3653343a3bcc82cb035b36b070d54719d78234725c8de49d14aafad3e7dbdfb"
+      }
+    },
+    "xmake-tests": {
+      "source": "github.com/xmake-io/xmake-skills/skills/testing/xmake-tests",
+      "type": "github-subdir",
+      "installed_at": "2026-05-30T02:22:32.3417662+09:00",
+      "repo_url": "https://github.com/xmake-io/xmake-skills.git",
+      "subdir": "skills/testing/xmake-tests",
+      "version": "2b58319",
+      "tree_hash": "63288c42fd431a7ac1279de8f218d892932d904c",
+      "file_hashes": {
+        "SKILL.md": "sha256:cb44f079b02413a15ffcd14a0ecec78ad6fa57322f36ba9bcf5fedbaf3162de5"
+      }
+    },
+    "xmake-theme": {
+      "source": "github.com/xmake-io/xmake-skills/skills/ops/xmake-theme",
+      "type": "github-subdir",
+      "installed_at": "2026-05-30T02:22:29.3184348+09:00",
+      "repo_url": "https://github.com/xmake-io/xmake-skills.git",
+      "subdir": "skills/ops/xmake-theme",
+      "version": "2b58319",
+      "tree_hash": "bb692f64a45cdaaea2e20048d7967e423a252b35",
+      "file_hashes": {
+        "SKILL.md": "sha256:85edd0c95ef580baa87ad690a00cccc0a540665a728548f10ad0c726f667f4f1"
+      }
+    },
+    "xmake-toolchains": {
+      "source": "github.com/xmake-io/xmake-skills/skills/toolchains/xmake-toolchains",
+      "type": "github-subdir",
+      "installed_at": "2026-05-30T02:22:32.815199+09:00",
+      "repo_url": "https://github.com/xmake-io/xmake-skills.git",
+      "subdir": "skills/toolchains/xmake-toolchains",
+      "version": "2b58319",
+      "tree_hash": "41392b28baf1187716ff4569e91aa1d2319f8f9b",
+      "file_hashes": {
+        "SKILL.md": "sha256:88a3664ec1f1ab46c429021f60b1a3517d720fdba5cbe974d0402b3a773c5eaf"
+      }
+    },
+    "xmake-troubleshooting": {
+      "source": "github.com/xmake-io/xmake-skills/skills/ops/xmake-troubleshooting",
+      "type": "github-subdir",
+      "installed_at": "2026-05-30T02:22:29.4300709+09:00",
+      "repo_url": "https://github.com/xmake-io/xmake-skills.git",
+      "subdir": "skills/ops/xmake-troubleshooting",
+      "version": "2b58319",
+      "tree_hash": "d234d85b5ac98caa8e97242eca8475fed2ac9df2",
+      "file_hashes": {
+        "SKILL.md": "sha256:a82d9649f86b62d4afb86293d47e6dbd80ec4b15574bab1cc252e64940cc0888"
+      }
+    },
+    "xmake-trybuild": {
+      "source": "github.com/xmake-io/xmake-skills/skills/cli/xmake-trybuild",
+      "type": "github-subdir",
+      "installed_at": "2026-05-30T02:22:27.6663755+09:00",
+      "repo_url": "https://github.com/xmake-io/xmake-skills.git",
+      "subdir": "skills/cli/xmake-trybuild",
+      "version": "2b58319",
+      "tree_hash": "a622ad9bb676efd8c9145c4198fea3801da03adf",
+      "file_hashes": {
+        "SKILL.md": "sha256:bd4fdd70621936d8bf88f90f84cafe61e247a26fd032776c7ece7ebafc5f6704"
+      }
+    },
+    "xmake-unit-tests": {
+      "source": "github.com/xmake-io/xmake-skills/skills/testing/xmake-unit-tests",
+      "type": "github-subdir",
+      "installed_at": "2026-05-30T02:22:32.4589889+09:00",
+      "repo_url": "https://github.com/xmake-io/xmake-skills.git",
+      "subdir": "skills/testing/xmake-unit-tests",
+      "version": "2b58319",
+      "tree_hash": "3b662495dd71c739833a49a7649dbf9727647889",
+      "file_hashes": {
+        "SKILL.md": "sha256:cf159b6ea0f476e8502e283a632406a109b08c573d90dac2123dfdeb5d3ae5bc"
+      }
+    },
+    "xmake-vala": {
+      "source": "github.com/xmake-io/xmake-skills/skills/languages/xmake-vala",
+      "type": "github-subdir",
+      "installed_at": "2026-05-30T02:22:28.8933829+09:00",
+      "repo_url": "https://github.com/xmake-io/xmake-skills.git",
+      "subdir": "skills/languages/xmake-vala",
+      "version": "2b58319",
+      "tree_hash": "6698c926f67b3f098de65f46e202569bcc2e5b35",
+      "file_hashes": {
+        "SKILL.md": "sha256:922f13b029a36f4d60b22ab3aabf50d4b126d56b508a7c2d5b4dda986de9f3d1"
+      }
+    },
+    "xmake-xpack": {
+      "source": "github.com/xmake-io/xmake-skills/skills/packaging/xmake-xpack",
+      "type": "github-subdir",
+      "installed_at": "2026-05-30T02:22:30.2219777+09:00",
+      "repo_url": "https://github.com/xmake-io/xmake-skills.git",
+      "subdir": "skills/packaging/xmake-xpack",
+      "version": "2b58319",
+      "tree_hash": "011526d6f255ea55a3ade5330f0d781159be0cdf",
+      "file_hashes": {
+        "SKILL.md": "sha256:c428de8e2c8738ab3e0d179c88c7e725253375afb77dc0b8949f61afaf8e6a25"
+      }
+    },
+    "xmake-zig": {
+      "source": "github.com/xmake-io/xmake-skills/skills/languages/xmake-zig",
+      "type": "github-subdir",
+      "installed_at": "2026-05-30T02:22:29.0002349+09:00",
+      "repo_url": "https://github.com/xmake-io/xmake-skills.git",
+      "subdir": "skills/languages/xmake-zig",
+      "version": "2b58319",
+      "tree_hash": "e82bef4e0ad1e6c1577170f6ff2aa426291dbf97",
+      "file_hashes": {
+        "SKILL.md": "sha256:fd9c3838b1b982731b2a4724da718770765cd80f0125ca59957342f7339029db"
+      }
+    },
+    "xrepo-cli": {
+      "source": "github.com/xmake-io/xmake-skills/skills/packages/xrepo-cli",
+      "type": "github-subdir",
+      "installed_at": "2026-05-30T02:22:30.0001755+09:00",
+      "repo_url": "https://github.com/xmake-io/xmake-skills.git",
+      "subdir": "skills/packages/xrepo-cli",
+      "version": "2b58319",
+      "tree_hash": "2fd5f04981d42839c55aaa39461e343fb8e7bf8d",
+      "file_hashes": {
+        "SKILL.md": "sha256:3e8183b38d8704507da8336697f2c969e9b6d8c2c3bbd3cfbe56a1a30b5cdf78"
+      }
+    },
+    "xrepo-env": {
+      "source": "github.com/xmake-io/xmake-skills/skills/packages/xrepo-env",
+      "type": "github-subdir",
+      "installed_at": "2026-05-30T02:22:30.1095965+09:00",
+      "repo_url": "https://github.com/xmake-io/xmake-skills.git",
+      "subdir": "skills/packages/xrepo-env",
+      "version": "2b58319",
+      "tree_hash": "38282fd0bec6d03d598b33cb817afc6f691f664a",
+      "file_hashes": {
+        "SKILL.md": "sha256:e06f6db93d62ab77c4366e68984cdbc58f20fb412c6bc21dca721438464f86f9"
+      }
+    }
+  }
+}
