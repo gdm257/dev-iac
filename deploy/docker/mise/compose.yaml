@@ -1,0 +1,24 @@
+volumes:
+  data:
+    name: ${VOLUME_NAME:-mise_data}
+    driver: ${VOLUME_DRIVER:-local}
+
+networks:
+  public:
+    external: ${PUBLIC_NETWORK_EXTERNAL:-true}
+    name: ${PUBLIC_NETWORK_NAME:-traefik-public}
+    driver: ${PUBLIC_NETWORK_DRIVER:-overlay}
+    attachable: ${PUBLIC_NETWORK_ATTACHABLE:-true}
+
+services:
+  mise:
+    image: ${IMAGE_NAME:-ghcr.io/amartani/mise-images}:${IMAGE_VERSION:-trixie-slim}
+    networks:
+      - public
+    volumes:
+      - data:/data
+    entrypoint: /bin/bash
+    command: |-
+      eval "$(mise activate bash)";
+      ${INSTALLER_SCRIPT:-}
+      ${SCRIPT:-/bin/bash}

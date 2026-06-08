@@ -1,0 +1,25 @@
+volumes:
+  data:
+    name: ${VOLUME_NAME:-pkgx_data}
+    driver: ${VOLUME_DRIVER:-local}
+
+networks:
+  public:
+    external: ${PUBLIC_NETWORK_EXTERNAL:-true}
+    name: ${PUBLIC_NETWORK_NAME:-traefik-public}
+    driver: ${PUBLIC_NETWORK_DRIVER:-overlay}
+    attachable: ${PUBLIC_NETWORK_ATTACHABLE:-true}
+
+services:
+  pkgx:
+    image: ${IMAGE_NAME:-pkgxdev/pkgx}:${IMAGE_VERSION:-v2}
+    networks:
+      - public
+    volumes:
+      - data:/data
+    entrypoint: ["/use/local/bin/pkgx", "/bin/bash", "-c"]
+    command: |-
+      echo 'command_not_found_handle() { pkgx "$@"; }' >> /root/.bashrc;
+      command_not_found_handle() { pkgx "$@"; };
+      ${INSTALLER_SCRIPT:-}
+      ${SCRIPT:-/bin/bash}
