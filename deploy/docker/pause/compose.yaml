@@ -5,6 +5,7 @@ volumes:
 
 networks:
   public:
+    external: ${PUBLIC_NETWORK_EXTERNAL:-true}
     name: ${PUBLIC_NETWORK_NAME:-traefik-public}
     driver: ${PUBLIC_NETWORK_DRIVER:-overlay}
     attachable: ${PUBLIC_NETWORK_ATTACHABLE:-true}
