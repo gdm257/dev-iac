@@ -13,9 +13,5 @@
 # https://github.com/kimdre/doco-cd/wiki/Deploy-Settings
 
 ---
-name: swarm-cronjob
-working_dir: deploy/docker/swarm-cronjob
-
----
 name: dpanel
 working_dir: deploy/docker/dpanel
