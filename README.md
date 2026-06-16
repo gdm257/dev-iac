@@ -11,9 +11,9 @@ git add .
 git push origin main
 # Deploy doco-cd to initialize GitOps
 cd deploy/docker/doco-cd
-vim .env
-docker compose --project-name temp up # after "gitops" target bootstrap, press ctrl-c to stop this container
-docker container rm --force temp_doco-cd
+vim .bootstrap.env
+docker compose --env-file .bootstrap.env up # after "gitops" target bootstrap, press ctrl-c to stop this container
+docker compose --env-file .bootstrap.env down
 
 # ==== Local-side ====
 # GitOps: modify files and git push to enable Continuous Deployment
