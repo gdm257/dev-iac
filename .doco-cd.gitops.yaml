@@ -6,6 +6,7 @@ external_secrets:
   WEBHOOK_SECRET: "xxxxxxxxxxxxx:prod:/doco-cd/doco-cd/WEBHOOK_SECRET"
   API_SECRET: "xxxxxxxxxxxxx:prod:/doco-cd/doco-cd/API_SECRET"
   GIT_ACCESS_TOKEN: "xxxxxxxxxxxxx:prod:/doco-cd/doco-cd/GIT_ACCESS_TOKEN"
+  GIT_COMMIT_STATUS: "xxxxxxxxxxxxx:prod:/doco-cd/doco-cd/GIT_COMMIT_STATUS"
   POLL_CONFIG: "xxxxxxxxxxxxx:prod:/doco-cd/doco-cd/POLL_CONFIG"
   # https://github.com/kimdre/doco-cd/wiki/External-Secrets
   SECRET_PROVIDER: "xxxxxxxxxxxxx:prod:/doco-cd/doco-cd/SECRET_PROVIDER"
@@ -13,7 +14,6 @@ external_secrets:
   SECRET_PROVIDER_CLIENT_ID: "xxxxxxxxxxxxx:prod:/doco-cd/doco-cd/SECRET_PROVIDER_CLIENT_ID"
   SECRET_PROVIDER_CLIENT_SECRET: "xxxxxxxxxxxxx:prod:/doco-cd/doco-cd/SECRET_PROVIDER_CLIENT_SECRET"
   # Common
-  REPLICAS: "xxxxxxxxxxxxx:prod:/doco-cd/doco-cd/REPLICAS"
   PUBLIC_NETWORK_NAME: "xxxxxxxxxxxxx:prod:/doco-cd/common/PUBLIC_NETWORK_NAME"
   PUBLIC_NETWORK_DRIVER: "xxxxxxxxxxxxx:prod:/doco-cd/common/PUBLIC_NETWORK_DRIVER"
   PUBLIC_NETWORK_ATTACHABLE: "xxxxxxxxxxxxx:prod:/doco-cd/common/PUBLIC_NETWORK_ATTACHABLE"

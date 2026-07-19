@@ -1,0 +1,27 @@
+---
+name: doco-cd-updater
+working_dir: deploy/docker/doco-cd
+environment:
+  VOLUME_NAME: doco-cd-updater
+  PUBLIC_NETWORK_NAME: doco-cd-updater
+  PUBLIC_NETWORK_EXTERNAL: "false"
+  TRAEFIK_ENABLE: "false"
+  POLL_CONFIG: |-
+    - url: https://github.com/gdm257/dev-iac.git
+      reference: main
+      intervel: 300
+      target: gitops
+  SCHEDULER_ENABLED: "false"
+external_secrets:
+  # https://github.com/kimdre/doco-cd/wiki/App-Settings
+  GIT_ACCESS_TOKEN: "xxxxxxxxxxxxx:prod:/doco-cd/doco-cd/GIT_ACCESS_TOKEN"
+  GIT_COMMIT_STATUS: "xxxxxxxxxxxxx:prod:/doco-cd/doco-cd/GIT_COMMIT_STATUS"
+  # https://github.com/kimdre/doco-cd/wiki/External-Secrets
+  SECRET_PROVIDER: "xxxxxxxxxxxxx:prod:/doco-cd/doco-cd/SECRET_PROVIDER"
+  SECRET_PROVIDER_SITE_URL: "xxxxxxxxxxxxx:prod:/doco-cd/doco-cd/SECRET_PROVIDER_SITE_URL"
+  SECRET_PROVIDER_CLIENT_ID: "xxxxxxxxxxxxx:prod:/doco-cd/doco-cd/SECRET_PROVIDER_CLIENT_ID"
+  SECRET_PROVIDER_CLIENT_SECRET: "xxxxxxxxxxxxx:prod:/doco-cd/doco-cd/SECRET_PROVIDER_CLIENT_SECRET"
+  # Common
+  PUBLIC_NETWORK_DRIVER: "xxxxxxxxxxxxx:prod:/doco-cd/common/PUBLIC_NETWORK_DRIVER"
+  PUBLIC_NETWORK_ATTACHABLE: "xxxxxxxxxxxxx:prod:/doco-cd/common/PUBLIC_NETWORK_ATTACHABLE"
+  TZ: "xxxxxxxxxxxxx:prod:/doco-cd/common/TZ"
