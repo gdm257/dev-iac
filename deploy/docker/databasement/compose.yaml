@@ -1,0 +1,74 @@
+volumes:
+  data:
+    external: ${VOLUME_EXTERNAL:-false}
+    name: ${VOLUME_NAME:-databasement_data}
+    driver: ${VOLUME_DRIVER:-local}
+
+networks:
+  public:
+    external: ${PUBLIC_NETWORK_EXTERNAL:-true}
+    name: ${PUBLIC_NETWORK_NAME:-traefik-public}
+    driver: ${PUBLIC_NETWORK_DRIVER:-overlay}
+    attachable: ${PUBLIC_NETWORK_ATTACHABLE:-true}
+
+services:
+  databasement:
+    image: ${IMAGE_NAME:-ghcr.io/david-crty/databasement}:${IMAGE_VERSION:-1}
+    networks:
+      - public
+    environment:
+      - TZ=${TZ:-Asia/Tokyo}
+      # Required, generate with:
+      # docker run --rm ghcr.io/david-crty/databasement:1 php artisan key:generate --show
+      - APP_KEY=${APP_KEY}
+      - APP_URL=${APP_URL:-http://localhost:2226}
+      # Application database defaults to SQLite in the data volume.
+      # Switch to MySQL/PostgreSQL with DB_CONNECTION=mysql|pgsql plus
+      # DB_HOST/DB_PORT/DB_DATABASE/DB_USERNAME/DB_PASSWORD, or a single
+      # DB_URL=mysql://user:pass@host:3306/databasement
+      - DB_CONNECTION=${DB_CONNECTION:-sqlite}
+      - DB_DATABASE=${DB_DATABASE:-/data/database.sqlite}
+      - DB_HOST=${DB_HOST:-}
+      - DB_PORT=${DB_PORT:-}
+      - DB_USERNAME=${DB_USERNAME:-}
+      - DB_PASSWORD=${DB_PASSWORD:-}
+      - DB_URL=${DB_URL:-}
+    volumes:
+      - data:/data
+    deploy:
+      labels:
+        - "traefik.enable=${TRAEFIK_ENABLE:-true}"
+        # The image inherits ports from its FrankenPHP base, point Traefik at 2226 explicitly
+        - "traefik.http.services.databasement.loadbalancer.server.port=2226"
+        - "traefik.http.routers.databasement-http.rule=Host(`${APP_NAME:-databasement}.${BASE_DOMAIN:-localhost}`)"
+        - "traefik.http.routers.databasement-http.entrypoints=${TRAEFIK_HTTP_ENTRYPOINT:-http}"
+        - "traefik.http.routers.databasement-http.middlewares=${TRAEFIK_HTTP_MIDDLEWARES:-https-redirect}"
+        - "traefik.http.routers.databasement-http.service=databasement"
+        - "traefik.http.routers.databasement-https.rule=Host(`${APP_NAME:-databasement}.${BASE_DOMAIN:-localhost}`)"
+        - "traefik.http.routers.databasement-https.entrypoints=${TRAEFIK_HTTPS_ENTRYPOINT:-https}"
+        - "traefik.http.routers.databasement-https.tls=${TRAEFIK_TLS:-true}"
+        - "traefik.http.routers.databasement-https.tls.certresolver=${TRAEFIK_TLS_RESOLVER:-myresolver}"
+        - "traefik.http.routers.databasement-https.middlewares=${TRAEFIK_HTTPS_MIDDLEWARES:-}"
+        - "traefik.http.routers.databasement-https.service=databasement"
+      replicas: ${REPLICAS:-1}
+
+  worker:
+    image: ${IMAGE_NAME:-ghcr.io/david-crty/databasement}:${IMAGE_VERSION:-1}
+    networks:
+      - public
+    environment:
+      - TZ=${TZ:-Asia/Tokyo}
+      - APP_KEY=${APP_KEY}
+      - DB_CONNECTION=${DB_CONNECTION:-sqlite}
+      - DB_DATABASE=${DB_DATABASE:-/data/database.sqlite}
+      - DB_HOST=${DB_HOST:-}
+      - DB_PORT=${DB_PORT:-}
+      - DB_USERNAME=${DB_USERNAME:-}
+      - DB_PASSWORD=${DB_PASSWORD:-}
+      - DB_URL=${DB_URL:-}
+    volumes:
+      - data:/data
+    command: sh -c "php artisan db:wait --check-migrations && php artisan queue:work --queue=backups,default --tries=3 --timeout=3600 --sleep=3 --max-jobs=1000"
+    deploy:
+      # increase to run more backups in parallel
+      replicas: ${WORKER_REPLICAS:-1}
