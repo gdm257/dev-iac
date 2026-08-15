@@ -1,0 +1,37 @@
+volumes:
+  data:
+    external: ${VOLUME_EXTERNAL:-false}
+    name: ${VOLUME_NAME:-databasus_data}
+    driver: ${VOLUME_DRIVER:-local}
+
+networks:
+  public:
+    external: ${PUBLIC_NETWORK_EXTERNAL:-true}
+    name: ${PUBLIC_NETWORK_NAME:-traefik-public}
+    driver: ${PUBLIC_NETWORK_DRIVER:-overlay}
+    attachable: ${PUBLIC_NETWORK_ATTACHABLE:-true}
+
+services:
+  databasus:
+    image: ${IMAGE_NAME:-ghcr.io/databasus/databasus}:${IMAGE_VERSION:-latest}
+    networks:
+      - public
+    environment:
+      - TZ=${TZ:-Asia/Tokyo}
+    volumes:
+      - data:/databasus-data
+    deploy:
+      labels:
+        - "traefik.enable=${TRAEFIK_ENABLE:-true}"
+        - "traefik.http.services.databasus.loadbalancer.server.port=4005"
+        - "traefik.http.routers.databasus-http.rule=Host(`${APP_NAME:-databasus}.${BASE_DOMAIN:-localhost}`)"
+        - "traefik.http.routers.databasus-http.entrypoints=${TRAEFIK_HTTP_ENTRYPOINT:-http}"
+        - "traefik.http.routers.databasus-http.middlewares=${TRAEFIK_HTTP_MIDDLEWARES:-https-redirect}"
+        - "traefik.http.routers.databasus-http.service=databasus"
+        - "traefik.http.routers.databasus-https.rule=Host(`${APP_NAME:-databasus}.${BASE_DOMAIN:-localhost}`)"
+        - "traefik.http.routers.databasus-https.entrypoints=${TRAEFIK_HTTPS_ENTRYPOINT:-https}"
+        - "traefik.http.routers.databasus-https.tls=${TRAEFIK_TLS:-true}"
+        - "traefik.http.routers.databasus-https.tls.certresolver=${TRAEFIK_TLS_RESOLVER:-myresolver}"
+        - "traefik.http.routers.databasus-https.middlewares=${TRAEFIK_HTTPS_MIDDLEWARES:-}"
+        - "traefik.http.routers.databasus-https.service=databasus"
+      replicas: ${REPLICAS:-1}
