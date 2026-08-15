@@ -1,0 +1,50 @@
+volumes:
+  config:
+    external: ${VOLUME_EXTERNAL:-false}
+    name: ${VOLUME_NAME:-zoraxy_config}
+    driver: ${VOLUME_DRIVER:-local}
+  plugin:
+    external: ${VOLUME_EXTERNAL:-false}
+    name: ${VOLUME_NAME_2:-zoraxy_plugin}
+    driver: ${VOLUME_DRIVER:-local}
+
+networks:
+  public:
+    external: ${PUBLIC_NETWORK_EXTERNAL:-true}
+    name: ${PUBLIC_NETWORK_NAME:-traefik-public}
+    driver: ${PUBLIC_NETWORK_DRIVER:-overlay}
+    attachable: ${PUBLIC_NETWORK_ATTACHABLE:-true}
+
+services:
+  zoraxy:
+    image: ${IMAGE_NAME:-zoraxydocker/zoraxy}:${IMAGE_VERSION:-latest}
+    networks:
+      - public
+    environment:
+      - TZ=${TZ:-Asia/Tokyo}
+      - FASTGEOIP=${FASTGEOIP:-false}
+    volumes:
+      - config:/opt/zoraxy/config
+      - plugin:/opt/zoraxy/plugin
+      - ${DOCKER_SOCKET:-/var/run/docker.sock}:/var/run/docker.sock
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    ports:
+      - "${HTTP_PORT:-80}:80"
+      - "${HTTPS_PORT:-43}:443"
+      - "${DASHBOARD_PORT:-8000}:8000"
+    deploy:
+      labels:
+        - "traefik.enable=${TRAEFIK_ENABLE:-true}"
+        - "traefik.http.services.zoraxy.loadbalancer.server.port=8000"
+        - "traefik.http.routers.zoraxy-http.rule=Host(`${APP_NAME:-zoraxy}.${BASE_DOMAIN:-localhost}`)"
+        - "traefik.http.routers.zoraxy-http.entrypoints=${TRAEFIK_HTTP_ENTRYPOINT:-http}"
+        - "traefik.http.routers.zoraxy-http.middlewares=${TRAEFIK_HTTP_MIDDLEWARES:-https-redirect}"
+        - "traefik.http.routers.zoraxy-http.service=zoraxy"
+        - "traefik.http.routers.zoraxy-https.rule=Host(`${APP_NAME:-zoraxy}.${BASE_DOMAIN:-localhost}`)"
+        - "traefik.http.routers.zoraxy-https.entrypoints=${TRAEFIK_HTTPS_ENTRYPOINT:-https}"
+        - "traefik.http.routers.zoraxy-https.tls=${TRAEFIK_TLS:-true}"
+        - "traefik.http.routers.zoraxy-https.tls.certresolver=${TRAEFIK_TLS_RESOLVER:-myresolver}"
+        - "traefik.http.routers.zoraxy-https.middlewares=${TRAEFIK_HTTPS_MIDDLEWARES:-}"
+        - "traefik.http.routers.zoraxy-https.service=zoraxy"
+      replicas: ${REPLICAS:-1}
