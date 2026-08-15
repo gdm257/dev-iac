@@ -1,0 +1,46 @@
+volumes:
+  data:
+    external: ${VOLUME_EXTERNAL:-false}
+    name: ${VOLUME_NAME:-dbackup_data}
+    driver: ${VOLUME_DRIVER:-local}
+  backups:
+    external: ${VOLUME_EXTERNAL:-false}
+    name: ${VOLUME_NAME_2:-dbackup_backups}
+    driver: ${VOLUME_DRIVER:-local}
+
+networks:
+  public:
+    external: ${PUBLIC_NETWORK_EXTERNAL:-true}
+    name: ${PUBLIC_NETWORK_NAME:-traefik-public}
+    driver: ${PUBLIC_NETWORK_DRIVER:-overlay}
+    attachable: ${PUBLIC_NETWORK_ATTACHABLE:-true}
+
+services:
+  dbackup:
+    image: ${IMAGE_NAME:-ghcr.io/skyfay/dbackup}:${IMAGE_VERSION:-latest}
+    networks:
+      - public
+    environment:
+      - TZ=${TZ:-Asia/Tokyo}
+      - ENCRYPTION_KEY=${ENCRYPTION_KEY} # openssl rand -hex 32
+      - BETTER_AUTH_SECRET=${BETTER_AUTH_SECRET} # openssl rand -base64 32
+      - BETTER_AUTH_URL=${BETTER_AUTH_URL}
+      - DISABLE_HTTPS=${DISABLE_HTTPS:-true}
+    volumes:
+      - data:/data
+      - backups:/backups
+    deploy:
+      labels:
+        - "traefik.enable=${TRAEFIK_ENABLE:-true}"
+        - "traefik.http.services.dbackup.loadbalancer.server.port=3000"
+        - "traefik.http.routers.dbackup-http.rule=Host(`${APP_NAME:-dbackup}.${BASE_DOMAIN:-localhost}`)"
+        - "traefik.http.routers.dbackup-http.entrypoints=${TRAEFIK_HTTP_ENTRYPOINT:-http}"
+        - "traefik.http.routers.dbackup-http.middlewares=${TRAEFIK_HTTP_MIDDLEWARES:-https-redirect}"
+        - "traefik.http.routers.dbackup-http.service=dbackup"
+        - "traefik.http.routers.dbackup-https.rule=Host(`${APP_NAME:-dbackup}.${BASE_DOMAIN:-localhost}`)"
+        - "traefik.http.routers.dbackup-https.entrypoints=${TRAEFIK_HTTPS_ENTRYPOINT:-https}"
+        - "traefik.http.routers.dbackup-https.tls=${TRAEFIK_TLS:-true}"
+        - "traefik.http.routers.dbackup-https.tls.certresolver=${TRAEFIK_TLS_RESOLVER:-myresolver}"
+        - "traefik.http.routers.dbackup-https.middlewares=${TRAEFIK_HTTPS_MIDDLEWARES:-}"
+        - "traefik.http.routers.dbackup-https.service=dbackup"
+      replicas: ${REPLICAS:-1}
