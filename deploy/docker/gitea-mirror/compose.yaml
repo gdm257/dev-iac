@@ -74,6 +74,7 @@ services:
       timeout: 10s
       retries: 5
       start_period: 15s
+    scale: ${REPLICAS:-1}
     deploy:
       labels:
         - "traefik.enable=${TRAEFIK_ENABLE:-true}"

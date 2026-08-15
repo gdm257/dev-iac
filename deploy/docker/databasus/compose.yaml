@@ -20,6 +20,7 @@ services:
       - TZ=${TZ:-Asia/Tokyo}
     volumes:
       - data:/databasus-data
+    scale: ${REPLICAS:-1}
     deploy:
       labels:
         - "traefik.enable=${TRAEFIK_ENABLE:-true}"

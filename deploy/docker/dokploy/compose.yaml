@@ -19,6 +19,7 @@ services:
     volumes:
       - ${DOCKER_SOCKET:-/var/run/docker.sock}:/var/run/docker.sock
       - data:/etc/dokploy
+    scale: ${REPLICAS:-1}
     deploy:
       labels:
         # Enable Traefik for this service

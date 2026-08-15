@@ -18,6 +18,7 @@ services:
       - public
     volumes:
       - data:/data
+    scale: ${REPLICAS:-1}
     deploy:
       labels:
         - "traefik.enable=${TRAEFIK_ENABLE:-true}"

@@ -29,6 +29,7 @@ services:
     volumes:
       - data:/data
       - backups:/backups
+    scale: ${REPLICAS:-1}
     deploy:
       labels:
         - "traefik.enable=${TRAEFIK_ENABLE:-true}"

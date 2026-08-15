@@ -10,6 +10,7 @@ services:
     image: ${IMAGE_NAME:-traefik/whoami}:${IMAGE_VERSION:-latest}
     networks:
       - public
+    scale: ${REPLICAS:-1}
     deploy:
       labels:
         - "traefik.enable=${TRAEFIK_ENABLE:-true}"

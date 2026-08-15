@@ -31,6 +31,7 @@ services:
       - ${DOCKER_SOCKET:-/var/run/docker.sock}:/var/run/docker.sock
       - data:/var/lib/dokku
       - ./config/plugin-list:/var/lib/dokku/plugin-list:ro
+    scale: ${REPLICAS:-1}
     deploy:
       labels:
         - "traefik.enable=${TRAEFIK_ENABLE:-true}"
