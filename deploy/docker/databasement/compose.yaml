@@ -35,6 +35,36 @@ services:
       - DB_USERNAME=${DB_USERNAME:-}
       - DB_PASSWORD=${DB_PASSWORD:-}
       - DB_URL=${DB_URL:-}
+      # SSO
+      - OAUTH_ONLY_MODE=${OAUTH_ONLY_MODE:-false}
+      - OAUTH_AUTO_CREATE_USERS=${OAUTH_AUTO_CREATE_USERS:-false}
+      - OAUTH_AUTO_LINK_BY_EMAIL=${OAUTH_AUTO_LINK_BY_EMAIL:-true}
+      - OAUTH_DEFAULT_ROLE=${OAUTH_DEFAULT_ROLE:-} # built-ins: viewer, member, admin
+      - OAUTH_DEFAULT_ORGANIZATION_ID=${OAUTH_DEFAULT_ORGANIZATION_ID:-}
+      # https://your-domain.com/oauth/github/callback
+      - OAUTH_GITHUB_ENABLED=${OAUTH_GITHUB_ENABLED:-false}
+      - OAUTH_GITHUB_CLIENT_ID=${OAUTH_GITHUB_CLIENT_ID:-}
+      - OAUTH_GITHUB_CLIENT_SECRET=${OAUTH_GITHUB_CLIENT_SECRET:-}
+      # https://your-domain.com/oauth/gitlab/callback
+      - OAUTH_GITLAB_ENABLED=${OAUTH_GITLAB_ENABLED:-false}
+      - OAUTH_GITLAB_CLIENT_ID=${OAUTH_GITLAB_CLIENT_ID:-}
+      - OAUTH_GITLAB_CLIENT_SECRET=${OAUTH_GITLAB_CLIENT_SECRET:-}
+      - OAUTH_GITLAB_HOST=${OAUTH_GITLAB_HOST:-https://gitlab.com}
+      # https://your-domain.com/oauth/google/callback
+      - OAUTH_GOOGLE_ENABLED=${OAUTH_GOOGLE_ENABLED:-false}
+      - OAUTH_GOOGLE_CLIENT_ID=${OAUTH_GOOGLE_CLIENT_ID:-}
+      - OAUTH_GOOGLE_CLIENT_SECRET=${OAUTH_GOOGLE_CLIENT_SECRET:-}
+      # https://your-domain.com/oauth/oidc/callback
+      - OAUTH_OIDC_ENABLED=${OAUTH_OIDC_ENABLED:-false}
+      - OAUTH_OIDC_BASE_URL=${OAUTH_OIDC_BASE_URL:-}
+      - OAUTH_OIDC_SCOPES=${OAUTH_OIDC_SCOPES:-} # comma-separated
+      - OAUTH_OIDC_CLIENT_ID=${OAUTH_OIDC_CLIENT_ID:-}
+      - OAUTH_OIDC_CLIENT_SECRET=${OAUTH_OIDC_CLIENT_SECRET:-}
+      - OAUTH_OIDC_LABEL=${OAUTH_OIDC_LABEL:-SSO}
+      - OAUTH_OIDC_ROLE_CLAIM=${OAUTH_OIDC_ROLE_CLAIM:-groups} # e.g. groups, roles, realm_access
+      - OAUTH_OIDC_ROLE_MAP_VIEWER=${OAUTH_OIDC_ROLE_MAP_VIEWER:-}
+      - OAUTH_OIDC_ROLE_MAP_MEMBER=${OAUTH_OIDC_ROLE_MAP_MEMBER:-}
+      - OAUTH_OIDC_ROLE_MAP_ADMIN=${OAUTH_OIDC_ROLE_MAP_ADMIN:-}
     volumes:
       - data:/data
     scale: ${REPLICAS:-1}
