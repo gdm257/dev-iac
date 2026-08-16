@@ -1,0 +1,45 @@
+services:
+  autorestic:
+    image: ${AR_IMAGE_NAME:-cupcakearmy/autorestic}:${AR_IMAGE_VERSION:-latest}
+    entrypoint: ["/bin/sh", "/entrypoint.sh"]
+    environment:
+      - TZ=${TZ:-Asia/Tokyo}
+      - AR_COMMAND=${AR_COMMAND:-backup} # backup|restore
+      - AR_RESTORE_SNAPSHOT=${AR_RESTORE_SNAPSHOT:-} # snapshot id to restore, latest when empty
+      - AR_CONFIG=${AR_CONFIG:-} # full YAML config content
+      # AUTORESTIC_MAIN_* are mapped onto "main" named backend config
+      - AUTORESTIC_MAIN_RESTIC_PASSWORD=${AR_BACKEND_KEY} # openssl rand -base64 32
+      - AR_BACKEND_TYPE=${AR_BACKEND_TYPE:-local} # local|b2|s3|sftp|rest
+      - AR_BACKEND_PATH=${AR_BACKEND_PATH:-${AR_BACKEND_MOUNT:-/var/lib/autorestic}/${COMPOSE_PROJECT_NAME:-autorestic}} # per-project restic repo dir; set the same path and AR_BACKEND_KEY on all instances to share one repo (stagger AR_SCHEDULE: prune takes an exclusive restic lock)
+      - AR_BACKEND_MOUNT=${AR_BACKEND_MOUNT:-/var/lib/autorestic} # parent dir of local repos, bind-mounted at the same path
+      - AR_BACKUP_VOLUMES=${AR_BACKUP_VOLUMES:-${COMPOSE_PROJECT_NAME:-autorestic}_data}
+      - AR_FORGET=${AR_FORGET:-prune} # yes|no|prune
+      - AR_FORGET_OPTIONS=${AR_FORGET_OPTIONS:---keep-daily 7 --keep-weekly 4 --keep-monthly 6}
+      # Secondary backend: every snapshot backed up to "main" is copied to
+      # this "offsite" backend (restic copy); offsite is forgotten with the
+      # same AR_FORGET options. Leave AR_OFFSITE_TYPE empty to disable.
+      # AUTORESTIC_OFFSITE_* envs can be added the same way (e.g. s3 creds).
+      - AUTORESTIC_OFFSITE_RESTIC_PASSWORD=${AR_OFFSITE_KEY:-${AR_BACKEND_KEY}} # openssl rand -base64 32, defaults to AR_BACKEND_KEY
+      - AR_OFFSITE_TYPE=${AR_OFFSITE_TYPE:-} # local|b2|s3|sftp|rest, empty = no copy
+      - AR_OFFSITE_PATH=${AR_OFFSITE_PATH:-} # repository path/URL, required when AR_OFFSITE_TYPE is set
+    volumes:
+      - ${DOCKER_SOCKET:-/var/run/docker.sock}:/var/run/docker.sock
+      - ${AR_BACKEND_MOUNT:-/var/lib/autorestic}:${AR_BACKEND_MOUNT:-/var/lib/autorestic}
+      - ./entrypoint.sh:/entrypoint.sh:ro
+    labels:
+      - cd.doco.job.enabled=${AR_JOB_ENABLED:-true}
+      - cd.doco.job.schedule=${AR_SCHEDULE:-0 4 * * *}
+      - cd.doco.job.skip_running=true
+    deploy:
+      placement:
+        constraints:
+          - ${AR_CONSTRAINT_1:-node.role != unused}
+          - ${AR_CONSTRAINT_2:-node.role != unused}
+          - ${AR_CONSTRAINT_3:-node.role != unused}
+          - ${AR_CONSTRAINT_4:-node.role != unused}
+          - ${AR_CONSTRAINT_5:-node.role != unused}
+          - ${AR_CONSTRAINT_6:-node.role != unused}
+          - ${AR_CONSTRAINT_7:-node.role != unused}
+          - ${AR_CONSTRAINT_8:-node.role != unused}
+          - ${AR_CONSTRAINT_9:-node.role != unused}
+          - ${AR_CONSTRAINT_10:-node.role != unused}
