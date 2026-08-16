@@ -18,9 +18,11 @@ services:
       - public
     environment:
       - TZ=${TZ:-Asia/Tokyo}
-      # Required, generate with:
+      # Used for data encryption, generate with:
+      # echo "base64:$(openssl rand -base64 32)"
+      # or
       # docker run --rm ghcr.io/david-crty/databasement:1 php artisan key:generate --show
-      - APP_KEY=${APP_KEY}
+      - APP_KEY=${APP_KEY:-}
       - APP_URL=${APP_URL:-http://localhost:2226}
       # Application database defaults to SQLite in the data volume.
       # Switch to MySQL/PostgreSQL with DB_CONNECTION=mysql|pgsql plus
