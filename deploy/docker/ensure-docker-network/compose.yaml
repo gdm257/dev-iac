@@ -1,12 +1,24 @@
-networks:
-  net:
-    external: false
-    name: ${NETWORK_NAME:-traefik-public}
-    driver: ${NETWORK_DRIVER:-overlay}
-    attachable: ${NETWORK_ATTACHABLE:-true}
-
 services:
-  pause:
-    image: ${IMAGE_NAME:-k8s.gcr.io/pause}:${IMAGE_VERSION:-3.9}
-    networks:
-      - net
+  ensure-network:
+    image: ${IMAGE_NAME:-docker}:${IMAGE_VERSION:-28-cli}
+    command:
+      - sh
+      - -c
+      - |
+        docker network inspect "$${NETWORK_NAME}" >/dev/null 2>&1 || {
+          set -- --driver "$${NETWORK_DRIVER}"
+          [ "$${NETWORK_ATTACHABLE}" = "false" ] || set -- "$@" --attachable
+          docker network create "$$@" "$${NETWORK_NAME}"
+        }
+        exec tail -f /dev/null
+    environment:
+      DOCKER_HOST: unix://${DOCKER_SOCKET:-/var/run/docker.sock}
+      NETWORK_NAME: ${NETWORK_NAME:-traefik-public}
+      NETWORK_DRIVER: ${NETWORK_DRIVER:-overlay}
+      NETWORK_ATTACHABLE: ${NETWORK_ATTACHABLE:-true}
+    volumes:
+      - ${DOCKER_SOCKET:-/var/run/docker.sock}:/var/run/docker.sock
+    deploy:
+      placement:
+        constraints:
+          - node.role == manager

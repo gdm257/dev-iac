@@ -1,6 +1,7 @@
 ---
 name: ensure-public-network
 working_dir: deploy/docker/ensure-docker-network
+force_recreate: true
 external_secrets:
   NETWORK_NAME: "xxxxxxxxxxxxx:prod:/doco-cd/common/PUBLIC_NETWORK_NAME"
   NETWORK_DRIVER: "xxxxxxxxxxxxx:prod:/doco-cd/common/PUBLIC_NETWORK_DRIVER"
