@@ -5,17 +5,10 @@ services:
       - sh
       - -c
       - |
-        docker network inspect "$${NETWORK_NAME}" >/dev/null 2>&1 || {
-          set -- --driver "$${NETWORK_DRIVER}"
-          [ "$${NETWORK_ATTACHABLE}" = "false" ] || set -- "$@" --attachable
-          docker network create "$$@" "$${NETWORK_NAME}"
-        }
+        docker network inspect ${NETWORK_NAME:-traefik-public} >/dev/null 2>&1 || docker network create --driver ${NETWORK_DRIVER:-overlay} --attachable ${NETWORK_NAME:-traefik-public}
         exec tail -f /dev/null
     environment:
       DOCKER_HOST: unix://${DOCKER_SOCKET:-/var/run/docker.sock}
-      NETWORK_NAME: ${NETWORK_NAME:-traefik-public}
-      NETWORK_DRIVER: ${NETWORK_DRIVER:-overlay}
-      NETWORK_ATTACHABLE: ${NETWORK_ATTACHABLE:-true}
     volumes:
       - ${DOCKER_SOCKET:-/var/run/docker.sock}:/var/run/docker.sock
     deploy:
