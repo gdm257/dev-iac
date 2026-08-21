@@ -7,7 +7,6 @@ services:
       - TZ=${TZ:-Asia/Tokyo}
       - LOG_LEVEL=${LOG_LEVEL:-info}
       - LOG_JSON=${LOG_JSON:-false}
-    scale: ${REPLICAS:-1}
     deploy:
       replicas: ${REPLICAS:-1}
       placement:

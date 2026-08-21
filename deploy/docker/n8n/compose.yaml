@@ -23,7 +23,6 @@ services:
       - N8N_RUNNERS_ENABLED=${N8N_RUNNERS_ENABLED:-true}
     volumes:
       - data:/home/node/.n8n
-    scale: ${REPLICAS:-1}
     deploy:
       labels:
         - "traefik.enable=${TRAEFIK_ENABLE:-true}"

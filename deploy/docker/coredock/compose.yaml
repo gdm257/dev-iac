@@ -12,7 +12,6 @@ services:
       # - COREDOCK_NAMESERVERS=${COREDOCK_NAMESERVERS:-10.0.0.2:53} # (optional) other coredock hosts
     volumes:
       - ${DOCKER_SOCKET:-/var/run/docker.sock}:/run/docker.sock
-    scale: ${REPLICAS:-1}
     deploy:
       replicas: ${REPLICAS:-1}
       placement:

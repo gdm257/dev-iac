@@ -82,7 +82,6 @@ services:
       TEMP_DIR: ${TEMP_DIR:-data/temp}
       TLS_INSECURE_SKIP_VERIFY: ${TLS_INSECURE_SKIP_VERIFY:-true}
       TOKEN_EXPIRES_IN: ${TOKEN_EXPIRES_IN:-48}
-    scale: ${REPLICAS:-1}
     deploy:
       labels:
         - "traefik.enable=${TRAEFIK_ENABLE:-true}"
@@ -121,6 +120,5 @@ services:
       - MEILI_NO_ANALYTICS=true
     volumes:
       - meili_data:/meili_data
-    scale: ${REPLICAS:-1}
     deploy:
       replicas: ${REPLICAS:-1}

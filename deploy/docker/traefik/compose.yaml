@@ -106,7 +106,6 @@ services:
         max-size: "10m"
         max-file: "3"
         compress: "true"
-    scale: ${REPLICAS:-1}
     deploy:
       labels:
         - "traefik.enable=${TRAEFIK_ENABLE:-true}"

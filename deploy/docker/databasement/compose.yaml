@@ -67,7 +67,6 @@ services:
       - OAUTH_OIDC_ROLE_MAP_ADMIN=${OAUTH_OIDC_ROLE_MAP_ADMIN:-}
     volumes:
       - data:/data
-    scale: ${REPLICAS:-1}
     deploy:
       labels:
         - "traefik.enable=${TRAEFIK_ENABLE:-true}"
@@ -102,7 +101,6 @@ services:
     volumes:
       - data:/data
     command: sh -c "php artisan db:wait --check-migrations && php artisan queue:work --queue=backups,default --tries=3 --timeout=3600 --sleep=3 --max-jobs=1000"
-    scale: ${WORKER_REPLICAS:-1}
     deploy:
       # increase to run more backups in parallel
       replicas: ${WORKER_REPLICAS:-1}
