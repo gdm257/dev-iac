@@ -1,11 +1,11 @@
 volumes:
   data:
     external: ${VOLUME_EXTERNAL:-false}
-    name: ${VOLUME_NAME:-dbackup_data}
+    name: ${COMPOSE_PROJECT_NAME:-dbackup}_data
     driver: ${VOLUME_DRIVER:-local}
   backups:
     external: ${VOLUME_EXTERNAL:-false}
-    name: ${VOLUME_NAME_2:-dbackup_backups}
+    name: ${COMPOSE_PROJECT_NAME:-dbackup}_backups
     driver: ${VOLUME_DRIVER:-local}
 
 networks:
@@ -33,11 +33,11 @@ services:
       labels:
         - "traefik.enable=${TRAEFIK_ENABLE:-true}"
         - "traefik.http.services.dbackup.loadbalancer.server.port=3000"
-        - "traefik.http.routers.dbackup-http.rule=Host(`${APP_NAME:-dbackup}.${BASE_DOMAIN:-localhost}`)"
+        - "traefik.http.routers.dbackup-http.rule=Host(`${COMPOSE_PROJECT_NAME:-dbackup}.${BASE_DOMAIN:-localhost}`)"
         - "traefik.http.routers.dbackup-http.entrypoints=${TRAEFIK_HTTP_ENTRYPOINT:-http}"
         - "traefik.http.routers.dbackup-http.middlewares=${TRAEFIK_HTTP_MIDDLEWARES:-https-redirect}"
         - "traefik.http.routers.dbackup-http.service=dbackup"
-        - "traefik.http.routers.dbackup-https.rule=Host(`${APP_NAME:-dbackup}.${BASE_DOMAIN:-localhost}`)"
+        - "traefik.http.routers.dbackup-https.rule=Host(`${COMPOSE_PROJECT_NAME:-dbackup}.${BASE_DOMAIN:-localhost}`)"
         - "traefik.http.routers.dbackup-https.entrypoints=${TRAEFIK_HTTPS_ENTRYPOINT:-https}"
         - "traefik.http.routers.dbackup-https.tls=${TRAEFIK_TLS:-true}"
         - "traefik.http.routers.dbackup-https.tls.certresolver=${TRAEFIK_TLS_RESOLVER:-myresolver}"

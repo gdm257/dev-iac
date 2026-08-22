@@ -1,7 +1,7 @@
 volumes:
   data:
     external: ${VOLUME_EXTERNAL:-false}
-    name: ${VOLUME_NAME:-dokku_data}
+    name: ${COMPOSE_PROJECT_NAME:-dokku}_data
     driver: ${VOLUME_DRIVER:-local}
 
 networks:
@@ -34,11 +34,11 @@ services:
     deploy:
       labels:
         - "traefik.enable=${TRAEFIK_ENABLE:-true}"
-        - "traefik.http.routers.dokku-http.rule=Host(`${APP_NAME:-dokku}.${BASE_DOMAIN:-localhost}`)"
+        - "traefik.http.routers.dokku-http.rule=Host(`${COMPOSE_PROJECT_NAME:-dokku}.${BASE_DOMAIN:-localhost}`)"
         - "traefik.http.routers.dokku-http.entrypoints=${TRAEFIK_HTTP_ENTRYPOINT:-http}"
         - "traefik.http.routers.dokku-http.middlewares=${TRAEFIK_HTTP_MIDDLEWARES:-https-redirect}"
         - "traefik.http.routers.dokku-http.service=dokku"
-        - "traefik.http.routers.dokku-https.rule=Host(`${APP_NAME:-dokku}.${BASE_DOMAIN:-localhost}`)"
+        - "traefik.http.routers.dokku-https.rule=Host(`${COMPOSE_PROJECT_NAME:-dokku}.${BASE_DOMAIN:-localhost}`)"
         - "traefik.http.routers.dokku-https.entrypoints=${TRAEFIK_HTTPS_ENTRYPOINT:-https}"
         - "traefik.http.routers.dokku-https.tls=${TRAEFIK_TLS:-true}"
         - "traefik.http.routers.dokku-https.tls.certresolver=${TRAEFIK_TLS_RESOLVER:-myresolver}"

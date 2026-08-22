@@ -1,7 +1,7 @@
 volumes:
   data:
     external: ${VOLUME_EXTERNAL:-false}
-    name: ${VOLUME_NAME:-databasement_data}
+    name: ${COMPOSE_PROJECT_NAME:-databasement}_data
     driver: ${VOLUME_DRIVER:-local}
 
 networks:
@@ -72,11 +72,11 @@ services:
         - "traefik.enable=${TRAEFIK_ENABLE:-true}"
         # The image inherits ports from its FrankenPHP base, point Traefik at 2226 explicitly
         - "traefik.http.services.databasement.loadbalancer.server.port=2226"
-        - "traefik.http.routers.databasement-http.rule=Host(`${APP_NAME:-databasement}.${BASE_DOMAIN:-localhost}`)"
+        - "traefik.http.routers.databasement-http.rule=Host(`${COMPOSE_PROJECT_NAME:-databasement}.${BASE_DOMAIN:-localhost}`)"
         - "traefik.http.routers.databasement-http.entrypoints=${TRAEFIK_HTTP_ENTRYPOINT:-http}"
         - "traefik.http.routers.databasement-http.middlewares=${TRAEFIK_HTTP_MIDDLEWARES:-https-redirect}"
         - "traefik.http.routers.databasement-http.service=databasement"
-        - "traefik.http.routers.databasement-https.rule=Host(`${APP_NAME:-databasement}.${BASE_DOMAIN:-localhost}`)"
+        - "traefik.http.routers.databasement-https.rule=Host(`${COMPOSE_PROJECT_NAME:-databasement}.${BASE_DOMAIN:-localhost}`)"
         - "traefik.http.routers.databasement-https.entrypoints=${TRAEFIK_HTTPS_ENTRYPOINT:-https}"
         - "traefik.http.routers.databasement-https.tls=${TRAEFIK_TLS:-true}"
         - "traefik.http.routers.databasement-https.tls.certresolver=${TRAEFIK_TLS_RESOLVER:-myresolver}"

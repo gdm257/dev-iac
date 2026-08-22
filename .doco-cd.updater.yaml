@@ -3,7 +3,7 @@ name: doco-cd-updater
 working_dir: deploy/docker/doco-cd
 force_recreate: true
 environment:
-  VOLUME_NAME: doco-cd-updater
+  COMPOSE_PROJECT_NAME: doco-cd-updater
   PUBLIC_NETWORK_NAME: doco-cd-updater
   PUBLIC_NETWORK_EXTERNAL: "false"
   TRAEFIK_ENABLE: "false"

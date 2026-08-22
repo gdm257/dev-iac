@@ -1,7 +1,7 @@
 volumes:
   data:
     external: ${VOLUME_EXTERNAL:-false}
-    name: ${VOLUME_NAME:-n8n_data}
+    name: ${COMPOSE_PROJECT_NAME:-n8n}_data
     driver: ${VOLUME_DRIVER:-local}
 
 networks:
@@ -27,11 +27,11 @@ services:
       labels:
         - "traefik.enable=${TRAEFIK_ENABLE:-true}"
         - "traefik.http.services.n8n.loadbalancer.server.port=5678"
-        - "traefik.http.routers.n8n-http.rule=Host(`${APP_NAME:-n8n}.${BASE_DOMAIN:-localhost}`)"
+        - "traefik.http.routers.n8n-http.rule=Host(`${COMPOSE_PROJECT_NAME:-n8n}.${BASE_DOMAIN:-localhost}`)"
         - "traefik.http.routers.n8n-http.entrypoints=${TRAEFIK_HTTP_ENTRYPOINT:-http}"
         - "traefik.http.routers.n8n-http.middlewares=${TRAEFIK_HTTP_MIDDLEWARES:-https-redirect}"
         - "traefik.http.routers.n8n-http.service=n8n"
-        - "traefik.http.routers.n8n-https.rule=Host(`${APP_NAME:-n8n}.${BASE_DOMAIN:-localhost}`)"
+        - "traefik.http.routers.n8n-https.rule=Host(`${COMPOSE_PROJECT_NAME:-n8n}.${BASE_DOMAIN:-localhost}`)"
         - "traefik.http.routers.n8n-https.entrypoints=${TRAEFIK_HTTPS_ENTRYPOINT:-https}"
         - "traefik.http.routers.n8n-https.tls=${TRAEFIK_TLS:-true}"
         - "traefik.http.routers.n8n-https.tls.certresolver=${TRAEFIK_TLS_RESOLVER:-myresolver}"

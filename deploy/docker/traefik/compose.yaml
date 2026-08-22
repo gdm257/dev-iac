@@ -1,7 +1,7 @@
 volumes:
   data:
     external: ${VOLUME_EXTERNAL:-false}
-    name: ${VOLUME_NAME:-traefik_data}
+    name: ${COMPOSE_PROJECT_NAME:-traefik}_data
     driver: ${VOLUME_DRIVER:-local}
 
 networks:
@@ -119,30 +119,30 @@ services:
         # Traefik services
         - "traefik.http.services.dummy-svc.loadbalancer.server.port=9999" # required by swarm mode
         # Ping routers
-        - "traefik.http.routers.traefik-ping-http.rule=Host(`${APP_NAME:-traefik}.${BASE_DOMAIN:-localhost}`) && PathPrefix(`/ping`)"
+        - "traefik.http.routers.traefik-ping-http.rule=Host(`${COMPOSE_PROJECT_NAME:-traefik}.${BASE_DOMAIN:-localhost}`) && PathPrefix(`/ping`)"
         - "traefik.http.routers.traefik-ping-http.entrypoints=${TRAEFIK_HTTP_ENTRYPOINT:-http}"
         - "traefik.http.routers.traefik-ping-http.middlewares=${TRAEFIK_HTTP_MIDDLEWARES:-https-redirect}"
         - "traefik.http.routers.traefik-ping-http.service=ping@internal"
-        - "traefik.http.routers.traefik-ping-https.rule=Host(`${APP_NAME:-traefik}.${BASE_DOMAIN:-localhost}`) && PathPrefix(`/ping`)"
+        - "traefik.http.routers.traefik-ping-https.rule=Host(`${COMPOSE_PROJECT_NAME:-traefik}.${BASE_DOMAIN:-localhost}`) && PathPrefix(`/ping`)"
         - "traefik.http.routers.traefik-ping-https.entrypoints=${TRAEFIK_HTTPS_ENTRYPOINT:-https}"
         - "traefik.http.routers.traefik-ping-https.tls.certresolver=${TRAEFIK_TLS_RESOLVER:-myresolver}"
         - "traefik.http.routers.traefik-ping-https.service=ping@internal"
         # API routers
-        - "traefik.http.routers.traefik-dashboard-http.rule=Host(`${APP_NAME:-traefik}.${BASE_DOMAIN:-localhost}`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`) || PathPrefix(`${OIDC_CALLBACK_URI:-/oidc/callback}`))"
+        - "traefik.http.routers.traefik-dashboard-http.rule=Host(`${COMPOSE_PROJECT_NAME:-traefik}.${BASE_DOMAIN:-localhost}`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`) || PathPrefix(`${OIDC_CALLBACK_URI:-/oidc/callback}`))"
         - "traefik.http.routers.traefik-dashboard-http.entrypoints=${TRAEFIK_HTTP_ENTRYPOINT:-http}"
         - "traefik.http.routers.traefik-dashboard-http.middlewares=${TRAEFIK_HTTP_MIDDLEWARES:-https-redirect}"
         - "traefik.http.routers.traefik-dashboard-http.service=api@internal"
-        - "traefik.http.routers.traefik-dashboard-https.rule=Host(`${APP_NAME:-traefik}.${BASE_DOMAIN:-localhost}`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`) || PathPrefix(`${OIDC_CALLBACK_URI:-/oidc/callback}`))"
+        - "traefik.http.routers.traefik-dashboard-https.rule=Host(`${COMPOSE_PROJECT_NAME:-traefik}.${BASE_DOMAIN:-localhost}`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`) || PathPrefix(`${OIDC_CALLBACK_URI:-/oidc/callback}`))"
         - "traefik.http.routers.traefik-dashboard-https.entrypoints=${TRAEFIK_HTTPS_ENTRYPOINT:-https}"
         - "traefik.http.routers.traefik-dashboard-https.tls.certresolver=${TRAEFIK_TLS_RESOLVER:-myresolver}"
         - "traefik.http.routers.traefik-dashboard-https.middlewares=${TRAEFIK_HTTPS_MIDDLEWARES:-}"
         - "traefik.http.routers.traefik-dashboard-https.service=api@internal"
         # Root routers
-        - "traefik.http.routers.traefik-dashboard-root-http.rule=Host(`${APP_NAME:-traefik}.${BASE_DOMAIN:-localhost}`) && Path(`/`)"
+        - "traefik.http.routers.traefik-dashboard-root-http.rule=Host(`${COMPOSE_PROJECT_NAME:-traefik}.${BASE_DOMAIN:-localhost}`) && Path(`/`)"
         - "traefik.http.routers.traefik-dashboard-root-http.entrypoints=${TRAEFIK_HTTP_ENTRYPOINT:-http}"
         - "traefik.http.routers.traefik-dashboard-root-http.middlewares=traefik-dashboard-redirect"
         - "traefik.http.routers.traefik-dashboard-root-http.service=api@internal"
-        - "traefik.http.routers.traefik-dashboard-root-https.rule=Host(`${APP_NAME:-traefik}.${BASE_DOMAIN:-localhost}`) && Path(`/`)"
+        - "traefik.http.routers.traefik-dashboard-root-https.rule=Host(`${COMPOSE_PROJECT_NAME:-traefik}.${BASE_DOMAIN:-localhost}`) && Path(`/`)"
         - "traefik.http.routers.traefik-dashboard-root-https.entrypoints=${TRAEFIK_HTTPS_ENTRYPOINT:-https}"
         - "traefik.http.routers.traefik-dashboard-root-https.tls.certresolver=${TRAEFIK_TLS_RESOLVER:-myresolver}"
         - "traefik.http.routers.traefik-dashboard-root-https.middlewares=traefik-dashboard-redirect"

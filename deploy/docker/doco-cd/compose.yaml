@@ -1,7 +1,7 @@
 volumes:
   data:
     external: ${VOLUME_EXTERNAL:-false}
-    name: ${VOLUME_NAME:-doco-cd_data}
+    name: ${COMPOSE_PROJECT_NAME:-doco-cd}_data
     driver: ${VOLUME_DRIVER:-local}
 
 networks:
@@ -39,11 +39,11 @@ services:
       labels:
         - traefik.enable=${TRAEFIK_ENABLE:-true}
         - traefik.http.services.doco-cd.loadbalancer.server.port=80
-        - traefik.http.routers.doco-cd-http.rule=Host(`${APP_NAME:-doco-cd}.${BASE_DOMAIN:-localhost}`)
+        - traefik.http.routers.doco-cd-http.rule=Host(`${COMPOSE_PROJECT_NAME:-doco-cd}.${BASE_DOMAIN:-localhost}`)
         - traefik.http.routers.doco-cd-http.entrypoints=${TRAEFIK_HTTP_ENTRYPOINT:-http}
         - traefik.http.routers.doco-cd-http.middlewares=${TRAEFIK_HTTP_MIDDLEWARES:-https-redirect}
         - traefik.http.routers.doco-cd-http.service=doco-cd
-        - traefik.http.routers.doco-cd-https.rule=Host(`${APP_NAME:-doco-cd}.${BASE_DOMAIN:-localhost}`)
+        - traefik.http.routers.doco-cd-https.rule=Host(`${COMPOSE_PROJECT_NAME:-doco-cd}.${BASE_DOMAIN:-localhost})
         - traefik.http.routers.doco-cd-https.entrypoints=${TRAEFIK_HTTPS_ENTRYPOINT:-https}
         - traefik.http.routers.doco-cd-https.tls=${TRAEFIK_TLS:-true}
         - traefik.http.routers.doco-cd-https.tls.certresolver=${TRAEFIK_TLS_RESOLVER:-myresolver}

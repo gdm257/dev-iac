@@ -1,6 +1,6 @@
 volumes:
   data:
-    name: ${VOLUME_NAME:-mise_data}
+    name: ${COMPOSE_PROJECT_NAME:-mise}_data
     driver: ${VOLUME_DRIVER:-local}
 
 networks:

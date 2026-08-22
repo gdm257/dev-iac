@@ -1,7 +1,7 @@
 volumes:
   data:
     external: ${VOLUME_EXTERNAL:-false}
-    name: ${VOLUME_NAME:-warpgate_data}
+    name: ${COMPOSE_PROJECT_NAME:-warpgate}_data
     driver: ${VOLUME_DRIVER:-local}
 
 networks:
@@ -27,11 +27,11 @@ services:
         - "traefik.tcp.services.warpgate-mysql.loadbalancer.server.port=33306"
         - "traefik.tcp.services.warpgate-postgresql.loadbalancer.server.port=55432"
 
-        - "traefik.http.routers.warpgate-http.rule=Host(`${APP_NAME:-warpgate}.${BASE_DOMAIN:-localhost}`) || Host(`${APP_NAME:-warpgate}-*.${BASE_DOMAIN:-localhost}`)"
+        - "traefik.http.routers.warpgate-http.rule=Host(`${COMPOSE_PROJECT_NAME:-warpgate}.${BASE_DOMAIN:-localhost}`) || Host(`${COMPOSE_PROJECT_NAME:-warpgate}-*.${BASE_DOMAIN:-localhost}`)"
         - "traefik.http.routers.warpgate-http.entrypoints=${TRAEFIK_HTTP_ENTRYPOINT:-http}"
         - "traefik.http.routers.warpgate-http.middlewares=${TRAEFIK_HTTP_MIDDLEWARES:-https-redirect}"
         - "traefik.http.routers.warpgate-http.service=warpgate"
-        - "traefik.http.routers.warpgate-https.rule=Host(`${APP_NAME:-warpgate}.${BASE_DOMAIN:-localhost}`) || Host(`${APP_NAME:-warpgate}-*.${BASE_DOMAIN:-localhost}`)"
+        - "traefik.http.routers.warpgate-https.rule=Host(`${COMPOSE_PROJECT_NAME:-warpgate}.${BASE_DOMAIN:-localhost}`) || Host(`${COMPOSE_PROJECT_NAME:-warpgate}-*.${BASE_DOMAIN:-localhost}`)"
         - "traefik.http.routers.warpgate-https.entrypoints=${TRAEFIK_HTTPS_ENTRYPOINT:-https}"
         - "traefik.http.routers.warpgate-https.tls=${TRAEFIK_TLS:-true}"
         - "traefik.http.routers.warpgate-https.tls.certresolver=${TRAEFIK_TLS_RESOLVER:-myresolver}"
@@ -39,14 +39,14 @@ services:
         - "traefik.http.routers.warpgate-https.service=warpgate"
 
         - "traefik.tcp.routers.warpgate-ssh.entrypoints=ssh"
-        - "traefik.tcp.routers.warpgate-ssh.rule=HostSNI(`${APP_NAME:-warpgate}-ssh-*.${BASE_DOMAIN:-localhost}`)"
+        - "traefik.tcp.routers.warpgate-ssh.rule=HostSNI(`${COMPOSE_PROJECT_NAME:-warpgate}-ssh-*.${BASE_DOMAIN:-localhost}`)"
         - "traefik.tcp.routers.warpgate-ssh.service=warpgate-ssh"
 
         - "traefik.tcp.routers.warpgate-mysql.entrypoints=mysql"
-        - "traefik.tcp.routers.warpgate-mysql.rule=HostSNI(`${APP_NAME:-warpgate}-mysql-*.${BASE_DOMAIN:-localhost}`)"
+        - "traefik.tcp.routers.warpgate-mysql.rule=HostSNI(`${COMPOSE_PROJECT_NAME:-warpgate}-mysql-*.${BASE_DOMAIN:-localhost}`)"
         - "traefik.tcp.routers.warpgate-mysql.service=warpgate-mysql"
 
         - "traefik.tcp.routers.warpgate-postgresql.entrypoints=postgresql"
-        - "traefik.tcp.routers.warpgate-postgresql.rule=HostSNI(`${APP_NAME:-warpgate}-postgresql-*.${BASE_DOMAIN:-localhost}`)"
+        - "traefik.tcp.routers.warpgate-postgresql.rule=HostSNI(`${COMPOSE_PROJECT_NAME:-warpgate}-postgresql-*.${BASE_DOMAIN:-localhost}`)"
         - "traefik.tcp.routers.warpgate-postgresql.service=warpgate-postgresql"
       replicas: ${REPLICAS:-1}

@@ -1,11 +1,11 @@
 volumes:
   config:
     external: ${VOLUME_EXTERNAL:-false}
-    name: ${VOLUME_NAME:-zoraxy_config}
+    name: ${COMPOSE_PROJECT_NAME:-zoraxy}_config
     driver: ${VOLUME_DRIVER:-local}
   plugin:
     external: ${VOLUME_EXTERNAL:-false}
-    name: ${VOLUME_NAME_2:-zoraxy_plugin}
+    name: ${COMPOSE_PROJECT_NAME:-zoraxy}_plugin
     driver: ${VOLUME_DRIVER:-local}
 
 networks:
@@ -37,11 +37,11 @@ services:
       labels:
         - "traefik.enable=${TRAEFIK_ENABLE:-true}"
         - "traefik.http.services.zoraxy.loadbalancer.server.port=8000"
-        - "traefik.http.routers.zoraxy-http.rule=Host(`${APP_NAME:-zoraxy}.${BASE_DOMAIN:-localhost}`)"
+        - "traefik.http.routers.zoraxy-http.rule=Host(`${COMPOSE_PROJECT_NAME:-zoraxy}.${BASE_DOMAIN:-localhost}`)"
         - "traefik.http.routers.zoraxy-http.entrypoints=${TRAEFIK_HTTP_ENTRYPOINT:-http}"
         - "traefik.http.routers.zoraxy-http.middlewares=${TRAEFIK_HTTP_MIDDLEWARES:-https-redirect}"
         - "traefik.http.routers.zoraxy-http.service=zoraxy"
-        - "traefik.http.routers.zoraxy-https.rule=Host(`${APP_NAME:-zoraxy}.${BASE_DOMAIN:-localhost}`)"
+        - "traefik.http.routers.zoraxy-https.rule=Host(`${COMPOSE_PROJECT_NAME:-zoraxy}.${BASE_DOMAIN:-localhost}`)"
         - "traefik.http.routers.zoraxy-https.entrypoints=${TRAEFIK_HTTPS_ENTRYPOINT:-https}"
         - "traefik.http.routers.zoraxy-https.tls=${TRAEFIK_TLS:-true}"
         - "traefik.http.routers.zoraxy-https.tls.certresolver=${TRAEFIK_TLS_RESOLVER:-myresolver}"
