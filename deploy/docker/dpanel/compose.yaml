@@ -1,7 +1,7 @@
 volumes:
   data:
     external: ${VOLUME_EXTERNAL:-false}
-    name: ${VOLUME_NAME:-dpanel_data}
+    name: ${COMPOSE_PROJECT_NAME:-dpanel}_data
     driver: ${VOLUME_DRIVER:-local}
 
 networks:
@@ -25,13 +25,13 @@ services:
         - "traefik.enable=${TRAEFIK_ENABLE:-true}"
 
         # HTTP to HTTPS redirect
-        - "traefik.http.routers.dpanel-http.rule=Host(`${APP_NAME:-dpanel}.${BASE_DOMAIN:-localhost}`)"
+        - "traefik.http.routers.dpanel-http.rule=Host(`${COMPOSE_PROJECT_NAME:-dpanel}.${BASE_DOMAIN:-localhost}`)"
         - "traefik.http.routers.dpanel-http.entrypoints=${TRAEFIK_HTTP_ENTRYPOINT:-http}"
         - "traefik.http.routers.dpanel-http.middlewares=${TRAEFIK_HTTP_MIDDLEWARES:-https-redirect}"
         - "traefik.http.routers.dpanel-http.service=dpanel"
 
         # HTTPS router with SSL
-        - "traefik.http.routers.dpanel-https.rule=Host(`${APP_NAME:-dpanel}.${BASE_DOMAIN:-localhost}`)"
+        - "traefik.http.routers.dpanel-https.rule=Host(`${COMPOSE_PROJECT_NAME:-dpanel}.${BASE_DOMAIN:-localhost}`)"
         - "traefik.http.routers.dpanel-https.entrypoints=${TRAEFIK_HTTPS_ENTRYPOINT:-https}"
         - "traefik.http.routers.dpanel-https.tls=${TRAEFIK_TLS:-true}"
         - "traefik.http.routers.dpanel-https.tls.certresolver=${TRAEFIK_TLS_RESOLVER:-myresolver}"
