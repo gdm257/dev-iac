@@ -96,7 +96,7 @@ services:
       - "--certificatesresolvers.httpresolver.acme.storage=/data/acme.json"
       - "--certificatesresolvers.${TRAEFIK_TLS_RESOLVER:-myresolver}.acme.dnschallenge=${ACME_DNS_CHALLENGE:-true}"
       - "--certificatesresolvers.${TRAEFIK_TLS_RESOLVER:-myresolver}.acme.dnschallenge.provider=${ACME_PROVIDER:-cloudflare}"
-      - "--certificatesresolvers.${TRAEFIK_TLS_RESOLVER:-myresolver}.acme.dnschallenge.propagation.delayBeforeChecks=${ACME_DNS_DELAY:-40}"
+      - "--certificatesresolvers.${TRAEFIK_TLS_RESOLVER:-myresolver}.acme.dnschallenge.propagation.delayBeforeChecks=${ACME_DNS_DELAY:-70}"
       - "--certificatesresolvers.${TRAEFIK_TLS_RESOLVER:-myresolver}.acme.email=${ACME_EMAIL}"
       - "--certificatesresolvers.${TRAEFIK_TLS_RESOLVER:-myresolver}.acme.storage=/data/acme.json"
       - "--experimental.plugins.traefik-oidc-auth.modulename=github.com/sevensolutions/traefik-oidc-auth"
