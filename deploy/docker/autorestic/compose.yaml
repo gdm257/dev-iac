@@ -4,31 +4,47 @@ services:
     entrypoint: ["/bin/sh", "/entrypoint.sh"]
     environment:
       - TZ=${TZ:-Asia/Tokyo}
-      - AR_COMMAND=${AR_COMMAND:-backup} # backup|restore
+      - AR_COMMAND=${AR_COMMAND:-backup} # backup|restore|cron; set cron when enabling AR_CRON below
       - AR_RESTORE_SNAPSHOT=${AR_RESTORE_SNAPSHOT:-} # snapshot id to restore, latest when empty
       - AR_CONFIG=${AR_CONFIG:-} # full YAML config content
-      # AUTORESTIC_MAIN_* are mapped onto "main" named backend config
-      - AUTORESTIC_MAIN_RESTIC_PASSWORD=${AR_BACKEND_KEY} # openssl rand -base64 32
-      - AR_BACKEND_TYPE=${AR_BACKEND_TYPE:-local} # local|b2|s3|sftp|rest
-      - AR_BACKEND_PATH=${AR_BACKEND_PATH:-${AR_BACKEND_MOUNT:-/var/lib/autorestic}/${COMPOSE_PROJECT_NAME:-autorestic}} # per-project restic repo dir; set the same path and AR_BACKEND_KEY on all instances to share one repo (stagger AR_SCHEDULE: prune takes an exclusive restic lock)
-      - AR_BACKEND_MOUNT=${AR_BACKEND_MOUNT:-/var/lib/autorestic} # parent dir of local repos, bind-mounted at the same path
-      - AR_BACKUP_VOLUMES=${AR_BACKUP_VOLUMES:-${COMPOSE_PROJECT_NAME:-autorestic}_data}
-      - AR_FORGET=${AR_FORGET:-prune} # yes|no|prune
+      # locations (data sources)
+      - AR_BACKUP_VOLUMES=${AR_BACKUP_VOLUMES:-} # newline-separated docker volume names
+      - AR_BACKUP_PATHS=${AR_BACKUP_PATHS:-} # newline-separated absolute in-container paths, backed up directly by this sidecar (bind them in via the including compose)
+      - AR_TAGS=${AR_TAGS:-} # comma-separated restic tags added to every backup
+      - AR_EXCLUDE=${AR_EXCLUDE:-} # newline-separated restic exclude patterns (--exclude)
+      - AR_EXCLUDE_FILE=${AR_EXCLUDE_FILE:-.gitignore} # restic --exclude-file, resolved per data source (volume root / backup path)
       - AR_FORGET_OPTIONS=${AR_FORGET_OPTIONS:---keep-daily 7 --keep-weekly 4 --keep-monthly 6}
-      # Secondary backend: every snapshot backed up to "main" is copied to
-      # this "offsite" backend (restic copy); offsite is forgotten with the
-      # same AR_FORGET options. Leave AR_OFFSITE_TYPE empty to disable.
-      # AUTORESTIC_OFFSITE_* envs can be added the same way (e.g. s3 creds).
-      - AUTORESTIC_OFFSITE_RESTIC_PASSWORD=${AR_OFFSITE_KEY:-${AR_BACKEND_KEY}} # openssl rand -base64 32, defaults to AR_BACKEND_KEY
-      - AR_OFFSITE_TYPE=${AR_OFFSITE_TYPE:-} # local|b2|s3|sftp|rest, empty = no copy
-      - AR_OFFSITE_PATH=${AR_OFFSITE_PATH:-} # repository path/URL, required when AR_OFFSITE_TYPE is set
+      - AR_CRON=${AR_CRON:-false} # enable autorestic cron. No cron is generated when DOCOCD_JOB_ENABLED=true
+      - AR_CRON_EXPR=${AR_CRON_EXPR:-0 4 * * *} # cron expression for both doco-cd jobs and autorestic cron
+      - AR_CRON_INTERVAL=${AR_CRON_INTERVAL:-5m} # loop interval of the `autorestic cron` poll
+      # main backend
+      - AR_MAIN_TYPE=${AR_MAIN_TYPE:-local} # local|b2|s3|sftp|rest
+      - AR_MAIN_PATH=${AR_MAIN_PATH:-${AR_MAIN_MOUNT:-/var/lib/autorestic}/${COMPOSE_PROJECT_NAME:-default-repo}} # local repo dir, or remote repo URL e.g. s3.amazonaws.com/bucket
+      - AR_MAIN_MOUNT=${AR_MAIN_MOUNT:-/var/lib/autorestic} # host parent dir of local repos, bind-mounted at the same path
+      - AUTORESTIC_MAIN_RESTIC_PASSWORD=${AUTORESTIC_MAIN_RESTIC_PASSWORD:-} # openssl rand -base64 32
+      - AUTORESTIC_MAIN_AWS_ACCESS_KEY_ID=${AUTORESTIC_MAIN_AWS_ACCESS_KEY_ID:-}
+      - AUTORESTIC_MAIN_AWS_SECRET_ACCESS_KEY=${AUTORESTIC_MAIN_AWS_SECRET_ACCESS_KEY:-}
+      - AUTORESTIC_MAIN_AWS_SESSION_TOKEN=${AUTORESTIC_MAIN_AWS_SESSION_TOKEN:-}
+      - AUTORESTIC_MAIN_AWS_DEFAULT_REGION=${AUTORESTIC_MAIN_AWS_DEFAULT_REGION:-}
+      - AUTORESTIC_MAIN_B2_ACCOUNT_ID=${AUTORESTIC_MAIN_B2_ACCOUNT_ID:-}
+      - AUTORESTIC_MAIN_B2_ACCOUNT_KEY=${AUTORESTIC_MAIN_B2_ACCOUNT_KEY:-}
+      # replica backend: snapshots are copied from main -> replica (restic copy); empty AR_REPLICA_TYPE disables
+      - AR_REPLICA_TYPE=${AR_REPLICA_TYPE:-}
+      - AR_REPLICA_PATH=${AR_REPLICA_PATH:-}
+      - AUTORESTIC_REPLICA_RESTIC_PASSWORD=${AUTORESTIC_REPLICA_RESTIC_PASSWORD:-${AUTORESTIC_MAIN_RESTIC_PASSWORD:-}} # defaults to the main password
+      - AUTORESTIC_REPLICA_AWS_ACCESS_KEY_ID=${AUTORESTIC_REPLICA_AWS_ACCESS_KEY_ID:-}
+      - AUTORESTIC_REPLICA_AWS_SECRET_ACCESS_KEY=${AUTORESTIC_REPLICA_AWS_SECRET_ACCESS_KEY:-}
+      - AUTORESTIC_REPLICA_AWS_SESSION_TOKEN=${AUTORESTIC_REPLICA_AWS_SESSION_TOKEN:-}
+      - AUTORESTIC_REPLICA_AWS_DEFAULT_REGION=${AUTORESTIC_REPLICA_AWS_DEFAULT_REGION:-}
+      - AUTORESTIC_REPLICA_B2_ACCOUNT_ID=${AUTORESTIC_REPLICA_B2_ACCOUNT_ID:-}
+      - AUTORESTIC_REPLICA_B2_ACCOUNT_KEY=${AUTORESTIC_REPLICA_B2_ACCOUNT_KEY:-}
     volumes:
       - ${DOCKER_SOCKET:-/var/run/docker.sock}:/var/run/docker.sock
-      - ${AR_BACKEND_MOUNT:-/var/lib/autorestic}:${AR_BACKEND_MOUNT:-/var/lib/autorestic}
+      - ${AR_MAIN_MOUNT:-/var/lib/autorestic}:${AR_MAIN_MOUNT:-/var/lib/autorestic}
       - ./entrypoint.sh:/entrypoint.sh:ro
     labels:
-      - cd.doco.job.enabled=${AR_JOB_ENABLED:-true}
-      - cd.doco.job.schedule=${AR_SCHEDULE:-0 4 * * *}
+      - cd.doco.job.enabled=${DOCOCD_JOB_ENABLED:-true} # doco-cd scheduled jobs take precedence over AR_CRON
+      - cd.doco.job.schedule=${AR_CRON_EXPR:-0 4 * * *}
       - cd.doco.job.skip_running=true
     deploy:
       placement:
