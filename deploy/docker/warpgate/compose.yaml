@@ -34,7 +34,7 @@ services:
         - "traefik.http.routers.warpgate-https.rule=Host(`${COMPOSE_PROJECT_NAME:-warpgate}.${BASE_DOMAIN:-localhost}`) || Host(`${COMPOSE_PROJECT_NAME:-warpgate}-*.${BASE_DOMAIN:-localhost}`)"
         - "traefik.http.routers.warpgate-https.entrypoints=${TRAEFIK_HTTPS_ENTRYPOINT:-https}"
         - "traefik.http.routers.warpgate-https.tls=${TRAEFIK_TLS:-true}"
-        - "traefik.http.routers.warpgate-https.tls.certresolver=${TRAEFIK_TLS_RESOLVER:-myresolver}"
+        - "traefik.http.routers.warpgate-https.tls.certresolver=${TRAEFIK_TLS_RESOLVER:-dnsresolver}"
         - "traefik.http.routers.warpgate-https.middlewares=${TRAEFIK_HTTPS_MIDDLEWARES:-oidc-auth}"
         - "traefik.http.routers.warpgate-https.service=warpgate"
 

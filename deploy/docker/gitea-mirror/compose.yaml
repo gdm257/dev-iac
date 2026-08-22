@@ -85,7 +85,7 @@ services:
         - "traefik.http.routers.gitea-mirror-https.rule=Host(`${COMPOSE_PROJECT_NAME:-gitea-mirror}.${BASE_DOMAIN:-localhost}`)"
         - "traefik.http.routers.gitea-mirror-https.entrypoints=${TRAEFIK_HTTPS_ENTRYPOINT:-https}"
         - "traefik.http.routers.gitea-mirror-https.tls=${TRAEFIK_TLS:-true}"
-        - "traefik.http.routers.gitea-mirror-https.tls.certresolver=${TRAEFIK_TLS_RESOLVER:-myresolver}"
+        - "traefik.http.routers.gitea-mirror-https.tls.certresolver=${TRAEFIK_TLS_RESOLVER:-dnsresolver}"
         - "traefik.http.routers.gitea-mirror-https.middlewares=${TRAEFIK_HTTPS_MIDDLEWARES:-}"
         - "traefik.http.routers.gitea-mirror-https.service=gitea-mirror"
       replicas: ${REPLICAS:-1}

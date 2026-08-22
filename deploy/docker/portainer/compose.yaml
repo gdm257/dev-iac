@@ -34,7 +34,7 @@ services:
         - "traefik.http.routers.portainer-https.rule=Host(`${COMPOSE_PROJECT_NAME:-portainer}.${BASE_DOMAIN:-localhost}`)"
         - "traefik.http.routers.portainer-https.entrypoints=${TRAEFIK_HTTPS_ENTRYPOINT:-https}"
         - "traefik.http.routers.portainer-https.tls=${TRAEFIK_TLS:-true}"
-        - "traefik.http.routers.portainer-https.tls.certresolver=${TRAEFIK_TLS_RESOLVER:-myresolver}"
+        - "traefik.http.routers.portainer-https.tls.certresolver=${TRAEFIK_TLS_RESOLVER:-dnsresolver}"
         - "traefik.http.routers.portainer-https.middlewares=${TRAEFIK_HTTPS_MIDDLEWARES:-}"
         - "traefik.http.routers.portainer-https.service=portainer"
 
@@ -51,7 +51,7 @@ services:
         - "traefik.http.routers.portainer-edge-https.rule=Host(`${COMPOSE_PROJECT_NAME:-portainer}-edge.${BASE_DOMAIN:-localhost}`)"
         - "traefik.http.routers.portainer-edge-https.entrypoints=${TRAEFIK_HTTPS_ENTRYPOINT:-https}"
         - "traefik.http.routers.portainer-edge-https.tls=${TRAEFIK_TLS:-true}"
-        - "traefik.http.routers.portainer-edge-https.tls.certresolver=${TRAEFIK_TLS_RESOLVER:-myresolver}"
+        - "traefik.http.routers.portainer-edge-https.tls.certresolver=${TRAEFIK_TLS_RESOLVER:-dnsresolver}"
         - "traefik.http.routers.portainer-edge-https.middlewares=${TRAEFIK_HTTPS_MIDDLEWARES:-}"
         - "traefik.http.routers.portainer-edge-https.service=portainer-edge"
 

@@ -44,7 +44,7 @@ services:
         - "traefik.http.routers.zoraxy-https.rule=Host(`${COMPOSE_PROJECT_NAME:-zoraxy}.${BASE_DOMAIN:-localhost}`)"
         - "traefik.http.routers.zoraxy-https.entrypoints=${TRAEFIK_HTTPS_ENTRYPOINT:-https}"
         - "traefik.http.routers.zoraxy-https.tls=${TRAEFIK_TLS:-true}"
-        - "traefik.http.routers.zoraxy-https.tls.certresolver=${TRAEFIK_TLS_RESOLVER:-myresolver}"
+        - "traefik.http.routers.zoraxy-https.tls.certresolver=${TRAEFIK_TLS_RESOLVER:-dnsresolver}"
         - "traefik.http.routers.zoraxy-https.middlewares=${TRAEFIK_HTTPS_MIDDLEWARES:-}"
         - "traefik.http.routers.zoraxy-https.service=zoraxy"
       replicas: ${REPLICAS:-1}

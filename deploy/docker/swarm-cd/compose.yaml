@@ -25,7 +25,7 @@ services:
         - "traefik.http.routers.swarm-cd-https.rule=Host(`${COMPOSE_PROJECT_NAME:-swarm-cd}.${BASE_DOMAIN:-localhost}`)"
         - "traefik.http.routers.swarm-cd-https.entrypoints=${TRAEFIK_HTTPS_ENTRYPOINT:-https}"
         - "traefik.http.routers.swarm-cd-https.tls=${TRAEFIK_TLS:-true}"
-        - "traefik.http.routers.swarm-cd-https.tls.certresolver=${TRAEFIK_TLS_RESOLVER:-myresolver}"
+        - "traefik.http.routers.swarm-cd-https.tls.certresolver=${TRAEFIK_TLS_RESOLVER:-dnsresolver}"
         - "traefik.http.routers.swarm-cd-https.middlewares=${TRAEFIK_HTTPS_MIDDLEWARES:-}"
         - "traefik.http.routers.swarm-cd-https.service=swarm-cd"
         - "traefik.http.services.swarm-cd.loadbalancer.server.port=80"

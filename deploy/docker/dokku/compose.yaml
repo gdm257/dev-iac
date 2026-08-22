@@ -41,7 +41,7 @@ services:
         - "traefik.http.routers.dokku-https.rule=Host(`${COMPOSE_PROJECT_NAME:-dokku}.${BASE_DOMAIN:-localhost}`)"
         - "traefik.http.routers.dokku-https.entrypoints=${TRAEFIK_HTTPS_ENTRYPOINT:-https}"
         - "traefik.http.routers.dokku-https.tls=${TRAEFIK_TLS:-true}"
-        - "traefik.http.routers.dokku-https.tls.certresolver=${TRAEFIK_TLS_RESOLVER:-myresolver}"
+        - "traefik.http.routers.dokku-https.tls.certresolver=${TRAEFIK_TLS_RESOLVER:-dnsresolver}"
         - "traefik.http.routers.dokku-https.middlewares=${TRAEFIK_HTTPS_MIDDLEWARES:-}"
         - "traefik.http.routers.dokku-https.service=dokku"
         - "traefik.http.services.dokku.loadbalancer.server.port=80"

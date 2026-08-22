@@ -34,7 +34,7 @@ services:
         - "traefik.http.routers.n8n-https.rule=Host(`${COMPOSE_PROJECT_NAME:-n8n}.${BASE_DOMAIN:-localhost}`)"
         - "traefik.http.routers.n8n-https.entrypoints=${TRAEFIK_HTTPS_ENTRYPOINT:-https}"
         - "traefik.http.routers.n8n-https.tls=${TRAEFIK_TLS:-true}"
-        - "traefik.http.routers.n8n-https.tls.certresolver=${TRAEFIK_TLS_RESOLVER:-myresolver}"
+        - "traefik.http.routers.n8n-https.tls.certresolver=${TRAEFIK_TLS_RESOLVER:-dnsresolver}"
         - "traefik.http.routers.n8n-https.middlewares=${TRAEFIK_HTTPS_MIDDLEWARES:-}"
         - "traefik.http.routers.n8n-https.service=n8n"
       replicas: ${REPLICAS:-1}

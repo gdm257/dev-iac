@@ -94,7 +94,7 @@ services:
         - "traefik.http.routers.openlist-https.rule=Host(`${COMPOSE_PROJECT_NAME:-openlist}.${BASE_DOMAIN:-localhost}`)"
         - "traefik.http.routers.openlist-https.entrypoints=${TRAEFIK_HTTPS_ENTRYPOINT:-https}"
         - "traefik.http.routers.openlist-https.tls=${TRAEFIK_TLS:-true}"
-        - "traefik.http.routers.openlist-https.tls.certresolver=${TRAEFIK_TLS_RESOLVER:-myresolver}"
+        - "traefik.http.routers.openlist-https.tls.certresolver=${TRAEFIK_TLS_RESOLVER:-dnsresolver}"
         - "traefik.http.routers.openlist-https.middlewares=${TRAEFIK_HTTPS_MIDDLEWARES:-}"
         - "traefik.http.routers.openlist-https.service=openlist"
 
@@ -106,7 +106,7 @@ services:
         - "traefik.http.routers.openlist-s3-https.rule=Host(`${COMPOSE_PROJECT_NAME:-openlist}-s3.${BASE_DOMAIN:-localhost}`)"
         - "traefik.http.routers.openlist-s3-https.entrypoints=${TRAEFIK_HTTPS_ENTRYPOINT:-https}"
         - "traefik.http.routers.openlist-s3-https.tls=${TRAEFIK_TLS:-true}"
-        - "traefik.http.routers.openlist-s3-https.tls.certresolver=${TRAEFIK_TLS_RESOLVER:-myresolver}"
+        - "traefik.http.routers.openlist-s3-https.tls.certresolver=${TRAEFIK_TLS_RESOLVER:-dnsresolver}"
         - "traefik.http.routers.openlist-s3-https.middlewares=${TRAEFIK_HTTPS_MIDDLEWARES:-}"
         - "traefik.http.routers.openlist-s3-https.service=openlist-s3"
       replicas: ${REPLICAS:-1}
