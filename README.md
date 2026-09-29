@@ -5,15 +5,15 @@
 ```bash
 # ==== Server-side ====
 # Configure doco-cd
-vim .doco-cd.updater.yaml
 vim .doco-cd.gitops.yaml
 vim .doco-cd.yaml
+vim deploy/docker/doco-cd/compose.yaml
 git add .
 git push origin main
-# Deploy doco-cd to initialize GitOps
+# Deploy doco-cd to initialize GitOps (one-shot, self-updating single instance)
 cd deploy/docker/doco-cd
 vim .bootstrap.env
-docker compose --env-file .bootstrap.env up # after "updater" target bootstrap, press ctrl-c to stop this container
+docker compose --env-file .bootstrap.env up # after the "gitops" target deployment finished, press ctrl-c to stop this container
 docker compose --env-file .bootstrap.env down
 
 # ==== Local-side ====

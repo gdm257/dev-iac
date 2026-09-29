@@ -14,6 +14,7 @@ networks:
 services:
   doco-cd:
     image: ${IMAGE_NAME:-ghcr.io/kimdre/doco-cd}:${IMAGE_VERSION:-latest}
+    restart: ${RESTART_POLICY:-unless-stopped}
     networks:
       - public
     environment:
@@ -26,6 +27,7 @@ services:
       GIT_COMMIT_STATUS: ${GIT_COMMIT_STATUS:-false}
       POLL_CONFIG: ${POLL_CONFIG}
       SCHEDULER_ENABLED: ${SCHEDULER_ENABLED:-true}
+      SELF_UPDATE_ENABLED: ${SELF_UPDATE_ENABLED:-true}
       DEPLOY_CONFIG_BASE_DIR: ${DEPLOY_CONFIG_BASE_DIR:-/}
       LOG_LEVEL: ${LOG_LEVEL:-info}
       SOPS_AGE_KEY: ${SOPS_AGE_KEY:-}
@@ -36,6 +38,12 @@ services:
     volumes:
       - ${DOCKER_SOCKET:-/var/run/docker.sock}:/var/run/docker.sock
       - data:/data
+    healthcheck:
+      test: ["CMD", "/doco-cd", "healthcheck"]
+      interval: 10s
+      timeout: 5s
+      start_period: 15s
+      retries: 3
     deploy:
       labels:
         - traefik.enable=${TRAEFIK_ENABLE:-true}
